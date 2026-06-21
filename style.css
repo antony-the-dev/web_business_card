@@ -16,6 +16,8 @@
     /* orange accent */
     --line: #e8ecf1;
     /* subtle divider line */
+    --teal: #14b8c4;
+    /* cube teal */
 }
 
 body {
@@ -25,21 +27,78 @@ body {
     line-height: 1.7;
 }
 
+/* lock scroll while the intro is playing */
+body.intro-lock {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ===== INTRO OVERLAY ===== */
+#intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--bg);
+    overflow: hidden;
+    transition: opacity 0.6s ease;
+}
+
+#intro.is-exiting {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#intro-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* words stack in a centered column and accumulate, one at a time */
+#intro-words {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.intro-word {
+    font-size: clamp(1.05rem, 2.5vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    /* default = hidden + blurred; JS toggles .sharp / .blurred */
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
+.intro-word.sharp {
+    opacity: 1;
+    filter: blur(0);
+}
+
+.intro-word.blurred {
+    opacity: 0.5;
+    filter: blur(5px);
+}
+
 /* ===== HERO ===== */
 #hero {
     position: relative;
     /* anchor for the cube canvas */
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
     overflow: hidden;
 }
 
-/* cube sits behind everything */
+/* cube fills the hero; the figure itself rests small + centered */
 #cube-canvas {
     position: absolute;
     top: 0;
@@ -49,15 +108,18 @@ body {
     z-index: 0;
 }
 
-/* name centered over the cube, lifted up a touch */
+/* name + role sit ABOVE the cube, not over it */
 .hero-content {
-    position: relative;
+    position: absolute;
+    top: 18%;
+    left: 0;
+    right: 0;
     z-index: 1;
-    transform: translateY(-8%);
+    text-align: center;
 }
 
 .hero-content h1 {
-    font-size: 4rem;
+    font-size: 3.4rem;
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1.05;
@@ -65,19 +127,16 @@ body {
     /* white halo for readability */
 }
 
-/* typed subtitle pinned below the cube */
-#hero #typed {
-    position: absolute;
-    bottom: 12%;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 1;
-    font-size: 1.35rem;
+.hero-content .role {
+    margin-top: 0.6rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
     color: var(--muted);
+    text-shadow: 0 0 16px #fff, 0 0 8px #fff;
 }
 
-#typed::after {
+/* blinking orange cursor after the role */
+.hero-content .role::after {
     content: "_";
     color: var(--accent);
     margin-left: 2px;
@@ -88,6 +147,26 @@ body {
     50% {
         opacity: 0;
     }
+}
+
+/* the changing line at the bottom of the hero */
+#hero #typed {
+    position: absolute;
+    bottom: 13%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+    font-size: 1.15rem;
+    color: var(--muted);
+    text-shadow: 0 0 14px #fff, 0 0 8px #fff;
+}
+
+#typed::after {
+    content: "_";
+    color: var(--accent);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -213,4 +292,14 @@ footer a {
 
 footer a:hover {
     color: var(--accent);
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+
+    .scroll-arrow,
+    #typed::after,
+    .hero-content .role::after {
+        animation: none;
+    }
 }
