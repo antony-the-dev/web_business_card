@@ -153,11 +153,32 @@ h1 {
     font-weight: 400;
 }
 
-#typed {
-    font-family: monospace;
-    font-size: 1rem;
+/* blinking orange cursor after the role: "Business Analyst|" */
+.role::after {
+    content: "|";
     color: var(--accent);
+    margin-left: 3px;
+    animation: blink 1s step-end infinite;
+}
+
+/* the typewriter line: normal-coloured text, only the cursor is orange */
+#typed {
+    font-size: 1rem;
+    color: var(--muted);
     min-height: 1.7em;
+}
+
+#typed::after {
+    content: "_";
+    color: var(--accent);
+    margin-left: 2px;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -273,4 +294,13 @@ footer p {
 
 .footer-links a:hover {
     color: var(--accent);
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+
+    .role::after,
+    #typed::after {
+        animation: none;
+    }
 }
