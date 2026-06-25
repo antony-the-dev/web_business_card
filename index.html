@@ -10,6 +10,7 @@
 
 <body>
 
+    <!-- ===== INTRO ===== -->
     <div id="intro">
         <canvas id="intro-canvas"></canvas>
         <div id="intro-words">
@@ -19,68 +20,103 @@
         </div>
     </div>
 
+    <!-- ===== SCREEN 1 ===== -->
     <section id="hero">
-        <div class="hero-container">
-            <div class="hero-text">
-                <div class="hero-content">
-                    <h1>Anton Lisachenko</h1>
+        <div class="hero-grid">
+
+            <div class="col-left">
+                <div class="block reveal-blur" data-enter="1">
+                    <h1 class="hex">Anton Lisachenko</h1>
                     <p class="role">Business Analyst</p>
+                    <p id="typed"></p>
                 </div>
-                <p id="typed"></p>
+
+                <div class="block reveal-blur" data-enter="3">
+                    <span class="deco-line"></span>
+                    <h2 class="hex">About</h2>
+                    <p>
+                        Business Analyst with 7 years in IT and a background in
+                        project management. I manage requirements from the
+                        pre-sale and discovery phase through to UAT and project
+                        handoff — drafting functional and non-functional
+                        requirements, data entity schemas, and process models
+                        in BPMN / UML.
+                    </p>
+                </div>
+
+                <div class="block reveal-blur" data-enter="4">
+                    <span class="deco-line"></span>
+                    <h3 class="hex">Currently working with</h3>
+                    <p>
+                        Google Antigravity, Git &amp; GitHub, vibe-coding
+                        workflows with AI agents.
+                    </p>
+                </div>
             </div>
-            <div id="hero-canvas-container">
-                <canvas id="cube-canvas"></canvas>
+
+            <div class="col-right">
+                <div class="block contact reveal-blur" data-enter="2">
+                    <span class="deco-line"></span>
+                    <h2 class="hex">Contact</h2>
+                    <div class="contact-links">
+                        <a href="mailto:antonlisachenko@gmail.com">Email</a>
+                        <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank">LinkedIn</a>
+                        <a href="https://github.com/antony-the-dev" target="_blank">GitHub</a>
+                    </div>
+                </div>
+
+                <div id="hero-canvas-container">
+                    <canvas id="cube-canvas"></canvas>
+                </div>
             </div>
+
         </div>
         <div class="scroll-arrow"></div>
     </section>
 
-    <section id="about" class="reveal">
-        <h2>About</h2>
-        <p>
-            Business Analyst with 7 years in IT and a background in project
-            management. I manage requirements from the pre-sale and discovery
-            phase through to UAT and project handoff — drafting functional and
-            non-functional requirements, data entity schemas, and process
-            models in BPMN / UML.
-        </p>
+    <!-- ===== SCREEN 2 (scroll) ===== -->
+    <section id="lower">
+        <div class="lower-grid">
+
+            <div class="block reveal-blur" data-scroll>
+                <span class="deco-line"></span>
+                <h2 class="hex">Domains</h2>
+                <div class="domain-tags">
+                    <span>SaaS</span>
+                    <span>Mobile</span>
+                    <span>GovTech</span>
+                    <span>Healthcare</span>
+                    <span>Real Estate</span>
+                    <span>Media</span>
+                    <span>Advertising</span>
+                    <span>Energy & Utilities</span>
+                    <span>IoT</span>
+                    <span>Blockchain & Crypto</span>
+                </div>
+            </div>
+
+            <div class="block reveal-blur" data-scroll>
+                <span class="deco-line"></span>
+                <h2 class="hex">Expertise</h2>
+                <p>
+                    • Scope discovery, elicitation &amp; workshop management, gap
+                    analysis, value gathering, BRD / SRS, user stories, data
+                    modeling and entity schemas, RBAC.
+                </p>
+                <p>
+                    • BPMN / UML modeling, REST APIs, SQL, n8n automation &amp; AI
+                    integrations.
+                </p>
+                <p>
+                    • Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile /
+                    Kanban delivery.
+                </p>
+            </div>
+
+        </div>
     </section>
 
-    <section id="expertise" class="reveal">
-        <h2>Expertise</h2>
-        <p>
-            Scope discovery, elicitation &amp; workshop management, gap
-            analysis, value gathering, BRD / SRS, user stories, data modeling
-            and entity schemas, RBAC.
-        </p>
-        <p>
-            BPMN / UML modeling, REST APIs, SQL, n8n automation &amp; AI
-            integrations.
-        </p>
-        <p>
-            Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile / Kanban
-            delivery.
-        </p>
-
-        <h3>Currently working with</h3>
-        <p>
-            Google Antigravity, Git &amp; GitHub, vibe-coding workflows
-            with AI agents.
-        </p>
-    </section>
-
-    <section id="contact" class="reveal">
-        <h2>Contact</h2>
-        <p>
-            <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>
-        </p>
-        <p>
-            <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank">GitHub</a>
-        </p>
-        <p>Kyiv, Ukraine</p>
-    </section>
-
-    <footer class="reveal">
+    <footer>
         <p>© 2026 Anton Lisachenko</p>
         <div class="footer-links">
             <a href="mailto:antonlisachenko@gmail.com">Email</a>

@@ -1,3 +1,4 @@
+// ===== TYPEWRITER EFFECT =====
 const phrases = ["7 years in IT", "Requirements, from discovery to UAT", "BPMN / UML modeling", "Pre-sale to UAT, end to end"];
 const target = document.getElementById("typed");
 let phraseIndex = 0; let charIndex = 0; let deleting = false;
@@ -17,17 +18,44 @@ function tick() {
 }
 tick();
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add("visible"); observer.unobserve(entry.target); } });
-}, { threshold: 0.15 });
-document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
+// ===== ENTRANCE: hero blocks appear one by one; lower blocks reveal on scroll =====
+(function () {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // hero blocks: staggered blur-in, timed to start as the intro hands off
+    const enterEls = Array.from(document.querySelectorAll("[data-enter]"))
+        .sort((a, b) => (+a.dataset.enter) - (+b.dataset.enter));
+
+    if (reduceMotion) {
+        enterEls.forEach((el) => el.classList.add("shown"));
+    } else {
+        const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
+        const base = introWillPlay ? 2300 : 300; // start as the intro fades out
+        enterEls.forEach((el, i) => setTimeout(() => el.classList.add("shown"), base + i * 240));
+    }
+
+    // lower blocks: blur-in when scrolled into view
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) { entry.target.classList.add("shown"); io.unobserve(entry.target); }
+        });
+    }, { threshold: 0.2 });
+    document.querySelectorAll("[data-scroll]").forEach((el) => {
+        if (reduceMotion) el.classList.add("shown"); else io.observe(el);
+    });
+})();
+
+
+// ===== HIDE SCROLL ARROW AFTER SCROLLING =====
 (function () {
     const arrow = document.querySelector(".scroll-arrow");
     if (!arrow) return;
     window.addEventListener("scroll", () => { arrow.style.opacity = window.scrollY > 10 ? "0" : "0.7"; });
 })();
 
+
+// ===== shared: soft round sprite so points render as circles =====
 function makeCircleTexture() {
     const s = 64; const c = document.createElement("canvas"); c.width = c.height = s;
     const ctx = c.getContext("2d");
@@ -37,6 +65,8 @@ function makeCircleTexture() {
     return new THREE.CanvasTexture(c);
 }
 
+
+// ===== HERO FIGURE =====
 (function () {
     const canvas = document.getElementById("cube-canvas");
     if (!canvas || typeof THREE === "undefined") return;
@@ -98,6 +128,8 @@ function makeCircleTexture() {
     window.addEventListener("resize", () => { camera.aspect = hero.clientWidth / hero.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(hero.clientWidth, hero.clientHeight); });
 })();
 
+
+// ===== INTRO SEQUENCE (explosion from a point -> cube emerges -> expands) =====
 (function () {
     const intro = document.getElementById("intro");
     if (!intro || typeof THREE === "undefined") return;
