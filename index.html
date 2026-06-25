@@ -10,7 +10,6 @@
 
 <body>
 
-    <!-- ===== INTRO (first-touch greeter, plays once per session) ===== -->
     <div id="intro">
         <canvas id="intro-canvas"></canvas>
         <div id="intro-words">
@@ -20,18 +19,22 @@
         </div>
     </div>
 
-    <!-- ===== HERO ===== -->
     <section id="hero">
-        <canvas id="cube-canvas"></canvas>
-        <div class="hero-content">
-            <h1>Anton Lisachenko</h1>
-            <p class="role">Business Analyst</p>
+        <div class="hero-container">
+            <div class="hero-text">
+                <div class="hero-content">
+                    <h1>Anton Lisachenko</h1>
+                    <p class="role">Business Analyst</p>
+                </div>
+                <p id="typed"></p>
+            </div>
+            <div id="hero-canvas-container">
+                <canvas id="cube-canvas"></canvas>
+            </div>
         </div>
-        <p id="typed"></p>
         <div class="scroll-arrow"></div>
     </section>
 
-    <!-- ===== ABOUT ===== -->
     <section id="about" class="reveal">
         <h2>About</h2>
         <p>
@@ -43,11 +46,11 @@
         </p>
     </section>
 
-    <!-- ===== EXPERTISE ===== -->
     <section id="expertise" class="reveal">
         <h2>Expertise</h2>
         <p>
-            Requirements gathering, BRD / SRS, user stories, data modeling
+            Scope discovery, elicitation &amp; workshop management, gap
+            analysis, value gathering, BRD / SRS, user stories, data modeling
             and entity schemas, RBAC.
         </p>
         <p>
@@ -66,7 +69,6 @@
         </p>
     </section>
 
-    <!-- ===== CONTACT ===== -->
     <section id="contact" class="reveal">
         <h2>Contact</h2>
         <p>
@@ -78,7 +80,6 @@
         <p>Kyiv, Ukraine</p>
     </section>
 
-    <!-- ===== FOOTER ===== -->
     <footer class="reveal">
         <p>© 2026 Anton Lisachenko</p>
         <div class="footer-links">
@@ -88,7 +89,6 @@
         </div>
     </footer>
 
-    <!-- Three.js + our script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
 </body>
