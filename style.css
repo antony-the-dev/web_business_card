@@ -62,23 +62,26 @@ body.intro-lock {
 }
 
 .intro-word {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 400;
     letter-spacing: -0.02em;
     color: var(--ink);
     opacity: 0;
     filter: blur(8px);
-    transition: opacity 0.7s ease, filter 0.7s ease;
+    transform: scale(0.85);
+    transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s ease;
 }
 
 .intro-word.sharp {
     opacity: 1;
     filter: blur(0px);
+    transform: scale(1.1);
 }
 
 .intro-word.blurred {
     opacity: 0.18;
     filter: blur(3px);
+    transform: scale(0.9);
 }
 
 /* ===== HEX BULLET (orange hexagon before headings) ===== */

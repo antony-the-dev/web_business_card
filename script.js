@@ -55,6 +55,18 @@ tick();
 })();
 
 
+// ===== FADE OUT TOP CONTACTS ON SCROLL (same idea as the scroll arrow) =====
+(function () {
+    const contact = document.querySelector(".contact");
+    if (!contact) return;
+    window.addEventListener("scroll", () => {
+        const scrolled = window.scrollY > 30;
+        contact.style.opacity = scrolled ? "0" : "1";
+        contact.style.pointerEvents = scrolled ? "none" : "auto"; // don't catch clicks while hidden
+    });
+})();
+
+
 // ===== SCROLL INVERSION: lower section flips to dark while in the focus band =====
 (function () {
     const lower = document.getElementById("lower");
