@@ -401,6 +401,19 @@ h3 {
     color: var(--muted);
 }
 
+/* Hover effect for domain tags */
+.domain-tags span:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    cursor: pointer;
+}
+
+/* Ensure hover effect overrides dark mode styles */
+#lower.dark .domain-tags span:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
 /* ===== LINKS ===== */
 a {
     color: var(--ink);

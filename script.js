@@ -1,6 +1,6 @@
 // ===== TYPEWRITER EFFECT (writes to every .typed-out target) =====
 const phrases = ["7 years in IT", "Requirements, from discovery to UAT", "BPMN / UML modeling", "Pre-sale to UAT, end to end"];
-const targets = document.querySelectorAll(".typed-out");
+const targets = document.querySelectorAll("#typed, .id-typed");
 let phraseIndex = 0; let charIndex = 0; let deleting = false;
 
 function tick() {
