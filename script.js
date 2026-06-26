@@ -197,7 +197,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
                 const s = (1 + wave) * spread; cpos.array[ix] = x * s; cpos.array[ix + 1] = y * s; cpos.array[ix + 2] = z * s;
             }
             cpos.needsUpdate = true;
-            if (Math.random() < 0.15) { const n = 1 + Math.floor(Math.random() * 3); for (let k = 0; k < n; k++) flash[Math.floor(Math.random() * count)] = 1; }
+            if (Math.random() < 1) { const n = 1 + Math.floor(Math.random() * 3); for (let k = 0; k < n; k++) flash[Math.floor(Math.random() * count)] = 1; }
             for (let i = 0; i < count; i++) {
                 if (flash[i] > 0) flash[i] -= 0.02; if (flash[i] < 0) flash[i] = 0;
                 const f = flash[i]; phase[i] += 0.02 + (Math.random() * 0.01); const blink = Math.sin(phase[i]) * 0.4 + 0.6;
