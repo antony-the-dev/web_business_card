@@ -1,16 +1,18 @@
-// ===== TYPEWRITER EFFECT =====
+// ===== TYPEWRITER EFFECT (writes to every .typed-out target) =====
 const phrases = ["7 years in IT", "Requirements, from discovery to UAT", "BPMN / UML modeling", "Pre-sale to UAT, end to end"];
-const target = document.getElementById("typed");
+const targets = document.querySelectorAll(".typed-out");
 let phraseIndex = 0; let charIndex = 0; let deleting = false;
 
 function tick() {
     const current = phrases[phraseIndex];
     if (!deleting) {
-        target.textContent = current.slice(0, charIndex + 1);
+        const text = current.slice(0, charIndex + 1);
+        targets.forEach((t) => t.textContent = text);
         charIndex++;
         if (charIndex === current.length) { deleting = true; setTimeout(tick, 1500); return; }
     } else {
-        target.textContent = current.slice(0, charIndex - 1);
+        const text = current.slice(0, charIndex - 1);
+        targets.forEach((t) => t.textContent = text);
         charIndex--;
         if (charIndex === 0) { deleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; }
     }
@@ -60,10 +62,20 @@ tick();
     const contact = document.querySelector(".contact");
     if (!contact) return;
     window.addEventListener("scroll", () => {
-        const scrolled = window.scrollY > 30;
+        const scrolled = window.scrollY > 10;
         contact.style.opacity = scrolled ? "0" : "1";
         contact.style.pointerEvents = scrolled ? "none" : "auto"; // don't catch clicks while hidden
     });
+})();
+
+
+// ===== PERSISTENT IDENTITY BAR: fade in once you leave the hero =====
+(function () {
+    const bar = document.getElementById("id-bar");
+    if (!bar) return;
+    const update = () => bar.classList.toggle("shown", window.scrollY > window.innerHeight * 0.5);
+    window.addEventListener("scroll", update);
+    update();
 })();
 
 
