@@ -115,7 +115,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
 
     const RESTING_SCALE = 0.8; const INTRO_SCALE = 5.0; const CONTRACT_DELAY = 2200; const CONTRACT_MS = 1500;
     const FACE_HOLD_MS = 3300;        // how long the face stays before collapsing back to the cube
-    const MORPH_SPEED = 0.015;        // per-frame step of the morph (reaches its end exactly)
+    const MORPH_SPEED = 0.012;        // per-frame step of the morph (reaches its end exactly)
     const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
 
     const scene = new THREE.Scene();
@@ -150,7 +150,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const faceColors = new Float32Array(N * 3); const faceFlash = new Float32Array(N); const facePhase = new Float32Array(N);
     for (let i = 0; i < N; i++) { faceColors[i * 3] = TEAL[0]; faceColors[i * 3 + 1] = TEAL[1]; faceColors[i * 3 + 2] = TEAL[2]; facePhase[i] = Math.random() * Math.PI * 2; }
     faceGeo.setAttribute("color", new THREE.BufferAttribute(faceColors, 3));
-    const faceMat = new THREE.PointsMaterial({ size: 0.035, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0, depthWrite: false });
+    const faceMat = new THREE.PointsMaterial({ size: 0.03, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0, depthWrite: false });
     const faceDots = new THREE.Points(faceGeo, faceMat);
 
     const figure = new THREE.Group(); figure.add(mesh, cubeDots, faceDots); scene.add(figure);
@@ -230,7 +230,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             }
             fcol.needsUpdate = true;
         }
-        faceMat.opacity = 0.65 * faceFade;
+        faceMat.opacity = 0.55 * faceFade;
 
         // intro hand-off contraction
         if (contracting) {

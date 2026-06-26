@@ -162,11 +162,16 @@ body.intro-lock {
     height: 2px;
     background: var(--deco);
     margin-bottom: 1rem;
-    transition: width 0.7s ease 0.15s;
+    transition: width 0.8s ease-out 0.15s;
 }
 
 .reveal-blur.shown .deco-line {
+    width: 100%;
+}
+
+#hero .deco-line {
     width: 36px;
+    transition: none;
 }
 
 /* ===== REVEAL (blur-in) ===== */
