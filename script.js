@@ -223,7 +223,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             if (Math.random() < 20) { const n = 1 + Math.floor(Math.random() * 3); for (let k = 0; k < n; k++) faceFlash[Math.floor(Math.random() * N)] = 1; }
             for (let i = 0; i < N; i++) {
                 if (faceFlash[i] > 0) faceFlash[i] -= 0.02; if (faceFlash[i] < 0) faceFlash[i] = 0;
-                const f = faceFlash[i]; facePhase[i] += 0.02 + (Math.random() * 0.01); const blink = Math.sin(facePhase[i]) * 0.7 + 0.5;
+                const f = faceFlash[i]; facePhase[i] += 0.02 + (Math.random() * 0.01); const blink = Math.sin(facePhase[i]) * 1.3 + 0.5;
                 fcol.array[i * 3] = (TEAL[0] + (ORANGE[0] - TEAL[0]) * f) * blink;
                 fcol.array[i * 3 + 1] = (TEAL[1] + (ORANGE[1] - TEAL[1]) * f) * blink;
                 fcol.array[i * 3 + 2] = (TEAL[2] + (ORANGE[2] - TEAL[2]) * f) * blink;
