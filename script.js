@@ -55,6 +55,19 @@ tick();
 })();
 
 
+// ===== SCROLL INVERSION: lower section flips to dark while in the focus band =====
+(function () {
+    const lower = document.getElementById("lower");
+    if (!lower) return;
+    // Active when any part of #lower sits in the middle 50% of the viewport.
+    // Returns to light near the footer (top/bottom margins shrink the trigger zone).
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => lower.classList.toggle("dark", entry.isIntersecting));
+    }, { rootMargin: "-25% 0px -25% 0px", threshold: 0 });
+    io.observe(lower);
+})();
+
+
 // ===== shared: soft round sprite so points render as circles =====
 function makeCircleTexture() {
     const s = 64; const c = document.createElement("canvas"); c.width = c.height = s;

@@ -270,6 +270,49 @@ h3 {
 /* ===== SCREEN 2 (scroll) ===== */
 #lower {
     padding: 7rem 2rem;
+    background-color: var(--bg);
+    transition: background-color 0.9s ease;
+}
+
+/* smooth color hand-off for everything that flips */
+#lower h2,
+#lower p,
+#lower .deco-line,
+#lower .domain-tags span,
+#lower a {
+    transition: color 0.9s ease, background-color 0.9s ease, border-color 0.9s ease;
+}
+
+/* ===== INVERSION: dark while the section is in focus ===== */
+#lower.dark {
+    background-color: var(--ink);
+}
+
+#lower.dark h2 {
+    color: #ffffff;
+}
+
+#lower.dark p {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+#lower.dark .deco-line {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+#lower.dark .domain-tags span {
+    border-color: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#lower.dark a {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+#lower.dark a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .lower-grid {
