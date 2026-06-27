@@ -124,6 +124,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setSize(hero.clientWidth, hero.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    const HERO_PAN_FRAC = 0.21; // shift figure toward screen-right (0 = centred; flip sign to go left)
+    function applyHeroPan() { const w = hero.clientWidth, h = hero.clientHeight; camera.setViewOffset(w, h, -w * HERO_PAN_FRAC, 0, w, h); }
+    applyHeroPan();
 
     const TEAL = [0.08, 0.72, 0.77]; const ORANGE = [1.0, 0.34, 0.13];
 
@@ -248,7 +251,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         renderer.render(scene, camera);
     }
     animate();
-    window.addEventListener("resize", () => { camera.aspect = hero.clientWidth / hero.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(hero.clientWidth, hero.clientHeight); });
+    window.addEventListener("resize", () => { camera.aspect = hero.clientWidth / hero.clientHeight; renderer.setSize(hero.clientWidth, hero.clientHeight); applyHeroPan(); });
 })();
 
 

@@ -30,6 +30,12 @@
 
     <!-- ===== SCREEN 1 ===== -->
     <section id="hero">
+
+        <!-- full-bleed particle canvas, sits behind the text -->
+        <div id="hero-canvas-container">
+            <canvas id="cube-canvas"></canvas>
+        </div>
+
         <div class="hero-grid">
 
             <div class="col-left">
@@ -71,10 +77,6 @@
                         <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank">LinkedIn</a>
                         <a href="https://github.com/antony-the-dev" target="_blank">GitHub</a>
                     </div>
-                </div>
-
-                <div id="hero-canvas-container">
-                    <canvas id="cube-canvas"></canvas>
                 </div>
             </div>
 
@@ -273,10 +275,11 @@
         })();
     </script>
 
-    <!-- ===== Hero shrink/fade on scroll (move into script.js at final cleanup) ===== -->
+    <!-- ===== Hero shrink/fade on scroll — now also moves the full-bleed canvas ===== -->
     <script>
         (function () {
             var grid = document.querySelector(".hero-grid");
+            var cv = document.getElementById("hero-canvas-container");
             if (!grid) return;
             if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -285,17 +288,25 @@
             var HERO_DRIFT = 40;
 
             var ticking = false;
+            function clamp(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
             function easeOut(p) { return 1 - Math.pow(1 - p, 2); }
 
             function update() {
                 ticking = false;
                 var vh = window.innerHeight || 1;
-                var p = Math.min(Math.max(window.scrollY / vh, 0), 1);
-                var e = easeOut(p);
+                var e = easeOut(clamp(window.scrollY / vh));
                 var scale = 1 - (1 - HERO_MIN_SCALE) * e;
-                grid.style.transform = "translateY(" + (HERO_DRIFT * e) + "px) scale(" + scale + ")";
+                var tf = "translateY(" + (HERO_DRIFT * e) + "px) scale(" + scale + ")";
+                var op = (1 - e).toFixed(3);
+
+                grid.style.transform = tf;
+                grid.style.opacity = op;
                 grid.style.filter = "blur(" + (HERO_MAX_BLUR * e) + "px)";
-                grid.style.opacity = (1 - e).toFixed(3);
+
+                if (cv) {
+                    cv.style.transform = tf;   // particle field recedes together with the text
+                    cv.style.opacity = op;
+                }
             }
 
             window.addEventListener("scroll", function () {
@@ -306,21 +317,19 @@
         })();
     </script>
 
-    <!-- ===== Identity bar: scroll-driven opacity (no time-based fade, so fast scroll can't smear it) ===== -->
-    <!-- (supersedes the id-bar block in script.js; remove that block at final cleanup) -->
+    <!-- ===== Identity bar: scroll-driven opacity (no time-based fade) ===== -->
     <script>
         (function () {
             var bar = document.getElementById("id-bar");
             var lower = document.getElementById("lower");
             if (!bar || !lower) return;
 
-            // kill the CSS time-fade — we set opacity directly from scroll position every frame
             bar.style.transition = "none";
 
-            var APPEAR_AT = 0.5;    // *vh — bar starts appearing after leaving half the hero
-            var APPEAR_OVER = 0.18; // *vh — scroll length over which it ramps in
-            var FADE_DIST = 150;    // px before contact over which it fades back out
-            var BAR_H = 95;        // px — opacity hits 0 while the dark top is still this far from the viewport top (no overlap)
+            var APPEAR_AT = 0.5;
+            var APPEAR_OVER = 0.18;
+            var FADE_DIST = 150;
+            var BAR_H = 110;
 
             var ticking = false;
             function clamp(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
@@ -329,14 +338,9 @@
                 ticking = false;
                 var vh = window.innerHeight || 1;
                 var sy = window.scrollY;
-
-                // appear: 0 over the hero, ramps to 1 as the hero leaves
                 var appear = clamp((sy - vh * APPEAR_AT) / (vh * APPEAR_OVER));
-
-                // disappear: fades out as the dark section's top nears the bar — finishes BEFORE contact
                 var lowerTop = lower.getBoundingClientRect().top;
                 var disappear = clamp((lowerTop - BAR_H) / FADE_DIST);
-
                 bar.style.opacity = (appear * disappear).toFixed(3);
             }
 

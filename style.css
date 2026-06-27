@@ -201,7 +201,26 @@ body.intro-lock {
     border-bottom: 1px solid var(--line);
 }
 
+/* full-bleed particle canvas, behind everything */
+#hero-canvas-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transform-origin: center 35%;
+    will-change: transform, opacity;
+}
+
+#cube-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
 .hero-grid {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+    /* clicks fall through to the canvas (morph to face) */
     max-width: 1200px;
     height: 100%;
     margin: 0 auto;
@@ -209,9 +228,13 @@ body.intro-lock {
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
     gap: 3.5rem;
-    /* shrink/fade on scroll is driven by JS; origin keeps it receding from centre-top */
     transform-origin: center 35%;
     will-change: transform, opacity, filter;
+}
+
+/* re-enable interaction/selection on the actual content */
+#hero .block {
+    pointer-events: auto;
 }
 
 .col-left {
@@ -311,19 +334,6 @@ h3 {
 
 .contact-links a {
     color: var(--ink);
-}
-
-/* ===== CUBE ===== */
-#hero-canvas-container {
-    flex: 1;
-    min-height: 0;
-    position: relative;
-}
-
-#cube-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -694,11 +704,6 @@ a:hover {
 
     .col-left {
         justify-content: flex-start;
-    }
-
-    #hero-canvas-container {
-        height: 48vh;
-        flex: none;
     }
 
     h1 {
