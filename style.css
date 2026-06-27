@@ -17,6 +17,10 @@ html {
     --line: #e8ecf1;
     --deco: #cfd6de;
     --teal: #14b8c4;
+    --deco-rest: 0px;
+    /* resting length of the accent tick */
+    --deco-hover: 100px;
+    /* length it extends to on block hover */
 }
 
 body {
@@ -155,23 +159,28 @@ body.intro-lock {
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="6,2 18,2 23,12 18,22 6,22 1,12" fill="none" stroke="%23ff5722" stroke-width="2.4"/></svg>') no-repeat center / contain;
 }
 
-/* ===== DECO LINE (draws in on reveal) ===== */
+/* ===== DECO LINE (draws in on reveal, slides out on hover) ===== */
 .deco-line {
     display: block;
     width: 0;
     height: 2px;
     background: var(--deco);
     margin-bottom: 1rem;
-    transition: width 0.8s ease-out 0.15s;
+    transition: width 2s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        background-color 0.4s ease;
 }
 
+/* draws in to its resting length once the block is revealed */
 .reveal-blur.shown .deco-line {
-    width: 100%;
+    width: var(--deco-rest);
 }
 
-#hero .deco-line {
-    width: 36px;
-    transition: none;
+/* slides out longer + warms to the accent when you hover the block */
+.block:hover .deco-line {
+    width: var(--deco-hover);
+    background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.4s ease;
 }
 
 /* ===== REVEAL (blur-in) ===== */
@@ -342,13 +351,24 @@ h3 {
     transition: background-color 0.9s ease;
 }
 
-/* smooth color hand-off for everything that flips */
+/* smooth color hand-off for everything that flips (deco-line handled separately) */
 #lower h2,
 #lower p,
-#lower .deco-line,
 #lower .domain-tags span,
 #lower a {
     transition: color 0.9s ease, background-color 0.9s ease, border-color 0.9s ease;
+}
+
+/* deco-line keeps its width draw-in AND gets the slow dark-flip color hand-off */
+#lower .deco-line {
+    transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        background-color 0.9s ease;
+}
+
+/* snappy hover must win over the id-scoped rule above */
+#lower .block:hover .deco-line {
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.4s ease;
 }
 
 /* ===== INVERSION: dark while the section is in focus ===== */
@@ -366,6 +386,11 @@ h3 {
 
 #lower.dark .deco-line {
     background: rgba(255, 255, 255, 0.35);
+}
+
+/* hover still warms to accent even on the dark section */
+#lower.dark .block:hover .deco-line {
+    background: var(--accent);
 }
 
 #lower.dark .domain-tags span {
@@ -501,5 +526,9 @@ footer p {
         opacity: 1;
         filter: none;
         transform: none;
+    }
+
+    .deco-line {
+        transition: none;
     }
 }
