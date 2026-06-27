@@ -17,10 +17,8 @@ html {
     --line: #e8ecf1;
     --deco: #cfd6de;
     --teal: #14b8c4;
-    --deco-rest: 0px;
-    /* resting length of the accent tick */
+    --deco-rest: 0;
     --deco-hover: 100px;
-    /* length it extends to on block hover */
 }
 
 body {
@@ -35,7 +33,7 @@ body.intro-lock {
     height: 100vh;
 }
 
-/* ===== PERSISTENT IDENTITY BAR ===== */
+/* ===== PERSISTENT IDENTITY BAR (always solid white) ===== */
 #id-bar {
     position: fixed;
     top: 0;
@@ -45,7 +43,7 @@ body.intro-lock {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.45s ease;
-    background: rgba(255, 255, 255, 0.72);
+    background: #ffffff;
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
 }
@@ -166,16 +164,14 @@ body.intro-lock {
     height: 2px;
     background: var(--deco);
     margin-bottom: 1rem;
-    transition: width 2s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
         background-color 0.4s ease;
 }
 
-/* draws in to its resting length once the block is revealed */
 .reveal-blur.shown .deco-line {
     width: var(--deco-rest);
 }
 
-/* slides out longer + warms to the accent when you hover the block */
 .block:hover .deco-line {
     width: var(--deco-hover);
     background: var(--accent);
@@ -219,7 +215,7 @@ body.intro-lock {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2.4rem;
+    gap: 2rem;
     min-width: 0;
 }
 
@@ -229,7 +225,6 @@ body.intro-lock {
     gap: 1rem;
     min-width: 0;
     position: relative;
-    /* Added to anchor the absolute contact block */
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -345,30 +340,250 @@ h3 {
 }
 
 /* ===== SCREEN 2 (scroll) ===== */
+/* top/bottom split out so each is independently tunable */
 #lower {
-    padding: 7rem 2rem;
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     background-color: var(--bg);
     transition: background-color 0.9s ease;
 }
 
-/* smooth color hand-off for everything that flips (deco-line handled separately) */
 #lower h2,
 #lower p,
+#lower .proc-label,
+#lower .proc-tree-title,
 #lower .domain-tags span,
 #lower a {
     transition: color 0.9s ease, background-color 0.9s ease, border-color 0.9s ease;
 }
 
-/* deco-line keeps its width draw-in AND gets the slow dark-flip color hand-off */
 #lower .deco-line {
     transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
         background-color 0.9s ease;
 }
 
-/* snappy hover must win over the id-scoped rule above */
 #lower .block:hover .deco-line {
     transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
         background-color 0.4s ease;
+}
+
+/* ===== PROCESS STRIP (How I work pipeline) ===== */
+.proc-hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0;
+}
+
+.process-strip {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+/* base teal track */
+.process-strip::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: var(--teal);
+    opacity: 0.5;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+
+.reveal-blur.shown .process-strip::before {
+    transform: scaleX(1);
+}
+
+/* orange runner — fills to the clicked node, retracts on close */
+.process-strip::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(var(--fill, 0));
+    transform-origin: left center;
+    transition: transform var(--run-dur, 0.5s) ease;
+}
+
+.proc-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+}
+
+.proc-step:focus-visible .proc-node {
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.35);
+}
+
+/* solid teal hexagon */
+.proc-node {
+    width: 14px;
+    height: 14px;
+    background: var(--teal);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.25s ease;
+}
+
+.reveal-blur.shown .proc-node {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.reveal-blur.shown .proc-step:nth-child(1) .proc-node {
+    transition-delay: 0.20s;
+}
+
+.reveal-blur.shown .proc-step:nth-child(2) .proc-node {
+    transition-delay: 0.32s;
+}
+
+.reveal-blur.shown .proc-step:nth-child(3) .proc-node {
+    transition-delay: 0.44s;
+}
+
+.reveal-blur.shown .proc-step:nth-child(4) .proc-node {
+    transition-delay: 0.56s;
+}
+
+.reveal-blur.shown .proc-step:nth-child(5) .proc-node {
+    transition-delay: 0.68s;
+}
+
+.proc-label {
+    margin-top: 0.65rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+/* every step up to and including the selected one fills orange ("done") */
+.proc-step.filled .proc-node {
+    background: var(--accent);
+}
+
+/* the selected step — orange + scaled + ring */
+.proc-step.active .proc-node {
+    background: var(--accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.12);
+}
+
+.proc-step.active .proc-label {
+    color: var(--accent);
+}
+
+/* hover */
+.proc-step:hover .proc-node {
+    transform: scale(1.3);
+    background: var(--accent);
+}
+
+.proc-step:hover .proc-label {
+    color: var(--accent);
+}
+
+/* ===== PROCESS DETAIL TREE (compact + space reserved so the section never jumps) ===== */
+.proc-detail {
+    margin-top: 1.4rem;
+    min-height: 10rem;
+}
+
+.proc-tree {
+    display: inline-block;
+}
+
+.proc-tree-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.4s ease, color 0.6s ease;
+}
+
+.proc-tree.show .proc-tree-title {
+    opacity: 1;
+}
+
+.proc-branches {
+    list-style: none;
+    position: relative;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.proc-branches::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 0.1rem;
+    bottom: 0.7rem;
+    width: 1px;
+    background: var(--teal);
+    opacity: 0.5;
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+}
+
+.proc-tree.show .proc-branches::before {
+    transform: scaleY(1);
+}
+
+.proc-branches li {
+    position: relative;
+    padding-left: 1.15rem;
+    margin: 0.4rem 0;
+    line-height: 1.45;
+    font-size: 0.92rem;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateX(-6px);
+    transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s ease, color 0.6s ease;
+    transition-delay: calc(var(--i) * 0.13s + 0.12s);
+}
+
+.proc-branches li::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 0.72em;
+    width: 0.72rem;
+    height: 1px;
+    background: var(--teal);
+    opacity: 0.5;
+}
+
+.proc-tree.show .proc-branches li {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
 }
 
 /* ===== INVERSION: dark while the section is in focus ===== */
@@ -384,13 +599,25 @@ h3 {
     color: rgba(255, 255, 255, 0.72);
 }
 
+#lower.dark .proc-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#lower.dark .proc-branches li {
+    color: rgba(255, 255, 255, 0.72);
+}
+
 #lower.dark .deco-line {
     background: rgba(255, 255, 255, 0.35);
 }
 
-/* hover still warms to accent even on the dark section */
 #lower.dark .block:hover .deco-line {
     background: var(--accent);
+}
+
+#lower.dark .proc-step.active .proc-label,
+#lower.dark .proc-step:hover .proc-label {
+    color: var(--accent);
 }
 
 #lower.dark .domain-tags span {
@@ -413,7 +640,7 @@ h3 {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 2.5rem;
 }
 
 .domain-tags {
@@ -431,14 +658,12 @@ h3 {
     color: var(--muted);
 }
 
-/* Hover effect for domain tags */
 .domain-tags span:hover {
     color: var(--accent);
     border-color: var(--accent);
     cursor: pointer;
 }
 
-/* Ensure hover effect overrides dark mode styles */
 #lower.dark .domain-tags span:hover {
     color: var(--accent);
     border-color: var(--accent);
@@ -456,36 +681,6 @@ a {
 a:hover {
     color: var(--accent);
     border-color: var(--accent);
-}
-
-/* ===== FOOTER ===== */
-footer {
-    width: 100%;
-    text-align: center;
-    padding: 3rem 2rem;
-    border-top: 1px solid var(--line);
-}
-
-footer p {
-    font-size: 0.9rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-}
-
-.footer-links a {
-    font-size: 0.9rem;
-    color: var(--muted);
-    border: none;
-}
-
-.footer-links a:hover {
-    color: var(--accent);
 }
 
 /* ===== RESPONSIVE ===== */
@@ -515,6 +710,20 @@ footer p {
     }
 }
 
+@media (max-width: 600px) {
+    .process-strip {
+        gap: 0.5rem;
+    }
+
+    .proc-label {
+        font-size: 0.72rem;
+    }
+
+    .proc-detail {
+        min-height: 9.5rem;
+    }
+}
+
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
 
@@ -530,5 +739,28 @@ footer p {
 
     .deco-line {
         transition: none;
+    }
+
+    .proc-node {
+        opacity: 1;
+        transform: none;
+    }
+
+    .process-strip::before {
+        transform: scaleX(1);
+    }
+
+    .process-strip::after {
+        transition: none;
+    }
+
+    .proc-branches li {
+        opacity: 1;
+        filter: none;
+        transform: none;
+    }
+
+    .proc-branches::before {
+        transform: scaleY(1);
     }
 }
