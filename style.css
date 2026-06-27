@@ -209,6 +209,9 @@ body.intro-lock {
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
     gap: 3.5rem;
+    /* shrink/fade on scroll is driven by JS; origin keeps it receding from centre-top */
+    transform-origin: center 35%;
+    will-change: transform, opacity, filter;
 }
 
 .col-left {
@@ -340,7 +343,6 @@ h3 {
 }
 
 /* ===== SCREEN 2 (scroll) ===== */
-/* top/bottom split out so each is independently tunable */
 #lower {
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
@@ -385,7 +387,6 @@ h3 {
     margin-top: 1.5rem;
 }
 
-/* base teal track */
 .process-strip::before {
     content: "";
     position: absolute;
@@ -404,7 +405,6 @@ h3 {
     transform: scaleX(1);
 }
 
-/* orange runner — fills to the clicked node, retracts on close */
 .process-strip::after {
     content: "";
     position: absolute;
@@ -431,7 +431,6 @@ h3 {
     box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.35);
 }
 
-/* solid teal hexagon */
 .proc-node {
     width: 14px;
     height: 14px;
@@ -478,12 +477,10 @@ h3 {
     white-space: nowrap;
 }
 
-/* every step up to and including the selected one fills orange ("done") */
 .proc-step.filled .proc-node {
     background: var(--accent);
 }
 
-/* the selected step — orange + scaled + ring */
 .proc-step.active .proc-node {
     background: var(--accent);
     transform: scale(1.25);
@@ -494,7 +491,6 @@ h3 {
     color: var(--accent);
 }
 
-/* hover */
 .proc-step:hover .proc-node {
     transform: scale(1.3);
     background: var(--accent);

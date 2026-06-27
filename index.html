@@ -175,9 +175,9 @@
             var steps = Array.prototype.slice.call(strip.querySelectorAll(".proc-step"));
             var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-            var RUNNER_MAX = 650;  // ms for the orange line to travel the full strip
-            var HOLD_MS = 3000;    // how long the tree stays open before auto-close
-            var EXIT_MS = 900;     // collapse animation before the DOM is cleared
+            var RUNNER_MAX = 650;
+            var HOLD_MS = 3000;
+            var EXIT_MS = 900;
 
             var buildTimer = null, closeTimer = null, clearTimer = null;
 
@@ -227,7 +227,6 @@
                 var activeStep = steps[idx];
 
                 resetSteps();
-                // fill every node up to and including the clicked one
                 steps.forEach(function (s, i) { if (i <= idx) s.classList.add("filled"); });
                 if (activeStep) {
                     activeStep.classList.add("active");
@@ -271,6 +270,46 @@
                 var active = steps.find(function (s) { return s.classList.contains("active"); });
                 if (active) positionTree(active, tree);
             });
+        })();
+    </script>
+
+    <!-- ===== Hero shrink/fade on scroll (move into script.js at final cleanup) ===== -->
+    <script>
+        (function () {
+            var grid = document.querySelector(".hero-grid");
+            if (!grid) return;
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+            // tweakables
+            var HERO_MIN_SCALE = 0.6; // how small the hero gets at full scroll
+            var HERO_MAX_BLUR = 8;     // px of blur at full scroll
+            var HERO_DRIFT = 40;       // px it sinks downward as it recedes
+
+            var ticking = false;
+
+            function easeOut(p) { return 1 - Math.pow(1 - p, 2); }
+
+            function update() {
+                ticking = false;
+                var vh = window.innerHeight || 1;
+                // progress 0 (top) -> 1 (scrolled one screen)
+                var p = Math.min(Math.max(window.scrollY / vh, 0), 1);
+                var e = easeOut(p);
+
+                var scale = 1 - (1 - HERO_MIN_SCALE) * e;
+                var blur = HERO_MAX_BLUR * e;
+                var drift = HERO_DRIFT * e;
+
+                grid.style.transform = "translateY(" + drift + "px) scale(" + scale + ")";
+                grid.style.filter = "blur(" + blur + "px)";
+                grid.style.opacity = (1 - e).toFixed(3);
+            }
+
+            window.addEventListener("scroll", function () {
+                if (!ticking) { ticking = true; requestAnimationFrame(update); }
+            }, { passive: true });
+            window.addEventListener("resize", update);
+            update();
         })();
     </script>
 </body>
