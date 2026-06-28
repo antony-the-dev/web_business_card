@@ -221,13 +221,18 @@ body.intro-lock {
     z-index: 1;
     pointer-events: none;
     /* clicks fall through to the canvas (morph to face) */
-    max-width: 1200px;
+    width: 100%;
     height: 100%;
-    margin: 0 auto;
-    padding: 3rem 2rem;
+    margin: 0;
+    padding: 3rem 3.5rem;
     display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 3.5rem;
+    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "credo    contact"
+        "identity right";
+    column-gap: 3.5rem;
+    row-gap: 2rem;
     transform-origin: center 35%;
     will-change: transform, opacity, filter;
 }
@@ -238,19 +243,157 @@ body.intro-lock {
 }
 
 .col-left {
+    grid-area: identity;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 2rem;
     min-width: 0;
+    padding-left: 3rem;
+    max-width: 46rem;
 }
 
-.col-right {
+/* ===== HERO CREDO (top-left brand line) ===== */
+.hero-credo {
+    grid-area: credo;
+    align-self: start;
+    margin: 0;
+    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    line-height: 2;
+    color: var(--ink);
+    pointer-events: auto;
+}
+
+/* ===== HERO CONTACT (top-right — mono, mirrors the credo) ===== */
+.hero-contact {
+    grid-area: contact;
+    align-self: start;
+    justify-self: end;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-width: 0;
+    align-items: flex-end;
+    gap: 0.6rem;
+    margin-right: 1.5rem;
+    /* reserve space for the right rail */
+    pointer-events: auto;
+}
+
+.contact-links {
+    display: flex;
+    gap: 1.75rem;
+}
+
+.hero-contact a {
     position: relative;
+    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* thin line that draws in just above the hovered word */
+.hero-contact a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -0.7em;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-contact a:hover {
+    color: var(--accent);
+    border-color: transparent;
+}
+
+.hero-contact a:hover::after {
+    transform: scaleX(1);
+}
+
+/* ===== RIGHT-EDGE CONTACT RAIL (vertical caption) ===== */
+.contact-rail {
+    position: absolute;
+    top: 0;
+    right: 1.4rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.rail-line {
+    width: 1px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-rail.show .rail-line {
+    height: 110px;
+}
+
+.rail-text {
+    writing-mode: vertical-rl;
+    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--accent);
+    opacity: 0;
+    transform: rotate(180deg) translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.contact-rail.show .rail-text {
+    opacity: 1;
+    transform: rotate(180deg) translateY(0);
+}
+
+/* ===== "CURRENTLY WORKING WITH" — scannable list (hex markers tie to the motif) ===== */
+.now-list {
+    list-style: none;
+    margin-top: 0.5rem;
+}
+
+.now-list li {
+    position: relative;
+    padding-left: 1.3rem;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.now-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: var(--teal);
+    transition: background-color 0.25s ease;
+}
+
+.now-list li:hover::before {
+    background: var(--accent);
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -313,27 +456,6 @@ h3 {
 
 .block p:last-child {
     margin-bottom: 0;
-}
-
-/* ===== CONTACT ===== */
-.contact {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.contact-links {
-    display: flex;
-    gap: 1.75rem;
-}
-
-.contact-links a {
-    color: var(--ink);
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -445,7 +567,7 @@ h3 {
     width: 14px;
     height: 14px;
     background: var(--teal);
-    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    border-radius: 50%;
     position: relative;
     z-index: 1;
     opacity: 0;
@@ -698,12 +820,24 @@ a:hover {
 
     .hero-grid {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+            "credo"
+            "contact"
+            "identity";
+        column-gap: 0;
+        row-gap: 2rem;
         padding: 4rem 1.5rem;
+    }
+
+    .hero-contact {
+        justify-self: start;
     }
 
     .col-left {
         justify-content: flex-start;
+        padding-left: 0;
+        max-width: none;
     }
 
     h1 {

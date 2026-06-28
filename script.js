@@ -1,5 +1,5 @@
 // ===== TYPEWRITER EFFECT (writes to every .typed-out target) =====
-const phrases = ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "End-to-end delivery"];
+const phrases = ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "Discovery to handoff"];
 const targets = document.querySelectorAll("#typed, .id-typed");
 let phraseIndex = 0; let charIndex = 0; let deleting = false;
 
@@ -113,7 +113,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     if (!canvas || typeof THREE === "undefined") return;
     const hero = document.getElementById("hero-canvas-container");
 
-    const RESTING_SCALE = 0.8; const INTRO_SCALE = 5.0; const CONTRACT_DELAY = 2200; const CONTRACT_MS = 1500;
+    const RESTING_SCALE = 1.1; const INTRO_SCALE = 5.0; const CONTRACT_DELAY = 2200; const CONTRACT_MS = 1500;
     const FACE_HOLD_MS = 3300;        // how long the face stays before collapsing back to the cube
     const MORPH_SPEED = 0.012;        // per-frame step of the morph (reaches its end exactly)
     const introWillPlay = sessionStorage.getItem("introSeen") !== "1";

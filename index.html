@@ -38,8 +38,22 @@
 
         <div class="hero-grid">
 
+            <!-- top-left: credo / brand line -->
+            <p class="hero-credo reveal-blur" data-enter="1">Classic business analysis.<br>AI-native execution.</p>
+
+            <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
+            <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
+                <div class="contact-links">
+                    <a href="mailto:antonlisachenko@gmail.com" data-rail="email me">Email</a>
+                    <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
+                        data-rail="message me">LinkedIn</a>
+                    <a href="https://github.com/antony-the-dev" target="_blank" data-rail="follow me">GitHub</a>
+                </div>
+            </nav>
+
+            <!-- center-left: identity -->
             <div class="col-left">
-                <div class="block reveal-blur" data-enter="1">
+                <div class="block reveal-blur" data-enter="2">
                     <h1 class="hex">Anton Lisachenko</h1>
                     <p class="role">Business Analyst</p>
                     <p id="typed"></p>
@@ -51,35 +65,32 @@
                     <p>
                         Business Analyst with 7 years in IT and a background in
                         project management.<br>
-                        I bridge the gap between business needs and technical
-                        implementation, driving products from the discovery phase
-                        through to UAT and successful handoff.
+                        I turn ambiguous business needs into clear, buildable
+                        requirements — and drive the product from discovery
+                        through UAT to a clean handoff.
                     </p>
                 </div>
 
                 <div class="block reveal-blur" data-enter="4">
                     <span class="deco-line"></span>
-                    <h3 class="hex">Currently working with</h3>
-                    <p>
-                        Google Antigravity, local LLM deployment (Hermes),
-                        Git &amp; GitHub, AI agent orchestration &amp; vibe-coding paradigms.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-right">
-                <div class="block contact reveal-blur" data-enter="2">
-                    <span class="deco-line"></span>
-                    <h2 class="hex">Contact</h2>
-                    <div class="contact-links">
-                        <a href="mailto:antonlisachenko@gmail.com">Email</a>
-                        <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank">LinkedIn</a>
-                        <a href="https://github.com/antony-the-dev" target="_blank">GitHub</a>
-                    </div>
+                    <h2 class="hex">Currently working with</h2>
+                    <ul class="now-list">
+                        <li>AI agent orchestration &amp; vibe-coding</li>
+                        <li>Local LLM deployment (Hermes)</li>
+                        <li>Google Antigravity &amp; VS Code</li>
+                        <li>Git &amp; GitHub</li>
+                    </ul>
                 </div>
             </div>
 
         </div>
+
+        <!-- right-edge rail: vertical caption that slides out on contact hover -->
+        <div class="contact-rail" aria-hidden="true">
+            <span class="rail-line"></span>
+            <span class="rail-text">contact me</span>
+        </div>
+
         <div class="scroll-arrow"></div>
     </section>
 
@@ -109,7 +120,7 @@
                 <h2 class="hex">Expertise</h2>
                 <p>
                     • Scope discovery, elicitation &amp; workshop management, gap
-                    analysis, value gathering, BRD / SRS, user stories, data
+                    analysis, value mapping, BRD / SRS, user stories, data
                     modeling and entity schemas, RBAC.
                 </p>
                 <p>
@@ -348,6 +359,27 @@
             }, { passive: true });
             window.addEventListener("resize", update);
             update();
+        })();
+    </script>
+
+    <!-- ===== Contact rail: per-link vertical caption (move into script.js at final cleanup) ===== -->
+    <script>
+        (function () {
+            var nav = document.querySelector(".hero-contact");
+            var rail = document.querySelector(".contact-rail");
+            if (!nav || !rail) return;
+            var railText = rail.querySelector(".rail-text");
+            var links = Array.prototype.slice.call(nav.querySelectorAll("a[data-rail]"));
+
+            function show(a) { railText.textContent = a.dataset.rail; rail.classList.add("show"); }
+            function hide() { rail.classList.remove("show"); }
+
+            links.forEach(function (a) {
+                a.addEventListener("mouseenter", function () { show(a); });
+                a.addEventListener("focus", function () { show(a); });
+            });
+            nav.addEventListener("mouseleave", hide);
+            nav.addEventListener("focusout", hide);
         })();
     </script>
 </body>
