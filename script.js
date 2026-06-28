@@ -1,5 +1,5 @@
 // ===== TYPEWRITER EFFECT (writes to every .typed-out target) =====
-const phrases = ["7 years in IT", "Requirements, from discovery to UAT", "BPMN / UML modeling", "Pre-sale to UAT, end to end"];
+const phrases = ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "End-to-end delivery"];
 const targets = document.querySelectorAll("#typed, .id-typed");
 let phraseIndex = 0; let charIndex = 0; let deleting = false;
 
