@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anton Lisachenko — Business Analyst</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='6,2 18,2 23,12 18,22 6,22 1,12' fill='none' stroke='%23ff5722' stroke-width='2.4'/></svg>">
     <meta name="description"
         content="Business Analyst with 7 years in IT and a background in project management. I take requirements from pre-sale and discovery through to UAT and a clean handoff.">
     <meta name="author" content="Anton Lisachenko">
@@ -311,16 +313,23 @@
 
             function update() {
                 ticking = false;
-                // on mobile the shrink/blur-on-scroll just fades content away — disable it
-                if (window.matchMedia("(max-width: 900px)").matches) {
-                    grid.style.transform = "";
-                    grid.style.opacity = "";
-                    grid.style.filter = "";
-                    if (cv) { cv.style.transform = ""; cv.style.opacity = ""; }
-                    return;
-                }
                 var vh = window.innerHeight || 1;
                 var e = easeOut(clamp(window.scrollY / vh));
+
+                // MOBILE: gentle dim only — no shift / scale / blur (those broke the layout
+                // and the blur ate the content). Text stays readable; portrait recedes.
+                if (window.matchMedia("(max-width: 900px)").matches) {
+                    grid.style.transform = "";
+                    grid.style.filter = "";
+                    grid.style.opacity = (1 - e * 0.35).toFixed(3);   // text fades only to ~65%
+                    if (cv) {
+                        cv.style.transform = "";
+                        cv.style.opacity = (1 - e * 0.85).toFixed(3); // portrait recedes more
+                    }
+                    return;
+                }
+
+                // DESKTOP: full shrink + blur + drift
                 var scale = 1 - (1 - HERO_MIN_SCALE) * e;
                 var tf = "translateY(" + (HERO_DRIFT * e) + "px) scale(" + scale + ")";
                 var op = (1 - e).toFixed(3);

@@ -114,6 +114,13 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const hero = document.getElementById("hero-canvas-container");
 
     const RESTING_SCALE = 1.1; const INTRO_SCALE = 5.0; const CONTRACT_DELAY = 2200; const CONTRACT_MS = 1500;
+
+    // ===== SIZE KNOBS (tune these freely — they don't fight each other) =====
+    const FACE_DOT_SIZE = 0.03;   // size of the PORTRAIT dots (smaller = sharper/denser face)
+    const CUBE_DOT_SIZE = 0.05;   // size of the CUBE dots
+    const BREATH_AMP = 0.06;      // portrait "breathing" size swing (0 = off)
+    const BREATH_GLOW = 0.10;     // portrait "breathing" brightness swing (0 = off)
+    const BREATH_SPEED = 2.0;     // portrait "breathing" speed
     const FACE_HOLD_MS = 3300;        // how long the face stays before collapsing back to the cube
     const MORPH_SPEED = 0.012;        // per-frame step of the morph (reaches its end exactly)
     const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
@@ -143,7 +150,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const colors = new Float32Array(count * 3); const flash = new Float32Array(count); const phase = new Float32Array(count);
     for (let i = 0; i < count; i++) { colors[i * 3] = TEAL[0]; colors[i * 3 + 1] = TEAL[1]; colors[i * 3 + 2] = TEAL[2]; phase[i] = Math.random() * Math.PI * 2; }
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const cubeDots = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 0.06, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.65, depthWrite: false }));
+    const cubeDots = new THREE.Points(geometry, new THREE.PointsMaterial({ size: CUBE_DOT_SIZE, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.65, depthWrite: false }));
 
     // --- FACE CLOUD: converges in from an outer shell ---
     const N = FACE_PTS.length / 3;
@@ -158,7 +165,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const faceColors = new Float32Array(N * 3); const faceFlash = new Float32Array(N); const facePhase = new Float32Array(N);
     for (let i = 0; i < N; i++) { faceColors[i * 3] = TEAL[0]; faceColors[i * 3 + 1] = TEAL[1]; faceColors[i * 3 + 2] = TEAL[2]; facePhase[i] = Math.random() * Math.PI * 2; }
     faceGeo.setAttribute("color", new THREE.BufferAttribute(faceColors, 3));
-    const faceMat = new THREE.PointsMaterial({ size: 0.03, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0, depthWrite: false });
+    const faceMat = new THREE.PointsMaterial({ size: FACE_DOT_SIZE, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0, depthWrite: false });
     const faceDots = new THREE.Points(faceGeo, faceMat);
 
     const figure = new THREE.Group(); figure.add(mesh, cubeDots, faceDots); scene.add(figure);
@@ -238,7 +245,11 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             }
             fcol.needsUpdate = true;
         }
-        faceMat.opacity = 0.55 * faceFade;
+        // gentle "breathing" so the resting portrait reads as alive / interactive
+        // (multiplies on top of FACE_DOT_SIZE — so changing FACE_DOT_SIZE actually works)
+        const breath = Math.sin(t * BREATH_SPEED);
+        faceMat.size = FACE_DOT_SIZE * (1 + BREATH_AMP * breath);
+        faceMat.opacity = 0.55 * faceFade * (1 + BREATH_GLOW * breath);
 
         // intro hand-off contraction
         if (contracting) {
