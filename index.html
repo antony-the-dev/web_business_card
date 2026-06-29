@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anton Lisachenko — Business Analyst</title>
+    <meta name="description"
+        content="Business Analyst with 7 years in IT. I turn ambiguous business needs into clear, buildable requirements — from discovery through UAT to a clean handoff.">
+    <meta name="author" content="Anton Lisachenko">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Anton Lisachenko — Business Analyst">
+    <meta property="og:description"
+        content="Classic business analysis. AI-native execution. Requirements, stakeholder alignment, and end-to-end delivery.">
+    <meta name="twitter:card" content="summary">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -65,9 +73,8 @@
                     <p>
                         Business Analyst with 7 years in IT and a background in
                         project management.<br>
-                        I turn ambiguous business needs into clear, buildable
-                        requirements — and drive the product from discovery
-                        through UAT to a clean handoff.
+                        I take requirements from pre-sale and discovery all the way
+                        through to UAT and a clean handoff.
                     </p>
                 </div>
 
@@ -158,6 +165,11 @@
                 </ol>
                 <div class="proc-detail" aria-live="polite"></div>
             </div>
+
+            <footer class="site-footer">
+                <p class="footer-name">Anton Lisachenko</p>
+                <p class="footer-rights">&copy; 2026 &middot; All rights reserved.</p>
+            </footer>
 
         </div>
     </section>
@@ -299,6 +311,14 @@
 
             function update() {
                 ticking = false;
+                // on mobile the shrink/blur-on-scroll just fades content away — disable it
+                if (window.matchMedia("(max-width: 900px)").matches) {
+                    grid.style.transform = "";
+                    grid.style.opacity = "";
+                    grid.style.filter = "";
+                    if (cv) { cv.style.transform = ""; cv.style.opacity = ""; }
+                    return;
+                }
                 var vh = window.innerHeight || 1;
                 var e = easeOut(clamp(window.scrollY / vh));
                 var scale = 1 - (1 - HERO_MIN_SCALE) * e;

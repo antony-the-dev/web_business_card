@@ -125,7 +125,12 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     renderer.setSize(hero.clientWidth, hero.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     const HERO_PAN_FRAC = 0.20; // shift figure toward screen-right (0 = centred; flip sign to go left)
-    function applyHeroPan() { const w = hero.clientWidth, h = hero.clientHeight; camera.setViewOffset(w, h, -w * HERO_PAN_FRAC, 0, w, h); }
+    function applyHeroPan() {
+        const w = hero.clientWidth, h = hero.clientHeight;
+        // on narrow screens the figure lives in a centered band, so don't pan it
+        const frac = window.matchMedia("(max-width: 900px)").matches ? 0 : HERO_PAN_FRAC;
+        camera.setViewOffset(w, h, -w * frac, 0, w, h);
+    }
     applyHeroPan();
 
     const TEAL = [0.08, 0.72, 0.77]; const ORANGE = [1.0, 0.34, 0.13];
