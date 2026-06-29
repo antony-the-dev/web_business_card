@@ -655,13 +655,15 @@ h3 {
     color: var(--accent);
 }
 
-.proc-step:hover .proc-node {
-    transform: scale(1.3);
-    background: var(--accent);
-}
+@media (hover: hover) {
+    .proc-step:hover .proc-node {
+        transform: scale(1.3);
+        background: var(--accent);
+    }
 
-.proc-step:hover .proc-label {
-    color: var(--accent);
+    .proc-step:hover .proc-label {
+        color: var(--accent);
+    }
 }
 
 /* ===== PROCESS DETAIL TREE (compact + space reserved so the section never jumps) ===== */
@@ -800,9 +802,14 @@ h3 {
     background: var(--accent);
 }
 
-#lower.dark .proc-step.active .proc-label,
-#lower.dark .proc-step:hover .proc-label {
+#lower.dark .proc-step.active .proc-label {
     color: var(--accent);
+}
+
+@media (hover: hover) {
+    #lower.dark .proc-step:hover .proc-label {
+        color: var(--accent);
+    }
 }
 
 #lower.dark .domain-tags span {
@@ -875,8 +882,8 @@ a:hover {
     /* --band-top: where the portrait band starts (raise/lower the whole portrait) */
     /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
     :root {
-        --band-top: 10rem;
-        --band-h: 45vh;
+        --band-top: 8.5rem;
+        --band-h: 26vh;
     }
 
     #hero {
@@ -986,7 +993,7 @@ a:hover {
 
     .proc-detail {
         margin-top: 1.1rem;
-        min-height: 5rem;
+        min-height: 7.5rem;
     }
 
     .proc-tree-title {
