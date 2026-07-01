@@ -290,6 +290,10 @@ body.intro-lock {
     grid-area: lang;
     justify-self: end;
     align-self: end;
+    margin-right: 1.5rem;
+    /* MUST match .hero-contact's margin-right so both share the same right
+       edge — they sit in the same grid column, justify-self:end pins them to
+       the column's right edge, and this offsets both by the same amount */
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -1066,6 +1070,7 @@ a:active {
     .lang-switch {
         justify-self: center;
         align-self: auto;
+        margin-right: 0;
     }
 
     /* confine the 3D portrait to a centered band; text flows above and below it */

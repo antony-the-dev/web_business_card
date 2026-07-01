@@ -64,7 +64,7 @@
             },
             now: {
                 heading: "Зараз працюю з",
-                items: ["Оркестрація ШІ-агентів та вайбкодингу", "Локальний LLM (Hermes)", "Google Antigravity та VS Code", "Git та GitHub"]
+                items: ["Оркестрація ШІ-агентів та вайбкодинг", "Локальний LLM (Hermes)", "Google Antigravity та VS Code", "Git та GitHub"]
             },
             domains: {
                 heading: "Домени",
