@@ -12,7 +12,7 @@ html {
 :root {
     --bg: #ffffff;
     --ink: #0a2540;
-    --muted: #5b6b7f;
+    --muted: #46586d;
     --accent: #ff5722;
     --line: #e8ecf1;
     --deco: #cfd6de;
@@ -22,7 +22,7 @@ html {
 }
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg);
     color: var(--ink);
     line-height: 1.7;
@@ -172,11 +172,19 @@ body.intro-lock {
     width: var(--deco-rest);
 }
 
-.block:hover .deco-line {
+@media (hover: hover) {
+    .block:hover .deco-line {
+        width: var(--deco-hover);
+        background: var(--accent);
+        transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+            background-color 0.4s ease;
+    }
+}
+
+.block:active .deco-line {
     width: var(--deco-hover);
     background: var(--accent);
-    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.4s ease;
+    transition: width 0.2s ease, background-color 0.2s ease;
 }
 
 /* ===== REVEAL (blur-in) ===== */
@@ -322,6 +330,15 @@ body.intro-lock {
     transform: scaleX(1);
 }
 
+/* touch devices have no :hover — give contact links a permanent, non-bold
+   tap affordance instead of relying on the hover underline animation */
+@media (hover: none) {
+    .hero-contact a {
+        border-bottom: 1px solid var(--deco);
+        padding-bottom: 2px;
+    }
+}
+
 /* ===== RIGHT-EDGE CONTACT RAIL (vertical caption) ===== */
 .contact-rail {
     position: absolute;
@@ -376,7 +393,7 @@ body.intro-lock {
     position: relative;
     padding-left: 1.3rem;
     margin-bottom: 0.35rem;
-    color: var(--muted);
+    color: var(--ink);
     line-height: 1.55;
 }
 
@@ -392,7 +409,13 @@ body.intro-lock {
     transition: background-color 0.25s ease;
 }
 
-.now-list li:hover::before {
+@media (hover: hover) {
+    .now-list li:hover::before {
+        background: var(--accent);
+    }
+}
+
+.now-list li:active::before {
     background: var(--accent);
 }
 
@@ -450,7 +473,7 @@ h3 {
 }
 
 .block p {
-    color: var(--muted);
+    color: var(--ink);
     margin-bottom: 0.4rem;
 }
 
@@ -470,7 +493,7 @@ h3 {
 .exp-list li {
     position: relative;
     padding-left: 1.4rem;
-    color: var(--muted);
+    color: var(--ink);
     line-height: 1.55;
 }
 
@@ -486,7 +509,13 @@ h3 {
     transition: background-color 0.25s ease;
 }
 
-.exp-list li:hover::before {
+@media (hover: hover) {
+    .exp-list li:hover::before {
+        background: var(--accent);
+    }
+}
+
+.exp-list li:active::before {
     background: var(--accent);
 }
 
@@ -530,9 +559,11 @@ h3 {
         background-color 0.9s ease;
 }
 
-#lower .block:hover .deco-line {
-    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.4s ease;
+@media (hover: hover) {
+    #lower .block:hover .deco-line {
+        transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+            background-color 0.4s ease;
+    }
 }
 
 /* ===== PROCESS STRIP (How I work pipeline) ===== */
@@ -758,11 +789,11 @@ h3 {
 }
 
 #lower.dark p {
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.88);
 }
 
 #lower.dark .exp-list li {
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .site-footer {
@@ -791,14 +822,20 @@ h3 {
 }
 
 #lower.dark .proc-branches li {
-    color: rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.88);
 }
 
 #lower.dark .deco-line {
     background: rgba(255, 255, 255, 0.35);
 }
 
-#lower.dark .block:hover .deco-line {
+@media (hover: hover) {
+    #lower.dark .block:hover .deco-line {
+        background: var(--accent);
+    }
+}
+
+#lower.dark .block:active .deco-line {
     background: var(--accent);
 }
 
@@ -822,7 +859,14 @@ h3 {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-#lower.dark a:hover {
+@media (hover: hover) {
+    #lower.dark a:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+}
+
+#lower.dark a:active {
     color: var(--accent);
     border-color: var(--accent);
 }
@@ -850,13 +894,20 @@ h3 {
     color: var(--muted);
 }
 
-.domain-tags span:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    cursor: pointer;
+@media (hover: hover) {
+    .domain-tags span:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        cursor: pointer;
+    }
+
+    #lower.dark .domain-tags span:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
 }
 
-#lower.dark .domain-tags span:hover {
+.domain-tags span:active {
     color: var(--accent);
     border-color: var(--accent);
 }
@@ -870,7 +921,14 @@ a {
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-a:hover {
+@media (hover: hover) {
+    a:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+}
+
+a:active {
     color: var(--accent);
     border-color: var(--accent);
 }
