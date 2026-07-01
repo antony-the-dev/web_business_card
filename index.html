@@ -26,7 +26,7 @@
     <div id="id-bar">
         <div class="id-inner">
             <p class="id-name">Anton Lisachenko</p>
-            <p class="id-role">Business Analyst</p>
+            <p class="id-role" data-i18n="role">Business Analyst</p>
             <p class="id-typed"></p>
         </div>
     </div>
@@ -52,15 +52,23 @@
         <div class="hero-grid">
 
             <!-- top-left: credo / brand line -->
-            <p class="hero-credo reveal-blur" data-enter="1">Classic business analysis.<br>AI-native execution.</p>
+            <p class="hero-credo reveal-blur" data-enter="1"><span data-i18n="credo.l1">Classic business
+                    analysis.</span><br><span data-i18n="credo.l2">AI-native execution.</span></p>
 
             <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
             <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
+                <div class="lang-switch" aria-label="Language">
+                    <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                        class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
+                        type="button" aria-label="Українська">UA</button>
+                </div>
                 <div class="contact-links">
-                    <a href="/cdn-cgi/l/email-protection#6f0e011b000103061c0e0c070a0104002f08020e0603410c0002" data-rail="email me">Email</a>
-                    <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
-                        data-rail="message me">LinkedIn</a>
-                    <a href="https://github.com/antony-the-dev" target="_blank" data-rail="follow me">GitHub</a>
+                    <a href="/cdn-cgi/l/email-protection#6f0e011b000103061c0e0c070a0104002f08020e0603410c0002"
+                        data-rail-en="email me" data-rail-uk="напишіть мені">Email</a>
+                    <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank" data-rail-en="message me"
+                        data-rail-uk="напишіть в LinkedIn">LinkedIn</a>
+                    <a href="https://github.com/antony-the-dev" target="_blank" data-rail-en="follow me"
+                        data-rail-uk="мій GitHub">GitHub</a>
                 </div>
             </nav>
 
@@ -68,29 +76,29 @@
             <div class="col-left">
                 <div class="block reveal-blur" data-enter="2">
                     <h1 class="hex">Anton Lisachenko</h1>
-                    <p class="role">Business Analyst</p>
+                    <p class="role" data-i18n="role">Business Analyst</p>
                     <p id="typed"></p>
                 </div>
 
                 <div class="block reveal-blur" data-enter="3">
                     <span class="deco-line"></span>
-                    <h2 class="hex">About</h2>
+                    <h2 class="hex" data-i18n="about.heading">About</h2>
                     <p>
-                        Business Analyst with 7 years in IT and a background in
-                        project management.<br>
-                        I take requirements from pre-sale and discovery all the way
-                        through to UAT and a clean handoff.
+                        <span data-i18n="about.p1">Business Analyst with 7 years in IT and a background in
+                            project management.</span><br>
+                        <span data-i18n="about.p2">I take requirements from pre-sale and discovery all the way
+                            through to UAT and a clean handoff.</span>
                     </p>
                 </div>
 
                 <div class="block reveal-blur" data-enter="4">
                     <span class="deco-line"></span>
-                    <h2 class="hex">Currently working with</h2>
+                    <h2 class="hex" data-i18n="now.heading">Currently working with</h2>
                     <ul class="now-list">
-                        <li>AI agent orchestration &amp; vibe-coding</li>
-                        <li>Local LLM deployment (Hermes)</li>
-                        <li>Google Antigravity &amp; VS Code</li>
-                        <li>Git &amp; GitHub</li>
+                        <li data-i18n="now.items.0">AI agent orchestration &amp; vibe-coding</li>
+                        <li data-i18n="now.items.1">Local LLM deployment (Hermes)</li>
+                        <li data-i18n="now.items.2">Google Antigravity &amp; VS Code</li>
+                        <li data-i18n="now.items.3">Git &amp; GitHub</li>
                     </ul>
                 </div>
             </div>
@@ -112,31 +120,31 @@
 
             <div class="block reveal-blur" data-scroll>
                 <span class="deco-line"></span>
-                <h2 class="hex">Domains</h2>
+                <h2 class="hex" data-i18n="domains.heading">Domains</h2>
                 <div class="domain-tags">
-                    <span>SaaS</span>
-                    <span>Mobile</span>
-                    <span>GovTech</span>
-                    <span>Healthcare</span>
-                    <span>Real Estate</span>
-                    <span>Media</span>
-                    <span>Advertising</span>
-                    <span>Energy & Utilities</span>
-                    <span>IoT</span>
-                    <span>Blockchain & Crypto</span>
+                    <span data-i18n="domains.items.0">SaaS</span>
+                    <span data-i18n="domains.items.1">Mobile</span>
+                    <span data-i18n="domains.items.2">GovTech</span>
+                    <span data-i18n="domains.items.3">Healthcare</span>
+                    <span data-i18n="domains.items.4">Real Estate</span>
+                    <span data-i18n="domains.items.5">Media</span>
+                    <span data-i18n="domains.items.6">Advertising</span>
+                    <span data-i18n="domains.items.7">Energy & Utilities</span>
+                    <span data-i18n="domains.items.8">IoT</span>
+                    <span data-i18n="domains.items.9">Blockchain & Crypto</span>
                 </div>
             </div>
 
             <div class="block reveal-blur" data-scroll>
                 <span class="deco-line"></span>
-                <h2 class="hex">Expertise</h2>
+                <h2 class="hex" data-i18n="expertise.heading">Expertise</h2>
                 <ul class="exp-list">
-                    <li>Scope discovery, elicitation &amp; workshop management, gap
+                    <li data-i18n="expertise.items.0">Scope discovery, elicitation &amp; workshop management, gap
                         analysis, value mapping, BRD / SRS, user stories, data
                         modeling and entity schemas, RBAC.</li>
-                    <li>BPMN / UML modeling, REST APIs, SQL, HTML / CSS,
+                    <li data-i18n="expertise.items.1">BPMN / UML modeling, REST APIs, SQL, HTML / CSS,
                         n8n automation &amp; integrations.</li>
-                    <li>Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile /
+                    <li data-i18n="expertise.items.2">Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile /
                         Kanban delivery.</li>
                 </ul>
             </div>
@@ -144,28 +152,28 @@
             <!-- interactive pipeline -->
             <div class="block reveal-blur" data-scroll>
                 <span class="deco-line"></span>
-                <h2 class="hex">How I work</h2>
-                <p class="proc-hint">Tap a phase to expand its activities.</p>
+                <h2 class="hex" data-i18n="how.heading">How I work</h2>
+                <p class="proc-hint" data-i18n="how.hint">Tap a phase to expand its activities.</p>
                 <ol class="process-strip" aria-label="Delivery pipeline">
                     <li class="proc-step" data-phase="discovery" tabindex="0" role="button" aria-pressed="false">
                         <span class="proc-node"></span>
-                        <span class="proc-label">Discovery</span>
+                        <span class="proc-label" data-i18n="how.steps.discovery">Discovery</span>
                     </li>
                     <li class="proc-step" data-phase="elicitation" tabindex="0" role="button" aria-pressed="false">
                         <span class="proc-node"></span>
-                        <span class="proc-label">Elicitation</span>
+                        <span class="proc-label" data-i18n="how.steps.elicitation">Elicitation</span>
                     </li>
                     <li class="proc-step" data-phase="modeling" tabindex="0" role="button" aria-pressed="false">
                         <span class="proc-node"></span>
-                        <span class="proc-label">Modeling</span>
+                        <span class="proc-label" data-i18n="how.steps.modeling">Modeling</span>
                     </li>
                     <li class="proc-step" data-phase="uat" tabindex="0" role="button" aria-pressed="false">
                         <span class="proc-node"></span>
-                        <span class="proc-label">UAT</span>
+                        <span class="proc-label" data-i18n="how.steps.uat">UAT</span>
                     </li>
                     <li class="proc-step" data-phase="handoff" tabindex="0" role="button" aria-pressed="false">
                         <span class="proc-node"></span>
-                        <span class="proc-label">Handoff</span>
+                        <span class="proc-label" data-i18n="how.steps.handoff">Handoff</span>
                     </li>
                 </ol>
                 <div class="proc-detail" aria-live="polite"></div>
@@ -173,20 +181,23 @@
 
             <footer class="site-footer">
                 <p class="footer-name">Anton Lisachenko</p>
-                <p class="footer-rights">&copy; 2026 &middot; All rights reserved <br><a href="privacy.html">Privacy
+                <p class="footer-rights">&copy; 2026 &middot; <span data-i18n="footer.rights">All rights
+                        reserved</span> <br><a href="privacy.html" data-i18n="footer.privacy">Privacy
                         Policy</a></p>
             </footer>
 
         </div>
     </section>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="lang.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
 
     <!-- ===== Interactive "How I work" pipeline (move into script.js at final cleanup) ===== -->
     <script>
         (function () {
-            var PHASES = {
+            var PHASES = window.PHASES_I18N || {
                 discovery: ["Define objectives", "Map stakeholders", "Identify constraints", "Assess feasibility"],
                 elicitation: ["Run workshops", "Interviews & surveys", "Capture requirements", "Resolve conflicts"],
                 modeling: ["BPMN / UML diagrams", "Data entity schemas", "User stories", "BRD / SRS"],
