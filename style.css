@@ -235,12 +235,17 @@ body.intro-lock {
     padding: 3rem 3.5rem;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 0.6rem auto 1fr;
     grid-template-areas:
+        "credo    lang"
+        "credo    ."
         "credo    contact"
         "identity right";
     column-gap: 3.5rem;
-    row-gap: 2rem;
+    row-gap: 0;
+    /* spacing is explicit per-row above (the 0.6rem track, .col-left's
+       margin-top below) instead of a uniform gap — credo/lang/contact/identity
+       each need a different amount of breathing room, one gap value can't do that */
     transform-origin: center 35%;
     will-change: transform, opacity, filter;
 }
@@ -257,6 +262,7 @@ body.intro-lock {
     justify-content: center;
     gap: 2rem;
     min-width: 0;
+    margin-top: 2rem;
     padding-left: 3rem;
     max-width: 46rem;
 }
@@ -281,6 +287,9 @@ body.intro-lock {
    the accent orange; whichever is active is full-strength, the other one
    dims — no icon/emoji to render inconsistently across systems. */
 .lang-switch {
+    grid-area: lang;
+    justify-self: end;
+    align-self: end;
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -288,6 +297,7 @@ body.intro-lock {
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.14em;
+    pointer-events: auto;
 }
 
 .lang-opt {
@@ -548,42 +558,48 @@ h3 {
     margin-bottom: 0;
 }
 
-.exp-list {
-    list-style: none;
-    margin: 0.2rem 0 0;
-    padding: 0;
+.exp-groups {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 1.3rem;
+    margin-top: 0.3rem;
 }
 
-.exp-list li {
-    position: relative;
-    padding-left: 1.4rem;
+.exp-group-title {
+    margin: 0 0 0.5rem;
+    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+}
+
+.exp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.exp-tags span {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.85rem;
     color: var(--ink);
-    line-height: 1.55;
-}
-
-.exp-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 0.5em;
-    height: 0.5em;
-    border-radius: 50%;
-    background: var(--teal);
-    transition: background-color 0.25s ease;
 }
 
 @media (hover: hover) {
-    .exp-list li:hover::before {
-        background: var(--accent);
+    .exp-tags span:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        cursor: pointer;
     }
 }
 
-.exp-list li:active::before {
-    background: var(--accent);
+.exp-tags span:active {
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -859,8 +875,25 @@ h3 {
     color: rgba(255, 255, 255, 0.88);
 }
 
-#lower.dark .exp-list li {
-    color: rgba(255, 255, 255, 0.88);
+#lower.dark .exp-group-title {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+#lower.dark .exp-tags span {
+    border-color: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+@media (hover: hover) {
+    #lower.dark .exp-tags span:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+}
+
+#lower.dark .exp-tags span:active {
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .site-footer {
@@ -1018,15 +1051,21 @@ a:active {
     .hero-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
+            "lang"
             "credo"
             "contact"
             "portrait"
             "identity";
-        grid-template-rows: 3.2rem 1.6rem var(--band-h) auto;
+        grid-template-rows: auto 3.2rem 1.6rem var(--band-h) auto;
         column-gap: 0;
         row-gap: 1.1rem;
         padding: 1.75rem 1.5rem 1.5rem;
         align-content: start;
+    }
+
+    .lang-switch {
+        justify-self: center;
+        align-self: auto;
     }
 
     /* confine the 3D portrait to a centered band; text flows above and below it */
@@ -1045,6 +1084,7 @@ a:active {
         justify-self: center;
         align-items: center;
         margin-right: 0;
+        margin-top: 0;
     }
 
     .col-left {

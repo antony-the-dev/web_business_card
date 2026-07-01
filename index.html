@@ -51,17 +51,21 @@
 
         <div class="hero-grid">
 
+            <!-- language switch: own grid area so it can sit above credo on
+                 mobile (choose language before reading) while staying next
+                 to contact links on desktop -->
+            <div class="lang-switch reveal-blur" data-enter="1" aria-label="Language">
+                <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                    class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
+                    aria-label="Українська">UA</button>
+            </div>
+
             <!-- top-left: credo / brand line -->
             <p class="hero-credo reveal-blur" data-enter="1"><span data-i18n="credo.l1">Classic business
                     analysis.</span><br><span data-i18n="credo.l2">AI-native execution.</span></p>
 
             <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
             <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
-                <div class="lang-switch" aria-label="Language">
-                    <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
-                        class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
-                        type="button" aria-label="Українська">UA</button>
-                </div>
                 <div class="contact-links">
                     <a href="/cdn-cgi/l/email-protection#6f0e011b000103061c0e0c070a0104002f08020e0603410c0002"
                         data-rail-en="email me" data-rail-uk="напишіть мені">Email</a>
@@ -138,15 +142,74 @@
             <div class="block reveal-blur" data-scroll>
                 <span class="deco-line"></span>
                 <h2 class="hex" data-i18n="expertise.heading">Expertise</h2>
-                <ul class="exp-list">
-                    <li data-i18n="expertise.items.0">Scope discovery, elicitation &amp; workshop management, gap
-                        analysis, value mapping, BRD / SRS, user stories, data
-                        modeling and entity schemas, RBAC.</li>
-                    <li data-i18n="expertise.items.1">BPMN / UML modeling, REST APIs, SQL, HTML / CSS,
-                        n8n automation &amp; integrations.</li>
-                    <li data-i18n="expertise.items.2">Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile /
-                        Kanban delivery.</li>
-                </ul>
+                <div class="exp-groups">
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.notations.title">Modeling Notations</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.notations.items.0">BPMN</span>
+                            <span data-i18n="expertise.groups.notations.items.1">UML</span>
+                            <span data-i18n="expertise.groups.notations.items.2">ERD</span>
+                            <span data-i18n="expertise.groups.notations.items.3">DFD</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.requirements.title">Requirements & Docs
+                        </p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.requirements.items.0">BRD</span>
+                            <span data-i18n="expertise.groups.requirements.items.1">PRD</span>
+                            <span data-i18n="expertise.groups.requirements.items.2">SRS</span>
+                            <span data-i18n="expertise.groups.requirements.items.3">User Stories</span>
+                            <span data-i18n="expertise.groups.requirements.items.4">Epics</span>
+                            <span data-i18n="expertise.groups.requirements.items.5">Acceptance Criteria</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.query.title">Query & Technical</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.query.items.0">SQL</span>
+                            <span data-i18n="expertise.groups.query.items.1">JQL</span>
+                            <span data-i18n="expertise.groups.query.items.2">HTML / CSS</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.api.title">APIs & Testing</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.api.items.0">REST API</span>
+                            <span data-i18n="expertise.groups.api.items.1">Swagger</span>
+                            <span data-i18n="expertise.groups.api.items.2">Postman</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.diagramming.title">Diagramming Tools</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.diagramming.items.0">Miro</span>
+                            <span data-i18n="expertise.groups.diagramming.items.1">Lucidchart</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.design.title">Design & Prototyping</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.design.items.0">Figma</span>
+                            <span data-i18n="expertise.groups.design.items.1">Photoshop</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.delivery.title">Delivery & PM</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.delivery.items.0">Jira</span>
+                            <span data-i18n="expertise.groups.delivery.items.1">Confluence</span>
+                            <span data-i18n="expertise.groups.delivery.items.2">Notion</span>
+                            <span data-i18n="expertise.groups.delivery.items.3">ClickUp</span>
+                        </div>
+                    </div>
+                    <div class="exp-group">
+                        <p class="exp-group-title" data-i18n="expertise.groups.automation.title">Automation</p>
+                        <div class="exp-tags">
+                            <span data-i18n="expertise.groups.automation.items.0">n8n</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- interactive pipeline -->

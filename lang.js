@@ -26,11 +26,16 @@
             },
             expertise: {
                 heading: "Expertise",
-                items: [
-                    "Scope discovery, elicitation & workshop management, gap analysis, value mapping, BRD / SRS, user stories, data modeling and entity schemas, RBAC.",
-                    "BPMN / UML modeling, REST APIs, SQL, HTML / CSS, n8n automation & integrations.",
-                    "Jira, Confluence, Figma, Miro, Swagger, Notion — in Agile / Kanban delivery."
-                ]
+                groups: {
+                    notations: { title: "Modeling Notations", items: ["BPMN", "UML", "ERD", "DFD"] },
+                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
+                    api: { title: "APIs & Testing", items: ["REST API", "Swagger", "Postman"] },
+                    diagramming: { title: "Diagramming Tools", items: ["Miro", "Lucidchart"] },
+                    design: { title: "Design & Prototyping", items: ["Figma", "Photoshop"] },
+                    delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] },
+                    automation: { title: "Automation", items: ["n8n"] }
+                }
             },
             how: {
                 heading: "How I work",
@@ -59,7 +64,7 @@
             },
             now: {
                 heading: "Зараз працюю з",
-                items: ["Оркестрація ШІ-агентів та вайбкодинг", "Локальний LLM (Hermes)", "Google Antigravity та VS Code", "Git та GitHub"]
+                items: ["Оркестрація ШІ-агентів та вайбкодингу", "Локальний LLM (Hermes)", "Google Antigravity та VS Code", "Git та GitHub"]
             },
             domains: {
                 heading: "Домени",
@@ -67,11 +72,16 @@
             },
             expertise: {
                 heading: "Експертиза",
-                items: [
-                    "Визначення обсягу робіт, виявлення та збір вимог, фасилітація воркшопів, аналіз розривів, мапування цінності, документ бізнес-вимог (BRD) / специфікація вимог до програмного забезпечення (SRS), користувацькі історії, моделювання даних та схеми сутностей, керування доступом на основі ролей (RBAC).",
-                    "Моделювання бізнес-процесів (BPMN), UML-моделювання, REST API, SQL, HTML / CSS, автоматизація та інтеграції на платформі n8n.",
-                    "Jira, Confluence, Figma, Miro, Swagger, Notion — в Agile / Kanban поставці."
-                ]
+                groups: {
+                    notations: { title: "Нотації моделювання", items: ["BPMN", "UML", "ERD", "DFD"] },
+                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
+                    query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS"] },
+                    api: { title: "API та тестування", items: ["REST API", "Swagger", "Postman"] },
+                    diagramming: { title: "Інструменти візуалізації", items: ["Miro", "Lucidchart"] },
+                    design: { title: "Дизайн та прототипування", items: ["Figma", "Photoshop"] },
+                    delivery: { title: "Постачання та PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] },
+                    automation: { title: "Автоматизація", items: ["n8n"] }
+                }
             },
             how: {
                 heading: "Як я працюю",
