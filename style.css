@@ -141,8 +141,8 @@ body.intro-lock {
 }
 
 .intro-word.blurred {
-    opacity: 0.18;
-    filter: blur(3px);
+    opacity: 0.4;
+    filter: blur(1.5px);
     transform: scale(0.9);
 }
 
@@ -150,11 +150,11 @@ body.intro-lock {
 .hex::before {
     content: "";
     display: inline-block;
-    width: 0.72em;
-    height: 0.72em;
+    width: 0.8em;
+    height: 0.8em;
     margin-right: 0.45em;
-    vertical-align: -0.06em;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="6,2 18,2 23,12 18,22 6,22 1,12" fill="none" stroke="%23ff5722" stroke-width="2.4"/></svg>') no-repeat center / contain;
+    vertical-align: -0.09em;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="12,1.6 20.9,6.8 20.9,17.2 12,22.4 3.1,17.2 3.1,6.8" fill="none" stroke="%23ff5722" stroke-width="2.1"/></svg>') no-repeat center / contain;
 }
 
 /* ===== DECO LINE (draws in on reveal, slides out on hover) ===== */
@@ -330,12 +330,24 @@ body.intro-lock {
     transform: scaleX(1);
 }
 
-/* touch devices have no :hover — give contact links a permanent, non-bold
-   tap affordance instead of relying on the hover underline animation */
+/* touch devices have no :hover — give contact links a permanent, thin grey
+   underline so they read as tappable, then reuse the same orange draw-in
+   line from above on tap (:active) so touch gets the same "alive" feeling
+   as desktop hover, instead of a static line */
 @media (hover: none) {
     .hero-contact a {
         border-bottom: 1px solid var(--deco);
         padding-bottom: 2px;
+        transition: border-color 0.35s ease;
+    }
+
+    .hero-contact a:active {
+        color: var(--accent);
+        border-color: transparent;
+    }
+
+    .hero-contact a:active::after {
+        transform: scaleX(1);
     }
 }
 

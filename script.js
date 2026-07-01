@@ -25,6 +25,24 @@ tick();
 (function () {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Reveals an element and guarantees it actually ends up visible: some browser/
+    // capture contexts (backgrounded tabs, print/screenshot pipelines, odd timeline
+    // throttling) can leave a CSS transition parked at its 0%/from-state forever
+    // instead of running it. If that happens content silently never appears — so
+    // after giving the transition a chance, force the end-state inline if the
+    // computed opacity hasn't actually moved.
+    function reveal(el) {
+        el.classList.add("shown");
+        setTimeout(() => {
+            if (parseFloat(getComputedStyle(el).opacity) < 0.5) {
+                el.style.transition = "none";
+                el.style.opacity = "1";
+                el.style.filter = "none";
+                el.style.transform = "none";
+            }
+        }, 900);
+    }
+
     // hero blocks: staggered blur-in, timed to start as the intro hands off
     const enterEls = Array.from(document.querySelectorAll("[data-enter]"))
         .sort((a, b) => (+a.dataset.enter) - (+b.dataset.enter));
@@ -34,15 +52,18 @@ tick();
     } else {
         const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
         const base = introWillPlay ? 2300 : 300; // start as the intro fades out
-        enterEls.forEach((el, i) => setTimeout(() => el.classList.add("shown"), base + i * 240));
+        enterEls.forEach((el, i) => setTimeout(() => reveal(el), base + i * 240));
     }
 
     // lower blocks: blur-in when scrolled into view
     const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            if (entry.isIntersecting) { entry.target.classList.add("shown"); io.unobserve(entry.target); }
+            if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); }
+            /* fires a touch earlier than the block being 20% in view, so content
+               starts appearing while the hero is still finishing its own fade —
+               closes the "dead" white gap between the two screens */
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.05, rootMargin: "0px 0px -5% 0px" });
     document.querySelectorAll("[data-scroll]").forEach((el) => {
         if (reduceMotion) el.classList.add("shown"); else io.observe(el);
     });
@@ -83,11 +104,13 @@ tick();
 (function () {
     const lower = document.getElementById("lower");
     if (!lower) return;
-    // Active when any part of #lower sits in the middle 50% of the viewport.
+    // Active when any part of #lower sits in the middle ~75% of the viewport.
+    // Tighter margins than before so the dark background arrives while the hero
+    // is still fading out overhead, instead of after a beat of plain white.
     // Returns to light near the footer (top/bottom margins shrink the trigger zone).
     const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => lower.classList.toggle("dark", entry.isIntersecting));
-    }, { rootMargin: "-25% 0px -25% 0px", threshold: 0 });
+    }, { rootMargin: "-12% 0px -12% 0px", threshold: 0 });
     io.observe(lower);
 })();
 
@@ -326,9 +349,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     }
     render();
     const words = Array.from(document.querySelectorAll(".intro-word")); const timers = [];
-    words.forEach((w, idx) => { timers.push(setTimeout(() => { if (idx > 0) { words[idx - 1].classList.remove("sharp"); words[idx - 1].classList.add("blurred"); } w.classList.add("sharp"); }, 300 + idx * 600)); });
+    words.forEach((w, idx) => { timers.push(setTimeout(() => { if (idx > 0) { words[idx - 1].classList.remove("sharp"); words[idx - 1].classList.add("blurred"); } w.classList.add("sharp"); }, 300 + idx * 700)); });
     let exited = false;
     function exitIntro() { if (exited) return; exited = true; sessionStorage.setItem("introSeen", "1"); timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
-    const auto = setTimeout(exitIntro, 2400);
+    const auto = setTimeout(exitIntro, 2650);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anton Lisachenko — Business Analyst</title>
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='6,2 18,2 23,12 18,22 6,22 1,12' fill='none' stroke='%23ff5722' stroke-width='2.4'/></svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12,1.6 20.9,6.8 20.9,17.2 12,22.4 3.1,17.2 3.1,6.8' fill='none' stroke='%23ff5722' stroke-width='2.3'/><text x='12' y='16.6' font-family='ui-monospace,Menlo,monospace' font-size='9.6' font-weight='700' fill='%230a2540' text-anchor='middle'>AL</text></svg>">
     <meta name="description"
         content="Business Analyst with 7 years in IT and a background in project management. I take requirements from pre-sale and discovery through to UAT and a clean handoff.">
     <meta name="author" content="Anton Lisachenko">
@@ -57,7 +57,7 @@
             <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
             <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
                 <div class="contact-links">
-                    <a href="mailto:antonlisachenko@gmail.com" data-rail="email me">Email</a>
+                    <a href="/cdn-cgi/l/email-protection#6f0e011b000103061c0e0c070a0104002f08020e0603410c0002" data-rail="email me">Email</a>
                     <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
                         data-rail="message me">LinkedIn</a>
                     <a href="https://github.com/antony-the-dev" target="_blank" data-rail="follow me">GitHub</a>
@@ -173,13 +173,14 @@
 
             <footer class="site-footer">
                 <p class="footer-name">Anton Lisachenko</p>
-                <p class="footer-rights">&copy; 2026 &middot; All rights reserved.</p>
+                <p class="footer-rights">&copy; 2026 &middot; All rights reserved <br><a href="privacy.html">Privacy
+                        Policy</a></p>
             </footer>
 
         </div>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
 
     <!-- ===== Interactive "How I work" pipeline (move into script.js at final cleanup) ===== -->
@@ -317,7 +318,10 @@
             function update() {
                 ticking = false;
                 var vh = window.innerHeight || 1;
-                var e = easeOut(clamp(window.scrollY / vh));
+                // fade/shrink resolves over ~72% of a viewport of scroll instead of the
+                // full 100% — closes the beat of plain white that used to sit between
+                // "hero fully faded" and "lower section fully in view"
+                var e = easeOut(clamp(window.scrollY / (vh * 0.72)));
 
                 // MOBILE: gentle dim only — no shift / scale / blur (those broke the layout
                 // and the blur ate the content). Text stays readable; portrait recedes.
