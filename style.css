@@ -1052,7 +1052,7 @@ a:active {
     /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
     :root {
         --band-top: 12rem;
-        --band-h: 45vh;
+        --band-h: 46vh;
     }
 
     #hero {
