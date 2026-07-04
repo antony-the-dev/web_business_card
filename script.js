@@ -136,7 +136,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     if (!canvas || typeof THREE === "undefined") return;
     const hero = document.getElementById("hero-canvas-container");
 
-    const RESTING_SCALE = 1.1; const INTRO_SCALE = 10.0; const CONTRACT_DELAY = 3000; const CONTRACT_MS = 2000;
+    const RESTING_SCALE = 1.13; const INTRO_SCALE = 10.0; const CONTRACT_DELAY = 3000; const CONTRACT_MS = 2000;
 
     // ===== SIZE KNOBS (tune these freely — they don't fight each other) =====
     const FACE_DOT_SIZE = 0.025;   // size of the PORTRAIT dots (smaller = sharper/denser face)
