@@ -30,11 +30,10 @@
                     notations: { title: "Modeling Notations", items: ["BPMN", "UML", "ERD", "DFD"] },
                     requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories"] },
                     query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
-                    api: { title: "APIs & Testing", items: ["REST API", "Swagger", "Postman"] },
+                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "Postman", "n8n"] },
                     diagramming: { title: "Diagramming Tools", items: ["Miro", "Lucidchart"] },
                     design: { title: "Design & Prototyping", items: ["Figma", "Photoshop"] },
-                    delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] },
-                    automation: { title: "Automation", items: ["n8n"] }
+                    delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
             how: {
@@ -76,11 +75,10 @@
                     notations: { title: "Нотації моделювання", items: ["BPMN", "UML", "ERD", "DFD"] },
                     requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories"] },
                     query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS"] },
-                    api: { title: "API та тестування", items: ["REST API", "Swagger", "Postman"] },
+                    api: { title: "API та автоматизація", items: ["REST API", "Swagger", "Postman", "n8n"] },
                     diagramming: { title: "Інструменти візуалізації", items: ["Miro", "Lucidchart"] },
                     design: { title: "Дизайн та прототипування", items: ["Figma", "Photoshop"] },
-                    delivery: { title: "Постачання та PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] },
-                    automation: { title: "Автоматизація", items: ["n8n"] }
+                    delivery: { title: "Постачання та PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
             how: {
