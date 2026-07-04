@@ -373,9 +373,8 @@
             if (!grid) return;
             if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-            var HERO_MIN_SCALE = 0.6;
-            var HERO_MAX_BLUR = 8;
-            var HERO_DRIFT = 40;
+            var HERO_MIN_SCALE = 0.5;
+            var HERO_DRIFT = 200;
 
             var ticking = false;
             function clamp(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
@@ -387,18 +386,11 @@
                 // fade/shrink resolves over ~72% of a viewport of scroll instead of the
                 // full 100% — closes the beat of plain white that used to sit between
                 // "hero fully faded" and "lower section fully in view"
-                var e = easeOut(clamp(window.scrollY / (vh * 0.72)));
+                var e = easeOut(clamp(window.scrollY / (vh * 1.72)));
 
-                // MOBILE: gentle dim only — no shift / scale / blur (those broke the layout
-                // and the blur ate the content). Text stays readable; portrait recedes.
+                // MOBILE: plain scroll — no dim/scale/blur (the fade flashed grey
+                // on fast phone scroll and cost performance for no visual gain)
                 if (window.matchMedia("(max-width: 900px)").matches) {
-                    grid.style.transform = "";
-                    grid.style.filter = "";
-                    grid.style.opacity = (1 - e * 0.35).toFixed(3);   // text fades only to ~65%
-                    if (cv) {
-                        cv.style.transform = "";
-                        cv.style.opacity = (1 - e * 0.85).toFixed(3); // portrait recedes more
-                    }
                     return;
                 }
 
@@ -409,7 +401,6 @@
 
                 grid.style.transform = tf;
                 grid.style.opacity = op;
-                grid.style.filter = "blur(" + (HERO_MAX_BLUR * e) + "px)";
 
                 if (cv) {
                     cv.style.transform = tf;   // particle field recedes together with the text
@@ -434,9 +425,9 @@
 
             bar.style.transition = "none";
 
-            var APPEAR_AT = 0.5;
+            var APPEAR_AT = 0.4;
             var APPEAR_OVER = 0.18;
-            var FADE_DIST = 150;
+            var FADE_DIST = 25;
             var BAR_H = 110;
 
             var ticking = false;

@@ -16,7 +16,7 @@ function tick() {
         charIndex--;
         if (charIndex === 0) { deleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; }
     }
-    setTimeout(tick, deleting ? 50 : 90);
+    setTimeout(tick, deleting ? 50 : 100);
 }
 tick();
 
@@ -136,16 +136,16 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     if (!canvas || typeof THREE === "undefined") return;
     const hero = document.getElementById("hero-canvas-container");
 
-    const RESTING_SCALE = 1.1; const INTRO_SCALE = 5.0; const CONTRACT_DELAY = 2200; const CONTRACT_MS = 1500;
+    const RESTING_SCALE = 1.1; const INTRO_SCALE = 10.0; const CONTRACT_DELAY = 3000; const CONTRACT_MS = 2000;
 
     // ===== SIZE KNOBS (tune these freely — they don't fight each other) =====
-    const FACE_DOT_SIZE = 0.03;   // size of the PORTRAIT dots (smaller = sharper/denser face)
-    const CUBE_DOT_SIZE = 0.05;   // size of the CUBE dots
+    const FACE_DOT_SIZE = 0.025;   // size of the PORTRAIT dots (smaller = sharper/denser face)
+    const CUBE_DOT_SIZE = 0.04;   // size of the CUBE dots
     const BREATH_AMP = 0.06;      // portrait "breathing" size swing (0 = off)
-    const BREATH_GLOW = 0.10;     // portrait "breathing" brightness swing (0 = off)
-    const BREATH_SPEED = 2.0;     // portrait "breathing" speed
-    const FACE_HOLD_MS = 3300;        // how long the face stays before collapsing back to the cube
-    const MORPH_SPEED = 0.012;        // per-frame step of the morph (reaches its end exactly)
+    const BREATH_GLOW = 0.15;     // portrait "breathing" brightness swing (0 = off)
+    const BREATH_SPEED = 3.0;     // portrait "breathing" speed
+    const FACE_HOLD_MS = 3500;        // how long the face stays before collapsing back to the cube
+    const MORPH_SPEED = 0.01;        // per-frame step of the morph (reaches its end exactly)
     const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
 
     const scene = new THREE.Scene();
@@ -214,7 +214,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
 
     function animate() {
         requestAnimationFrame(animate);
-        t += 0.01; cameraAngle += 0.002;
+        t += 0.01; cameraAngle += 0.003;
 
         // advance morph to the target, reaching 0 / 1 exactly (no lingering ghost)
         if (morph < morphTarget) morph = Math.min(morph + MORPH_SPEED, morphTarget);
@@ -349,9 +349,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     }
     render();
     const words = Array.from(document.querySelectorAll(".intro-word")); const timers = [];
-    words.forEach((w, idx) => { timers.push(setTimeout(() => { if (idx > 0) { words[idx - 1].classList.remove("sharp"); words[idx - 1].classList.add("blurred"); } w.classList.add("sharp"); }, 300 + idx * 700)); });
+    words.forEach((w, idx) => { timers.push(setTimeout(() => { if (idx > 0) { words[idx - 1].classList.remove("sharp"); words[idx - 1].classList.add("blurred"); } w.classList.add("sharp"); }, 400 + idx * 700)); });
     let exited = false;
     function exitIntro() { if (exited) return; exited = true; sessionStorage.setItem("introSeen", "1"); timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
-    const auto = setTimeout(exitIntro, 2650);
+    const auto = setTimeout(exitIntro, 2800);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();

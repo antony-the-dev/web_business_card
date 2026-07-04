@@ -1051,7 +1051,7 @@ a:active {
     /* --band-top: where the portrait band starts (raise/lower the whole portrait) */
     /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
     :root {
-        --band-top: 9rem;
+        --band-top: 12rem;
         --band-h: 45vh;
     }
 
