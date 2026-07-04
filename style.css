@@ -976,25 +976,32 @@ h3 {
 }
 
 .lower-grid {
-    max-width: 720px;
+    max-width: 960px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
 }
 
+/* Domains: block container + inline-block pills (instead of flex),
+   so text-wrap: balance can even out the wrapped rows (~5+5) */
 .domain-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    display: block;
+    text-wrap: balance;
+    font-size: 0;
+    /* removes whitespace gaps between inline-blocks */
     margin-top: 0.4rem;
 }
 
 .domain-tags span {
+    display: inline-block;
+    font-size: 0.9rem;
+    /* restore pill text size (container is 0) */
+    margin: 0 0.6rem 0.6rem 0;
+    /* replaces the former flex gap */
     border: 1px solid var(--line);
     border-radius: 999px;
     padding: 0.35rem 0.9rem;
-    font-size: 0.9rem;
     color: var(--muted);
 }
 
@@ -1138,13 +1145,10 @@ a:active {
         padding-right: 1.25rem;
     }
 
-    .domain-tags {
-        gap: 0.45rem;
-    }
-
     .domain-tags span {
         font-size: 0.8rem;
         padding: 0.3rem 0.7rem;
+        margin: 0 0.45rem 0.45rem 0;
     }
 
     /* keep the pipeline horizontal but let long labels wrap instead of overflowing */
@@ -1236,5 +1240,63 @@ a:active {
 
     .proc-branches::before {
         transform: scaleY(1);
+    }
+}
+
+/* ===== Expertise: 2-column grid on desktop ===== */
+@media (min-width: 901px) {
+    .exp-groups {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.6rem 4rem;
+
+        .process-strip {
+            margin: 1.5rem -2.5rem 0;
+        }
+    }
+
+    /* subtle vertical divider between the two columns */
+    .exp-groups::before {
+        content: "";
+        position: absolute;
+        top: 0.1rem;
+        bottom: 0.1rem;
+        left: 49.8%;
+        width: 1px;
+        background: var(--line);
+        transition: background-color 0.9s ease;
+    }
+
+    #lower.dark .exp-groups::before {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Pin groups to specific cells so mobile HTML order
+       (BA-logic flow) maps to the 2-col layout:
+       Left: requirements, notations, delivery
+       Right: api, query, diagramming */
+    .exp-group:nth-child(1) {
+        grid-area: 1 / 1;
+    }
+
+    .exp-group:nth-child(2) {
+        grid-area: 2 / 1;
+    }
+
+    .exp-group:nth-child(3) {
+        grid-area: 3 / 2;
+    }
+
+    .exp-group:nth-child(4) {
+        grid-area: 1 / 2;
+    }
+
+    .exp-group:nth-child(5) {
+        grid-area: 2 / 2;
+    }
+
+    .exp-group:nth-child(6) {
+        grid-area: 3 / 1;
     }
 }
