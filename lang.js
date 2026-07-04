@@ -28,7 +28,7 @@
                 heading: "Expertise",
                 groups: {
                     notations: { title: "Modeling Notations", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
+                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories"] },
                     query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
                     api: { title: "APIs & Testing", items: ["REST API", "Swagger", "Postman"] },
                     diagramming: { title: "Diagramming Tools", items: ["Miro", "Lucidchart"] },
@@ -74,7 +74,7 @@
                 heading: "Експертиза",
                 groups: {
                     notations: { title: "Нотації моделювання", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
+                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories"] },
                     query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS"] },
                     api: { title: "API та тестування", items: ["REST API", "Swagger", "Postman"] },
                     diagramming: { title: "Інструменти візуалізації", items: ["Miro", "Lucidchart"] },
