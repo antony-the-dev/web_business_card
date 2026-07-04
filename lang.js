@@ -26,12 +26,13 @@
             },
             expertise: {
                 heading: "Expertise",
+                // key order mirrors the visual order in index.html (BA-logic flow)
                 groups: {
+                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
                     notations: { title: "Modeling Notations", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories"] },
-                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
-                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "Postman", "n8n"] },
                     diagramming: { title: "Diagramming Tools", items: ["Miro", "Lucidchart"] },
+                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "Postman", "n8n"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
                     design: { title: "Design & Prototyping", items: ["Figma", "Photoshop"] },
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
@@ -71,12 +72,13 @@
             },
             expertise: {
                 heading: "Експертиза",
+                // key order mirrors the visual order in index.html (BA-logic flow)
                 groups: {
+                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories", "Epics", "Acceptance Criteria"] },
                     notations: { title: "Нотації моделювання", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories"] },
-                    query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
-                    api: { title: "API та автоматизація", items: ["REST API", "Swagger", "Postman", "n8n"] },
                     diagramming: { title: "Інструменти візуалізації", items: ["Miro", "Lucidchart"] },
+                    api: { title: "API та автоматизація", items: ["REST API", "Swagger", "Postman", "n8n"] },
+                    query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
                     design: { title: "Дизайн та прототипування", items: ["Figma", "Photoshop"] },
                     delivery: { title: "Постачання та PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
