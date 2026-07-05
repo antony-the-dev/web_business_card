@@ -143,26 +143,26 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     // ===== SCENE_CONFIG — the single tuning surface =====
     const SCENE_CONFIG = {
         cube: {
-            desktop: { scale: 0.9, grid: 5, lineOpacity: 0.3, rot: 0.0045, breathe: 0.08 },
-            mobile: { scale: 0.7, grid: 4, lineOpacity: 0.25, rot: 0.0035, breathe: 0.12 }
+            desktop: { scale: 0.95, grid: 3, lineOpacity: 0.25, rot: 0.0035, breathe: 0.12 },
+            mobile: { scale: 0.8, grid: 3, lineOpacity: 0.25, rot: 0.0035, breathe: 0.12 }
         },
         face: {
-            desktop: { scale: 2.05, camZ: 4.4, dotSize: 0.05, shade: 0.8, flatten: 0.9 },
-            mobile: { scale: 0.95, camZ: 2.5, dotSize: 0.025, shade: 0.8, flatten: 0.9 }
+            desktop: { scale: 1.8, camZ: 4.4, dotSize: 0.040, shade: 1, flatten: 0.9 },
+            mobile: { scale: 1.3, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
         },
-        morph: { durationMs: 3700, stagger: 0.55, reveal: 0.4, holdMs: 5000 },
+        morph: { durationMs: 4000, stagger: 0.75, reveal: 0.5, holdMs: 6000 },
         cubeDot: { size: 0.05, opacity: 0.85 },   // dot size/opacity in the CUBE state
         colors: {
             ink: [0.039, 0.145, 0.251],    // resting dot & line color (site --ink #0a2540)
             orange: [1.0, 0.34, 0.13],     // twinkle accent (site --accent #ff5722)
-            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band background)
+            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band backround)
         },
-        twinkle: { rate: 2, decay: 0.02, blinkAmp: 0.22, blinkSpeed: 0.02 },
+        twinkle: { rate: 8, decay: 0.02, blinkAmp: 0.22, blinkSpeed: 1 },
         breatheSpeed: 1.4,     // cube breathing tempo
         wobble: 0.35,          // camera axis precession: 0 = plain orbit, higher = livelier
         intro: { scale: 10.0, delayMs: 3000, contractMs: 2000 },
         bootFadeMs: 900,       // figure fades in on load instead of popping in fully formed
-        scrollShrink: 0.35,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
+        scrollShrink: 0.2,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
         panFrac: 0.20          // shift figure toward screen-right on desktop (0 = centred)
     };
     const C = SCENE_CONFIG;
@@ -327,7 +327,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
 
         // twinkle ignition: a couple of random dots flare orange each frame
         for (let k = 0; k < C.twinkle.rate; k++) {
-            if (Math.random() < 0.7) flash[(Math.random() * N) | 0] = 1;
+            if (Math.random() < 5.7) flash[(Math.random() * N) | 0] = 1;
         }
 
         const stag = C.morph.stagger, rev = C.morph.reveal, shade = face.shade;
