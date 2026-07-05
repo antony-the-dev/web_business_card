@@ -1104,7 +1104,8 @@ a:active {
         justify-content: flex-start;
         padding-left: 0;
         max-width: none;
-        gap: 1.5rem;
+        gap: 1rem;
+        margin-top: -1.5rem;
     }
 
     h1 {

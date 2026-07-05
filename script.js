@@ -143,25 +143,27 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     // ===== SCENE_CONFIG — the single tuning surface =====
     const SCENE_CONFIG = {
         cube: {
-            desktop: { scale: 0.95, grid: 3, lineOpacity: 0.25, rot: 0.0035, breathe: 0.12 },
-            mobile: { scale: 0.8, grid: 3, lineOpacity: 0.25, rot: 0.0035, breathe: 0.12 }
+            desktop: { scale: 1, grid: 3, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09 },
+            mobile: { scale: 1, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
         },
         face: {
-            desktop: { scale: 1.8, camZ: 4.4, dotSize: 0.040, shade: 1, flatten: 0.9 },
+            desktop: { scale: 1.6, camZ: 4.4, dotSize: 0.04, shade: 1, flatten: 0.9 },
             mobile: { scale: 1.3, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
         },
-        morph: { durationMs: 4000, stagger: 0.75, reveal: 0.5, holdMs: 6000 },
-        cubeDot: { size: 0.05, opacity: 0.85 },   // dot size/opacity in the CUBE state
+        morph: { durationMs: 4000, stagger: 0.75, reveal: 0.4, holdMs: 6000 },
+        cubeDot: { size: 0.05, opacity: 0.5 },   // dot size/opacity in the CUBE state
         colors: {
-            ink: [0.039, 0.145, 0.251],    // resting dot & line color (site --ink #0a2540)
+            ink: [0.039, 0.145, 0.251],    // portrait dot color (site --ink #0a2540)
+            cube: [0.08, 0.72, 0.77],      // CUBE dot & line color (site teal — matches the intro)
             orange: [1.0, 0.34, 0.13],     // twinkle accent (site --accent #ff5722)
-            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band backround)
+            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band background)
         },
-        twinkle: { rate: 8, decay: 0.02, blinkAmp: 0.22, blinkSpeed: 1 },
-        breatheSpeed: 1.4,     // cube breathing tempo
-        wobble: 0.35,          // camera axis precession: 0 = plain orbit, higher = livelier
+        cubeDiagonals: true,               // face diagonals on the cage (false = plain grid)
+        twinkle: { rate: 0.001, decay: 0.02, blinkAmp: 0.01, blinkSpeed: 0.05 },
+        breatheSpeed: 0.4,     // cube breathing tempo
+        wobble: 0.5,          // camera axis precession: 0 = plain orbit, higher = livelier
         intro: { scale: 10.0, delayMs: 3000, contractMs: 2000 },
-        bootFadeMs: 900,       // figure fades in on load instead of popping in fully formed
+        bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
         scrollShrink: 0.2,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
         panFrac: 0.20          // shift figure toward screen-right on desktop (0 = centred)
     };
@@ -211,6 +213,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
 
     const cubeHomes = new Float32Array(N * 3);
     let lineSeg = null;
+    let nodeCount = 1;
 
     // Surface lattice: dots stack on grid nodes (clean cube at rest), wireframe
     // lines run along every face — the true morph flies each point to the face.
@@ -221,6 +224,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
                 nodes.push([-HALF + 2 * HALF * i / G, -HALF + 2 * HALF * j / G, -HALF + 2 * HALF * k / G]);
             }
         }
+        nodeCount = nodes.length;
         const order = nodes.map((_, i) => i);
         for (let i = order.length - 1; i > 0; i--) {
             const j = (Math.random() * (i + 1)) | 0;
@@ -235,18 +239,28 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         for (let a = 0; a <= G; a++) {
             const u = -HALF + a * step;
             for (const s of [-HALF, HALF]) {
-                segs.push(u, -HALF, s, u, HALF, s);
-                segs.push(-HALF, u, s, HALF, u, s);
-                segs.push(u, s, -HALF, u, s, HALF);
-                segs.push(s, u, -HALF, s, u, HALF);
+                segs.push(u, -HALF, s, u, HALF, s);   // z-faces: vertical
+                segs.push(-HALF, u, s, HALF, u, s);   // z-faces: horizontal
+                segs.push(u, s, -HALF, u, s, HALF);   // y-faces: along Z
+                segs.push(-HALF, s, u, HALF, s, u);   // y-faces: along X (was missing)
+                segs.push(s, u, -HALF, s, u, HALF);   // x-faces: along Z
+                segs.push(s, -HALF, u, s, HALF, u);   // x-faces: vertical (was missing)
+            }
+        }
+        // corner-to-corner diagonals on every face — same motif as the intro cubes
+        if (C.cubeDiagonals) {
+            for (const s of [-HALF, HALF]) {
+                segs.push(s, -HALF, -HALF, s, HALF, HALF); segs.push(s, -HALF, HALF, s, HALF, -HALF);
+                segs.push(-HALF, s, -HALF, HALF, s, HALF); segs.push(-HALF, s, HALF, HALF, s, -HALF);
+                segs.push(-HALF, -HALF, s, HALF, HALF, s); segs.push(-HALF, HALF, s, HALF, -HALF, s);
             }
         }
         if (lineSeg) { figure.remove(lineSeg); lineSeg.geometry.dispose(); lineSeg.material.dispose(); }
         const lgeo = new THREE.BufferGeometry();
         lgeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(segs), 3));
-        const ink = C.colors.ink;
+        const cc = C.colors.cube;
         const lmat = new THREE.LineBasicMaterial({
-            color: new THREE.Color(ink[0], ink[1], ink[2]), transparent: true, opacity: 0
+            color: new THREE.Color(cc[0], cc[1], cc[2]), transparent: true, opacity: 0
         });
         lineSeg = new THREE.LineSegments(lgeo, lmat);
         figure.add(lineSeg);
@@ -297,7 +311,8 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         t += 0.01;
         angle += cube.rot * (1 - morph); // orbit stops as the face forms
 
-        const bootFade = Math.min(1, (performance.now() - heroStart) / C.bootFadeMs);
+        // on intro loads the overlay + contraction own the entrance, so skip the fade
+        const bootFade = introWillPlay ? 1 : Math.min(1, (performance.now() - heroStart) / C.bootFadeMs);
         const breathe = 1 + Math.sin(t * C.breatheSpeed) * cube.breathe * (1 - morph);
 
         // desktop: figure shrinks in sync with the hero scrolling away
@@ -307,32 +322,40 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             shr = 1 - C.scrollShrink * easeInOut(e);
         }
 
-        let scl = (cube.scale + (face.scale - cube.scale) * m) * breathe * shr;
+        let base = cube.scale + (face.scale - cube.scale) * m;
         if (contracting) {
             const el = performance.now() - heroStart - C.intro.delayMs;
             if (el >= 0) {
                 const p = Math.min(el / C.intro.contractMs, 1);
-                scl = C.intro.scale + (cube.scale - C.intro.scale) * easeOut(p);
+                base = C.intro.scale + (cube.scale - C.intro.scale) * easeOut(p);
                 if (p >= 1) contracting = false;
             } else {
-                scl = C.intro.scale;
+                base = C.intro.scale;
             }
         }
-        figure.scale.setScalar(scl);
+        // breathe/shrink multiply the whole curve, so the handoff has no scale jump
+        figure.scale.setScalar(base * breathe * shr);
 
         // wireframe dissolves as the face forms; dots settle to full presence
         lineSeg.material.opacity = cube.lineOpacity * (1 - m) * bootFade;
         mat.size = C.cubeDot.size + (face.dotSize - C.cubeDot.size) * m;
         mat.opacity = (C.cubeDot.opacity + (1 - C.cubeDot.opacity) * morph) * bootFade;
 
-        // twinkle ignition: a couple of random dots flare orange each frame
+        // twinkle ignition (rate = flares per frame): in cube state dots are stacked
+        // on lattice nodes, so a single flaring dot stays buried under its stack —
+        // flare the whole node; in face state single dots flare as before
         for (let k = 0; k < C.twinkle.rate; k++) {
-            if (Math.random() < 5.7) flash[(Math.random() * N) | 0] = 1;
+            if (morph < 0.5) {
+                const n = (Math.random() * nodeCount) | 0;
+                for (let p = n; p < N; p += nodeCount) flash[p] = 1;
+            } else {
+                flash[(Math.random() * N) | 0] = 1;
+            }
         }
 
         const stag = C.morph.stagger, rev = C.morph.reveal, shade = face.shade;
         const zK = 1 - face.flatten * m; // relief collapses: flat crisp portrait at rest
-        const INK = C.colors.ink, ORANGE = C.colors.orange, BG = C.colors.fadeTo;
+        const INK = C.colors.ink, CUB = C.colors.cube, ORANGE = C.colors.orange, BG = C.colors.fadeTo;
 
         for (let i = 0; i < N; i++) {
             const j = i * 3;
@@ -347,9 +370,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             const b = BRIGHT[i];
             const lr = clamp01((morph - (1 - b) * rev) / (1 - rev || 1));
             const k = 1 - shade * (1 - b);
-            let r = INK[0] + ((BG[0] + (INK[0] - BG[0]) * k) - INK[0]) * lr;
-            let g = INK[1] + ((BG[1] + (INK[1] - BG[1]) * k) - INK[1]) * lr;
-            let bl = INK[2] + ((BG[2] + (INK[2] - BG[2]) * k) - INK[2]) * lr;
+            let r = CUB[0] + ((BG[0] + (INK[0] - BG[0]) * k) - CUB[0]) * lr;
+            let g = CUB[1] + ((BG[1] + (INK[1] - BG[1]) * k) - CUB[1]) * lr;
+            let bl = CUB[2] + ((BG[2] + (INK[2] - BG[2]) * k) - CUB[2]) * lr;
 
             // blink: dots softly fade toward the background and back
             phase[i] += C.twinkle.blinkSpeed;
