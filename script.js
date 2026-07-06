@@ -159,7 +159,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band background)
         },
         cubeDiagonals: true,               // face diagonals on the cage (false = plain grid)
-        twinkle: { rate: 0.001, decay: 0.02, blinkAmp: 0.01, blinkSpeed: 0.05 },
+        twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
         breatheSpeed: 0.4,     // cube breathing tempo
         wobble: 0.5,          // camera axis precession: 0 = plain orbit, higher = livelier
         intro: { scale: 10.0, delayMs: 3000, contractMs: 2000 },
@@ -344,7 +344,8 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         // twinkle ignition (rate = flares per frame): in cube state dots are stacked
         // on lattice nodes, so a single flaring dot stays buried under its stack —
         // flare the whole node; in face state single dots flare as before
-        for (let k = 0; k < C.twinkle.rate; k++) {
+        // rate = flares per SECOND (probability per frame), not per frame
+        if (Math.random() < C.twinkle.rate / 60) {
             if (morph < 0.5) {
                 const n = (Math.random() * nodeCount) | 0;
                 for (let p = n; p < N; p += nodeCount) flash[p] = 1;
@@ -370,14 +371,27 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             const b = BRIGHT[i];
             const lr = clamp01((morph - (1 - b) * rev) / (1 - rev || 1));
             const k = 1 - shade * (1 - b);
-            let r = CUB[0] + ((BG[0] + (INK[0] - BG[0]) * k) - CUB[0]) * lr;
-            let g = CUB[1] + ((BG[1] + (INK[1] - BG[1]) * k) - CUB[1]) * lr;
-            let bl = CUB[2] + ((BG[2] + (INK[2] - BG[2]) * k) - CUB[2]) * lr;
-
-            // blink: dots softly fade toward the background and back
+            // cube state: each dot drifts SLOWLY through the full palette cycle
+            // ink -> teal -> orange -> teal -> ink (blinkAmp = how far along the
+            // palette the drift reaches: 0.5 stops at teal, 1.0 reaches orange;
+            // blinkSpeed = tempo). The drift dies out as the portrait forms.
             phase[i] += C.twinkle.blinkSpeed;
-            const blink = C.twinkle.blinkAmp * (0.5 + 0.5 * Math.sin(phase[i]));
-            r += (BG[0] - r) * blink; g += (BG[1] - g) * blink; bl += (BG[2] - bl) * blink;
+            const drift = C.twinkle.blinkAmp * (0.5 + 0.5 * Math.sin(phase[i]));
+            let r, g, bl;
+            if (drift < 0.5) {
+                const d2 = drift * 2; // 0..1: ink -> teal
+                r = INK[0] + (CUB[0] - INK[0]) * d2;
+                g = INK[1] + (CUB[1] - INK[1]) * d2;
+                bl = INK[2] + (CUB[2] - INK[2]) * d2;
+            } else {
+                const d2 = (drift - 0.5) * 2; // 0..1: teal -> orange
+                r = CUB[0] + (ORANGE[0] - CUB[0]) * d2;
+                g = CUB[1] + (ORANGE[1] - CUB[1]) * d2;
+                bl = CUB[2] + (ORANGE[2] - CUB[2]) * d2;
+            }
+            r += ((BG[0] + (INK[0] - BG[0]) * k) - r) * lr;
+            g += ((BG[1] + (INK[1] - BG[1]) * k) - g) * lr;
+            bl += ((BG[2] + (INK[2] - BG[2]) * k) - bl) * lr;
 
             // orange flare on top
             if (flash[i] > 0) { flash[i] -= C.twinkle.decay; if (flash[i] < 0) flash[i] = 0; }
@@ -445,7 +459,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         dotTarget[i * 3] = d.x * r; dotTarget[i * 3 + 1] = d.y * r; dotTarget[i * 3 + 2] = d.z * r; dotColors[i * 3] = DOT_TEAL[0]; dotColors[i * 3 + 1] = DOT_TEAL[1]; dotColors[i * 3 + 2] = DOT_TEAL[2]; dotPhase[i] = Math.random() * Math.PI * 2;
     }
     const dotGeo = new THREE.BufferGeometry(); dotGeo.setAttribute("position", new THREE.BufferAttribute(dotPos, 3)); dotGeo.setAttribute("color", new THREE.BufferAttribute(dotColors, 3));
-    group.add(new THREE.Points(dotGeo, new THREE.PointsMaterial({ size: 0.04, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false })));
+    group.add(new THREE.Points(dotGeo, new THREE.PointsMaterial({ size: 0.06, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.8, depthWrite: false })));
     scene.add(group);
     let raf = null; const startTime = performance.now(); const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2); const easeOut = (p) => 1 - Math.pow(1 - p, 3);
     function render() {
