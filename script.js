@@ -165,7 +165,28 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         intro: { scale: 10.0, delayMs: 3000, contractMs: 2000 },
         bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
         scrollShrink: 0.2,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
-        panFrac: 0.20          // shift figure toward screen-right on desktop (0 = centred)
+        panFrac: 0.20,         // shift figure toward screen-right on desktop (0 = centred)
+        // ----- heartbeat teaser: periodic lub-dub pulse in cube state (tuned in lab_heartbeat.html) -----
+        heartbeat: {
+            intervalMs: 4000,   // time between double-pulses
+            mainAmp: 0.05,      // main beat: +5% scale
+            echoAmp: 0.03,      // echo beat: +3% scale
+            beatMs: 600,        // duration of one beat (attack + decay)
+            pauseMs: 300,       // micro-pause between the two beats
+            roundness: 0,       // 0..1: cube bulges toward a sphere at pulse peak (0 = off)
+            firstDelayMs: 2500  // delay before the very first beat (after intro settles)
+        },
+        hintText: {
+            text: "tap me",     // word 1 appears on lub, the rest joins on dub
+            color: "ink",       // teal | ink | orange
+            depth: 0,           // fake-3D extrusion layers in px (0 = flat)
+            maxShows: 1,        // hint appears at most this many times per page load
+            peakOpacity: 0.5,   // opacity at the peak of the pulse
+            restOpacity: 0,     // ghost opacity in resting state (0 = fully hidden)
+            restBlur: 2,        // blur px in resting state (0 at the peak)
+            fadeMs: 750,        // how slowly the text melts back into blur
+            size: 2.1           // hint plane width in scene units
+        }
     };
     const C = SCENE_CONFIG;
 
@@ -212,7 +233,10 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     figure.add(new THREE.Points(geo, mat));
 
     const cubeHomes = new Float32Array(N * 3);
+    const homes = new Float32Array(N * 3); // spherify-adjusted copy of cubeHomes (what the loop reads)
     let lineSeg = null;
+    let lineBase = null;   // wireframe rest positions (cube shape) for spherify
+    let lastK = -1;        // last spherify factor applied (-1 forces a resync)
     let nodeCount = 1;
 
     // Surface lattice: dots stack on grid nodes (clean cube at rest), wireframe
@@ -234,38 +258,75 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             const nd = nodes[order[p % order.length]];
             cubeHomes[p * 3] = nd[0]; cubeHomes[p * 3 + 1] = nd[1]; cubeHomes[p * 3 + 2] = nd[2];
         }
-        const segs = [];
+        // segments are SUBDIVIDED so the heartbeat can bow lines toward a sphere
+        const raw = [];
         const step = 2 * HALF / G;
         for (let a = 0; a <= G; a++) {
             const u = -HALF + a * step;
             for (const s of [-HALF, HALF]) {
-                segs.push(u, -HALF, s, u, HALF, s);   // z-faces: vertical
-                segs.push(-HALF, u, s, HALF, u, s);   // z-faces: horizontal
-                segs.push(u, s, -HALF, u, s, HALF);   // y-faces: along Z
-                segs.push(-HALF, s, u, HALF, s, u);   // y-faces: along X (was missing)
-                segs.push(s, u, -HALF, s, u, HALF);   // x-faces: along Z
-                segs.push(s, -HALF, u, s, HALF, u);   // x-faces: vertical (was missing)
+                raw.push([u, -HALF, s, u, HALF, s]);   // z-faces: vertical
+                raw.push([-HALF, u, s, HALF, u, s]);   // z-faces: horizontal
+                raw.push([u, s, -HALF, u, s, HALF]);   // y-faces: along Z
+                raw.push([-HALF, s, u, HALF, s, u]);   // y-faces: along X (was missing)
+                raw.push([s, u, -HALF, s, u, HALF]);   // x-faces: along Z
+                raw.push([s, -HALF, u, s, HALF, u]);   // x-faces: vertical (was missing)
             }
         }
         // corner-to-corner diagonals on every face — same motif as the intro cubes
         if (C.cubeDiagonals) {
             for (const s of [-HALF, HALF]) {
-                segs.push(s, -HALF, -HALF, s, HALF, HALF); segs.push(s, -HALF, HALF, s, HALF, -HALF);
-                segs.push(-HALF, s, -HALF, HALF, s, HALF); segs.push(-HALF, s, HALF, HALF, s, -HALF);
-                segs.push(-HALF, -HALF, s, HALF, HALF, s); segs.push(-HALF, HALF, s, HALF, -HALF, s);
+                raw.push([s, -HALF, -HALF, s, HALF, HALF]); raw.push([s, -HALF, HALF, s, HALF, -HALF]);
+                raw.push([-HALF, s, -HALF, HALF, s, HALF]); raw.push([-HALF, s, HALF, HALF, s, -HALF]);
+                raw.push([-HALF, -HALF, s, HALF, HALF, s]); raw.push([-HALF, HALF, s, HALF, -HALF, s]);
+            }
+        }
+        const SUB = 8;
+        const segs = [];
+        for (const r of raw) {
+            for (let q = 0; q < SUB; q++) {
+                const t0 = q / SUB, t1 = (q + 1) / SUB;
+                segs.push(
+                    r[0] + (r[3] - r[0]) * t0, r[1] + (r[4] - r[1]) * t0, r[2] + (r[5] - r[2]) * t0,
+                    r[0] + (r[3] - r[0]) * t1, r[1] + (r[4] - r[1]) * t1, r[2] + (r[5] - r[2]) * t1
+                );
             }
         }
         if (lineSeg) { figure.remove(lineSeg); lineSeg.geometry.dispose(); lineSeg.material.dispose(); }
         const lgeo = new THREE.BufferGeometry();
         lgeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(segs), 3));
+        lineBase = new Float32Array(segs);
         const cc = C.colors.cube;
         const lmat = new THREE.LineBasicMaterial({
             color: new THREE.Color(cc[0], cc[1], cc[2]), transparent: true, opacity: 0
         });
         lineSeg = new THREE.LineSegments(lgeo, lmat);
         figure.add(lineSeg);
+        homes.set(cubeHomes); // resync the spherify copy after every rebuild
+        lastK = -1;
     }
     buildCube(C.cube[vp].grid);
+
+    // ----- spherify: lerp every vertex from its cube home toward a sphere (heartbeat) -----
+    const SPHERE_R = HALF * 1.15; // radius the vertices bulge toward
+    function applySpherify(k) {
+        if (Math.abs(k - lastK) < 0.0005) return;
+        lastK = k;
+        for (let i = 0; i < N; i++) {
+            const j = i * 3;
+            const x = cubeHomes[j], y = cubeHomes[j + 1], z = cubeHomes[j + 2];
+            const d = Math.sqrt(x * x + y * y + z * z) || 1;
+            const mm = 1 + (SPHERE_R / d - 1) * k;
+            homes[j] = x * mm; homes[j + 1] = y * mm; homes[j + 2] = z * mm;
+        }
+        const lp = lineSeg.geometry.attributes.position.array;
+        for (let j = 0; j < lp.length; j += 3) {
+            const x = lineBase[j], y = lineBase[j + 1], z = lineBase[j + 2];
+            const d = Math.sqrt(x * x + y * y + z * z) || 1;
+            const mm = 1 + (SPHERE_R / d - 1) * k;
+            lp[j] = x * mm; lp[j + 1] = y * mm; lp[j + 2] = z * mm;
+        }
+        lineSeg.geometry.attributes.position.needsUpdate = true;
+    }
 
     const onMq = () => { vp = mq.matches ? "mobile" : "desktop"; buildCube(C.cube[vp].grid); applyHeroPan(); };
     if (mq.addEventListener) mq.addEventListener("change", onMq); else mq.addListener(onMq);
@@ -283,7 +344,106 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         morphTarget = morphTarget === 0 ? 1 : 0;
         clearTimeout(holdTimer);
         if (morphTarget === 1) holdTimer = setTimeout(() => { morphTarget = 0; }, C.morph.holdMs);
+        // the user has found the secret — retire the hint for the rest of the session
+        tapped = true;
+        windowHasText = false;
+        sessionStorage.setItem("heroTapped", "1");
     });
+
+    // ===== HEARTBEAT TEASER + HINT TEXT (tuned in lab_heartbeat.html) =====
+    // Hint plane lives INSIDE the cube and rotates with it; the text is drawn on a
+    // canvas in the hero-credo face (SF Mono 500, uppercase, wide letter-spacing)
+    // and melts in/out of blur via ctx.filter baked into the texture.
+    const HINT_COLOR = { teal: "#14b8c4", ink: "#0a2540", orange: "#ff5722" };
+    const HINT_DEPTH_COLOR = { teal: "#0c6f76", ink: "#04101c", orange: "#a33314" };
+    const HINT_W = 1024, HINT_H = 320, HINT_FONT_PX = 96;
+    const HINT_FONT = "500 " + HINT_FONT_PX + "px 'SF Mono', 'JetBrains Mono', 'Roboto Mono', ui-monospace, monospace";
+    const hintCanvas = document.createElement("canvas");
+    hintCanvas.width = HINT_W; hintCanvas.height = HINT_H;
+    const hintCtx = hintCanvas.getContext("2d");
+    const hintTex = new THREE.CanvasTexture(hintCanvas);
+    hintTex.minFilter = THREE.LinearFilter;
+    const hintMat = new THREE.MeshBasicMaterial({
+        map: hintTex, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide
+    });
+    const hintPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, HINT_H / HINT_W), hintMat);
+    hintPlane.scale.setScalar(C.hintText.size);
+    figure.add(hintPlane); // rotates with the cube — weird angles are expected
+
+    let hintLastDraw = "";
+    function drawHint(str, blurPx, dots) {
+        const ht = C.hintText;
+        const key = str + "|" + blurPx.toFixed(1) + "|" + dots + "|" + ht.color + "|" + ht.depth;
+        if (key === hintLastDraw) return;
+        hintLastDraw = key;
+        hintCtx.clearRect(0, 0, HINT_W, HINT_H);
+        if (!str) { hintTex.needsUpdate = true; return; }
+        hintCtx.filter = blurPx > 0.3 ? "blur(" + blurPx.toFixed(1) + "px)" : "none";
+        hintCtx.font = HINT_FONT;
+        if ("letterSpacing" in hintCtx) hintCtx.letterSpacing = (0.22 * HINT_FONT_PX).toFixed(0) + "px";
+        hintCtx.textAlign = "center"; hintCtx.textBaseline = "middle";
+        const cx = HINT_W / 2, cy = HINT_H / 2;
+        // fake 3D: darker extrusion layers stepped behind the top face (depth 0 = flat)
+        for (let d = C.hintText.depth; d >= 1; d--) {
+            hintCtx.fillStyle = HINT_DEPTH_COLOR[ht.color] || HINT_DEPTH_COLOR.ink;
+            hintCtx.fillText(str, cx + d, cy + d);
+        }
+        hintCtx.fillStyle = HINT_COLOR[ht.color] || HINT_COLOR.ink;
+        hintCtx.fillText(str, cx, cy);
+        // trailing dots appended at the right edge so the word itself never shifts
+        if (dots > 0) {
+            const w = hintCtx.measureText(str).width;
+            hintCtx.textAlign = "left";
+            hintCtx.fillText(".".repeat(dots), cx + w / 2 + HINT_FONT_PX * 0.15, cy);
+        }
+        hintCtx.filter = "none";
+        hintTex.needsUpdate = true;
+    }
+
+    // beatShape: sharp ease-out attack (35% of the beat), smooth decay back
+    function beatShape(p) {
+        if (p <= 0 || p >= 1) return 0;
+        const a = 0.35;
+        return p < a ? easeOut(p / a) : 1 - easeInOut((p - a) / (1 - a));
+    }
+
+    let beatStart = -1;    // -1 = resting
+    let nextBeatAt = performance.now() + C.heartbeat.firstDelayMs;
+    let hintVis = 0;       // 0 = hidden/blurred, 1 = sharp peak
+    let hintShows = 0;     // how many times the hint has been shown this page load
+    let tapped = sessionStorage.getItem("heroTapped") === "1";
+    let windowHasText = false;
+    let hbLast = performance.now();
+
+    function heartbeat(now) {
+        const hb = C.heartbeat;
+        if (beatStart < 0 && now >= nextBeatAt) {
+            // beats only fire in the resting cube state — never during morph or intro
+            if (morph === 0 && morphTarget === 0 && !contracting) {
+                beatStart = now;
+                windowHasText = !tapped && hintShows < C.hintText.maxShows;
+                if (windowHasText) hintShows++;
+            } else {
+                nextBeatAt = now + hb.intervalMs; // busy — try again next interval
+            }
+        }
+        let pulse = 0, inWindow = false, echoPhase = false;
+        if (beatStart >= 0) {
+            const el = now - beatStart;
+            const echoDur = hb.beatMs * 0.85;
+            const total = hb.beatMs + hb.pauseMs + echoDur;
+            if (el >= total) {
+                beatStart = -1;
+                nextBeatAt = now + hb.intervalMs;
+            } else {
+                inWindow = true;
+                echoPhase = el >= hb.beatMs + hb.pauseMs * 0.5; // second word joins on the dub
+                pulse += beatShape(el / hb.beatMs) * hb.mainAmp;                          // lub
+                pulse += beatShape((el - hb.beatMs - hb.pauseMs) / echoDur) * hb.echoAmp; // dub
+            }
+        }
+        return { pulse: pulse, inWindow: inWindow, echoPhase: echoPhase };
+    }
 
     // ----- intro hand-off + boot fade -----
     const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
@@ -333,8 +493,37 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
                 base = C.intro.scale;
             }
         }
+        // heartbeat: lub-dub pulse rides on top of breathe; dies out as the face forms
+        const hbNow = performance.now();
+        const hbDt = Math.min(50, hbNow - hbLast); hbLast = hbNow;
+        const hbState = heartbeat(hbNow);
+        const pulse = hbState.pulse * inv;
+
         // breathe/shrink multiply the whole curve, so the handoff has no scale jump
-        figure.scale.setScalar(base * breathe * shr);
+        figure.scale.setScalar(base * breathe * shr * (1 + pulse));
+
+        // cube -> sphere bulge driven by pulse strength (roundness 0 = off)
+        applySpherify(C.heartbeat.roundness * Math.min(1, pulse / (C.heartbeat.mainAmp || 1)));
+
+        // hint text: fast attack at the beat, slow melt back into blur;
+        // staged wording — word 1 on the lub, full phrase on the dub, dots grow on the fade
+        const hTarget = (hbState.inWindow && windowHasText) ? 1 : 0;
+        const hSpeed = hTarget > hintVis ? hbDt / 120 : hbDt / C.hintText.fadeMs;
+        hintVis += (hTarget - hintVis) * Math.min(1, hSpeed);
+        if (hintVis < 0.001) hintVis = 0;
+        const HT = C.hintText;
+        hintMat.opacity = (HT.restOpacity + (HT.peakOpacity - HT.restOpacity) * hintVis) * inv * bootFade;
+        if (hintMat.opacity > 0.001 || hintVis > 0) {
+            const hWords = (HT.text || "").trim().toUpperCase().split(/\s+/);
+            let hStr = "", hDots = 0;
+            if (hbState.inWindow && windowHasText) {
+                hStr = hbState.echoPhase ? hWords.join(" ") : hWords[0];
+            } else if (hintVis > 0) {
+                hStr = hWords.join(" ");
+                hDots = hintVis > 0.75 ? 1 : hintVis > 0.45 ? 2 : 3;
+            }
+            drawHint(hStr, HT.restBlur * (1 - hintVis), hDots);
+        }
 
         // wireframe dissolves as the face forms; dots settle to full presence
         lineSeg.material.opacity = cube.lineOpacity * (1 - m) * bootFade;
@@ -362,9 +551,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             const j = i * 3;
             // position: per-point staggered flight cube -> face
             const lp = easeInOut(clamp01((morph - delay[i] * stag) / (1 - stag || 1)));
-            pos.array[j] = cubeHomes[j] + (SRC[j] - cubeHomes[j]) * lp;
-            pos.array[j + 1] = cubeHomes[j + 1] + (SRC[j + 1] - cubeHomes[j + 1]) * lp;
-            pos.array[j + 2] = cubeHomes[j + 2] + (SRC[j + 2] * zK - cubeHomes[j + 2]) * lp;
+            pos.array[j] = homes[j] + (SRC[j] - homes[j]) * lp;
+            pos.array[j + 1] = homes[j + 1] + (SRC[j + 1] - homes[j + 1]) * lp;
+            pos.array[j + 2] = homes[j + 2] + (SRC[j + 2] * zK - homes[j + 2]) * lp;
 
             // color: brightness-ordered reveal — strong features commit first,
             // light shadows fill in last ("developing photo")

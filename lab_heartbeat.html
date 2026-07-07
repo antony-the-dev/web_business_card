@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heartbeat Lab v2 — hero cube teaser playground</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        background: #dbe7fb;
+        color: #0a2540;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+    #sidebar {
+        width: 320px;
+        min-width: 320px;
+        background: #fff;
+        border-right: 1px solid #b9c9e4;
+        padding: 18px 16px;
+        overflow-y: auto;
+        font-size: 12px;
+    }
+    #sidebar h1 { font-size: 14px; margin-bottom: 4px; }
+    #sidebar .sub { color: #5b7194; margin-bottom: 16px; font-size: 11px; }
+    .group { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px dashed #d4dff0; }
+    .group h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #14b8c4; margin-bottom: 10px; }
+    .row { margin-bottom: 10px; }
+    .row label { display: flex; justify-content: space-between; margin-bottom: 3px; }
+    .row label .val { color: #ff5722; font-weight: bold; }
+    .row input[type=range] { width: 100%; accent-color: #14b8c4; }
+    .row select, .row input[type=text] {
+        width: 100%; padding: 5px 6px; font-family: inherit; font-size: 12px;
+        border: 1px solid #b9c9e4; border-radius: 4px; color: #0a2540; background: #f6f9ff;
+    }
+    button {
+        font-family: inherit; font-size: 12px; padding: 7px 12px; cursor: pointer;
+        border: 1px solid #14b8c4; border-radius: 5px; background: #14b8c4; color: #fff;
+        width: 100%;
+    }
+    button.secondary { background: #fff; color: #14b8c4; margin-top: 6px; }
+    button:active { transform: scale(0.98); }
+    #status { font-size: 11px; color: #5b7194; margin-top: 8px; text-align: center; }
+    #shows-status { font-size: 11px; color: #ff5722; margin-top: 4px; text-align: center; }
+    #config-box {
+        width: 100%; height: 200px; font-family: inherit; font-size: 10px;
+        border: 1px solid #b9c9e4; border-radius: 5px; padding: 8px;
+        background: #f6f9ff; color: #0a2540; resize: vertical; white-space: pre;
+    }
+    #stage { flex: 1; position: relative; }
+    #cube-canvas { width: 100%; height: 100%; display: block; cursor: pointer; }
+    #copied { color: #14b8c4; font-size: 11px; text-align: center; height: 14px; margin-top: 4px; }
+    .hint { font-size: 10px; color: #5b7194; margin-top: 4px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h1>Heartbeat Lab v2</h1>
+    <div class="sub">lub-dub teaser + staged hint text + spherify</div>
+
+    <div class="group">
+        <h2>Heartbeat rhythm</h2>
+        <div class="row">
+            <label>Interval <span class="val" id="v-interval">5.0 s</span></label>
+            <input type="range" id="c-interval" min="3" max="15" step="0.5" value="5">
+        </div>
+        <div class="row">
+            <label>Main pulse scale <span class="val" id="v-main">+10%</span></label>
+            <input type="range" id="c-main" min="5" max="40" step="1" value="10">
+        </div>
+        <div class="row">
+            <label>Echo pulse scale <span class="val" id="v-echo">+5%</span></label>
+            <input type="range" id="c-echo" min="3" max="20" step="1" value="5">
+        </div>
+        <div class="row">
+            <label>Beat duration <span class="val" id="v-beatms">600 ms</span></label>
+            <input type="range" id="c-beatms" min="150" max="800" step="10" value="600">
+        </div>
+        <div class="row">
+            <label>Micro-pause <span class="val" id="v-pause">300 ms</span></label>
+            <input type="range" id="c-pause" min="40" max="400" step="10" value="300">
+        </div>
+        <div class="row">
+            <label>Roundness on pulse <span class="val" id="v-round">0.35</span></label>
+            <input type="range" id="c-round" min="0" max="1" step="0.05" value="0.35">
+            <div class="hint">how far the cube bulges toward a sphere at the pulse peak (0 = off)</div>
+        </div>
+        <button id="trigger-now">Trigger beat now</button>
+        <div id="status">next beat in — s</div>
+    </div>
+
+    <div class="group">
+        <h2>Hint text</h2>
+        <div class="row">
+            <label>Text (word 1 on lub, rest on dub)</label>
+            <input type="text" id="c-text" value="tap me">
+        </div>
+        <div class="row">
+            <label>Color</label>
+            <select id="c-color">
+                <option value="teal">teal (#14b8c4)</option>
+                <option value="ink" selected>ink (#0a2540)</option>
+                <option value="orange">orange (#ff5722)</option>
+            </select>
+        </div>
+        <div class="row">
+            <label>3D depth <span class="val" id="v-depth">3 px</span></label>
+            <input type="range" id="c-depth" min="0" max="8" step="1" value="3">
+            <div class="hint">fake extrusion layers behind the glyphs (0 = flat)</div>
+        </div>
+        <div class="row">
+            <label>Max shows <span class="val" id="v-maxshows">3</span></label>
+            <input type="range" id="c-maxshows" min="1" max="6" step="1" value="3">
+        </div>
+        <div class="row">
+            <label>Peak opacity <span class="val" id="v-peakop">1</span></label>
+            <input type="range" id="c-peakop" min="0.3" max="1" step="0.05" value="1">
+        </div>
+        <div class="row">
+            <label>Rest opacity <span class="val" id="v-restop">0.03</span></label>
+            <input type="range" id="c-restop" min="0" max="0.3" step="0.01" value="0.03">
+        </div>
+        <div class="row">
+            <label>Rest blur <span class="val" id="v-restblur">16 px</span></label>
+            <input type="range" id="c-restblur" min="0" max="24" step="1" value="16">
+        </div>
+        <div class="row">
+            <label>Fade-out speed <span class="val" id="v-fade">1600 ms</span></label>
+            <input type="range" id="c-fade" min="200" max="3000" step="50" value="1600">
+        </div>
+        <div class="row">
+            <label>Text size <span class="val" id="v-tsize">1.7</span></label>
+            <input type="range" id="c-tsize" min="0.8" max="2.6" step="0.1" value="1.7">
+        </div>
+        <button class="secondary" id="reset-shows">Reset shows / tap state</button>
+        <div id="shows-status">shows: 0 / 3 · not tapped</div>
+        <div class="hint">click the cube = simulated tap: hint text is disabled forever (like the real morph click will do)</div>
+    </div>
+
+    <div class="group">
+        <h2>Config export</h2>
+        <textarea id="config-box" readonly></textarea>
+        <button class="secondary" id="copy-config">Copy JSON</button>
+        <div id="copied"></div>
+    </div>
+</div>
+
+<div id="stage">
+    <canvas id="cube-canvas"></canvas>
+</div>
+
+<script>
+(function () {
+    "use strict";
+    const canvas = document.getElementById("cube-canvas");
+    const stage = document.getElementById("stage");
+
+    // ===== Base cube config — mirrors SCENE_CONFIG in script.js (cube state only) =====
+    const BASE = {
+        grid: 3, scale: 1, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09,
+        cubeDot: { size: 0.05, opacity: 0.5 },
+        colors: {
+            ink: [0.039, 0.145, 0.251],
+            cube: [0.08, 0.72, 0.77],
+            orange: [1.0, 0.34, 0.13],
+            fadeTo: [0.859, 0.906, 0.984]
+        },
+        twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
+        breatheSpeed: 0.4,
+        wobble: 0.5,
+        dotCount: 2000
+    };
+
+    // ===== Tunable heartbeat config — the thing this lab exports =====
+    const HB = {
+        heartbeat: {
+            intervalMs: 5000,   // time between double-pulses
+            mainAmp: 0.10,      // main beat: +10% scale
+            echoAmp: 0.05,      // echo beat: +5% scale
+            beatMs: 600,        // duration of one beat (attack + decay)
+            pauseMs: 300,       // micro-pause between the two beats
+            roundness: 0.35     // 0..1: cube bulges toward a sphere at pulse peak
+        },
+        hintText: {
+            text: "tap me",     // word 1 appears on lub, the rest joins on dub
+            color: "ink",       // teal | ink | orange
+            depth: 3,           // fake-3D extrusion layers in px (0 = flat)
+            maxShows: 3,        // hint appears at most this many times, then never again
+            peakOpacity: 1,
+            restOpacity: 0.03,
+            restBlur: 16,
+            fadeMs: 1600,       // how slowly the text melts back into blur
+            size: 1.7           // plane width in scene units
+        }
+    };
+
+    const COLOR_HEX = { teal: "#14b8c4", ink: "#0a2540", orange: "#ff5722" };
+    // deeper shade of each color for the extrusion layers
+    const DEPTH_HEX = { teal: "#0c6f76", ink: "#04101c", orange: "#a33314" };
+    const HALF = 1.1;
+    const SPHERE_R = HALF * 1.15;  // radius the vertices bulge toward
+    const N = BASE.dotCount;
+
+    // ===== Scene =====
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, stage.clientWidth / stage.clientHeight, 0.1, 1000);
+    camera.position.z = 3.0;
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(stage.clientWidth, stage.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    function makeCircleTexture() {
+        const s = 64, c = document.createElement("canvas"); c.width = c.height = s;
+        const ctx = c.getContext("2d");
+        const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+        g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.6, "rgba(255,255,255,0.85)"); g.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2); ctx.fill();
+        return new THREE.CanvasTexture(c);
+    }
+
+    const figure = new THREE.Group();
+    scene.add(figure);
+
+    // ----- dots stacked on lattice nodes -----
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+    const mat = new THREE.PointsMaterial({
+        size: BASE.cubeDot.size, map: makeCircleTexture(), vertexColors: true,
+        transparent: true, opacity: BASE.cubeDot.opacity, depthWrite: false
+    });
+    figure.add(new THREE.Points(geo, mat));
+
+    // base (cube-shaped) positions, kept so spherify can be applied non-destructively
+    const dotBase = new Float32Array(N * 3);
+    let lineBase = null, linePos = null;
+    let nodeCount = 1;
+
+    (function buildCube(G) {
+        const nodes = [];
+        for (let i = 0; i <= G; i++) for (let j = 0; j <= G; j++) for (let k = 0; k <= G; k++) {
+            if (i === 0 || i === G || j === 0 || j === G || k === 0 || k === G) {
+                nodes.push([-HALF + 2 * HALF * i / G, -HALF + 2 * HALF * j / G, -HALF + 2 * HALF * k / G]);
+            }
+        }
+        nodeCount = nodes.length;
+        const order = nodes.map((_, i) => i);
+        for (let i = order.length - 1; i > 0; i--) {
+            const j = (Math.random() * (i + 1)) | 0;
+            const t = order[i]; order[i] = order[j]; order[j] = t;
+        }
+        const pos = geo.attributes.position.array;
+        for (let p = 0; p < N; p++) {
+            const nd = nodes[order[p % order.length]];
+            pos[p * 3] = nd[0]; pos[p * 3 + 1] = nd[1]; pos[p * 3 + 2] = nd[2];
+            dotBase[p * 3] = nd[0]; dotBase[p * 3 + 1] = nd[1]; dotBase[p * 3 + 2] = nd[2];
+        }
+        geo.attributes.position.needsUpdate = true;
+
+        // wireframe with face diagonals — SUBDIVIDED so lines can bow into arcs
+        // when the pulse rounds the cube toward a sphere
+        const SUB = 8;
+        const raw = [];
+        const step = 2 * HALF / G;
+        for (let a = 0; a <= G; a++) {
+            const u = -HALF + a * step;
+            for (const s of [-HALF, HALF]) {
+                raw.push([u, -HALF, s, u, HALF, s]);
+                raw.push([-HALF, u, s, HALF, u, s]);
+                raw.push([u, s, -HALF, u, s, HALF]);
+                raw.push([-HALF, s, u, HALF, s, u]);
+                raw.push([s, u, -HALF, s, u, HALF]);
+                raw.push([s, -HALF, u, s, HALF, u]);
+            }
+        }
+        for (const s of [-HALF, HALF]) {
+            raw.push([s, -HALF, -HALF, s, HALF, HALF]); raw.push([s, -HALF, HALF, s, HALF, -HALF]);
+            raw.push([-HALF, s, -HALF, HALF, s, HALF]); raw.push([-HALF, s, HALF, HALF, s, -HALF]);
+            raw.push([-HALF, -HALF, s, HALF, HALF, s]); raw.push([-HALF, HALF, s, HALF, -HALF, s]);
+        }
+        const segs = [];
+        for (const r of raw) {
+            for (let q = 0; q < SUB; q++) {
+                const t0 = q / SUB, t1 = (q + 1) / SUB;
+                segs.push(
+                    r[0] + (r[3] - r[0]) * t0, r[1] + (r[4] - r[1]) * t0, r[2] + (r[5] - r[2]) * t0,
+                    r[0] + (r[3] - r[0]) * t1, r[1] + (r[4] - r[1]) * t1, r[2] + (r[5] - r[2]) * t1
+                );
+            }
+        }
+        const lgeo = new THREE.BufferGeometry();
+        lgeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(segs), 3));
+        lineBase = new Float32Array(segs);
+        linePos = lgeo.attributes.position;
+        const cc = BASE.colors.cube;
+        const lmat = new THREE.LineBasicMaterial({
+            color: new THREE.Color(cc[0], cc[1], cc[2]), transparent: true, opacity: BASE.lineOpacity
+        });
+        figure.add(new THREE.LineSegments(lgeo, lmat));
+    })(BASE.grid);
+
+    // ----- spherify: lerp every vertex from its cube home toward the sphere -----
+    let lastK = -1;
+    function applySpherify(k) {
+        if (Math.abs(k - lastK) < 0.0005) return;
+        lastK = k;
+        const dp = geo.attributes.position.array;
+        for (let i = 0; i < N; i++) {
+            const j = i * 3;
+            const x = dotBase[j], y = dotBase[j + 1], z = dotBase[j + 2];
+            const d = Math.sqrt(x * x + y * y + z * z) || 1;
+            const m = 1 + (SPHERE_R / d - 1) * k;
+            dp[j] = x * m; dp[j + 1] = y * m; dp[j + 2] = z * m;
+        }
+        geo.attributes.position.needsUpdate = true;
+        const lp = linePos.array;
+        for (let j = 0; j < lp.length; j += 3) {
+            const x = lineBase[j], y = lineBase[j + 1], z = lineBase[j + 2];
+            const d = Math.sqrt(x * x + y * y + z * z) || 1;
+            const m = 1 + (SPHERE_R / d - 1) * k;
+            lp[j] = x * m; lp[j + 1] = y * m; lp[j + 2] = z * m;
+        }
+        linePos.needsUpdate = true;
+    }
+
+    // ----- per-dot color drift + orange flares (same motif as the hero) -----
+    const flash = new Float32Array(N);
+    const phase = new Float32Array(N);
+    for (let i = 0; i < N; i++) phase[i] = Math.random() * Math.PI * 2;
+
+    // ===== Hint text plane — INSIDE the cube, attached to the rotating group =====
+    // Same face as the hero credo: SF Mono 500, uppercase, wide letter-spacing.
+    // Fake 3D: darker extrusion layers stacked behind the top face.
+    // Blur is baked into the canvas texture via ctx.filter.
+    const TEXT_W = 1024, TEXT_H = 320;
+    const FONT_PX = 96;
+    const CREDO_FONT = "500 " + FONT_PX + "px 'SF Mono', 'JetBrains Mono', 'Roboto Mono', ui-monospace, monospace";
+    const textCanvas = document.createElement("canvas");
+    textCanvas.width = TEXT_W; textCanvas.height = TEXT_H;
+    const textCtx = textCanvas.getContext("2d");
+    const textTex = new THREE.CanvasTexture(textCanvas);
+    textTex.minFilter = THREE.LinearFilter;
+    const textMat = new THREE.MeshBasicMaterial({
+        map: textTex, transparent: true, opacity: 0,
+        depthWrite: false, side: THREE.DoubleSide
+    });
+    const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, TEXT_H / TEXT_W), textMat);
+    figure.add(textPlane); // rotates with the cube — weird angles are expected
+
+    let lastDraw = "";
+    function drawText(str, blurPx, dots) {
+        const t = HB.hintText;
+        const key = str + "|" + blurPx.toFixed(1) + "|" + dots + "|" + t.color + "|" + t.depth;
+        if (key === lastDraw) return;
+        lastDraw = key;
+        textCtx.clearRect(0, 0, TEXT_W, TEXT_H);
+        if (!str) { textTex.needsUpdate = true; return; }
+        textCtx.filter = blurPx > 0.3 ? "blur(" + blurPx.toFixed(1) + "px)" : "none";
+        textCtx.font = CREDO_FONT;
+        if ("letterSpacing" in textCtx) textCtx.letterSpacing = (0.22 * FONT_PX).toFixed(0) + "px";
+        textCtx.textAlign = "center"; textCtx.textBaseline = "middle";
+        const cx = TEXT_W / 2, cy = TEXT_H / 2;
+        const main = COLOR_HEX[t.color] || COLOR_HEX.ink;
+        const deep = DEPTH_HEX[t.color] || DEPTH_HEX.ink;
+        // extrusion: darker copies stepped down-right, then the top face
+        for (let d = t.depth; d >= 1; d--) {
+            textCtx.fillStyle = deep;
+            textCtx.fillText(str, cx + d, cy + d);
+        }
+        textCtx.fillStyle = main;
+        textCtx.fillText(str, cx, cy);
+        // trailing dots appended to the right edge so the word itself never shifts
+        if (dots > 0) {
+            const w = textCtx.measureText(str).width;
+            textCtx.textAlign = "left";
+            textCtx.fillText(".".repeat(dots), cx + w / 2 + FONT_PX * 0.15, cy);
+        }
+        textCtx.filter = "none";
+        textTex.needsUpdate = true;
+    }
+
+    // ===== Heartbeat engine =====
+    const easeOutCubic = (p) => 1 - Math.pow(1 - p, 3);
+    const easeInOutCubic = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+    function beatShape(p) {
+        if (p <= 0 || p >= 1) return 0;
+        const a = 0.35;
+        return p < a ? easeOutCubic(p / a) : 1 - easeInOutCubic((p - a) / (1 - a));
+    }
+
+    let beatStart = -1;                        // -1 = resting
+    let nextBeatAt = performance.now() + 2000; // first beat comes quickly so you see it
+    let textVis = 0;                           // 0 = hidden/blurred, 1 = sharp peak
+    let shows = 0;                             // how many times the hint has been shown
+    let tapped = false;                        // once true, the hint never appears again
+    let windowHasText = false;                 // whether THIS pulse shows the hint
+
+    function heartbeat(now) {
+        const hb = HB.heartbeat;
+        if (beatStart < 0 && now >= nextBeatAt) {
+            beatStart = now;
+            windowHasText = !tapped && shows < HB.hintText.maxShows;
+            if (windowHasText) shows++;
+            updateShowsStatus();
+        }
+        let pulse = 0, inWindow = false, echoPhase = false;
+        if (beatStart >= 0) {
+            const el = now - beatStart;
+            const echoDur = hb.beatMs * 0.85;
+            const total = hb.beatMs + hb.pauseMs + echoDur;
+            if (el >= total) {
+                beatStart = -1;
+                nextBeatAt = now + hb.intervalMs;
+            } else {
+                inWindow = true;
+                echoPhase = el >= hb.beatMs + hb.pauseMs * 0.5; // second word joins on the dub
+                pulse += beatShape(el / hb.beatMs) * hb.mainAmp;                          // lub
+                pulse += beatShape((el - hb.beatMs - hb.pauseMs) / echoDur) * hb.echoAmp; // dub
+            }
+        }
+        return { pulse: pulse, inWindow: inWindow, echoPhase: echoPhase };
+    }
+
+    // ===== Controls wiring =====
+    const $ = (id) => document.getElementById(id);
+    function bind(id, valId, fmt, apply) {
+        const el = $(id);
+        const upd = () => { $(valId).textContent = fmt(el.value); apply(parseFloat(el.value)); refreshConfig(); };
+        el.addEventListener("input", upd); upd();
+    }
+    bind("c-interval", "v-interval", (v) => (+v).toFixed(1) + " s", (v) => { HB.heartbeat.intervalMs = v * 1000; });
+    bind("c-main", "v-main", (v) => "+" + v + "%", (v) => { HB.heartbeat.mainAmp = v / 100; });
+    bind("c-echo", "v-echo", (v) => "+" + v + "%", (v) => { HB.heartbeat.echoAmp = v / 100; });
+    bind("c-beatms", "v-beatms", (v) => v + " ms", (v) => { HB.heartbeat.beatMs = v; });
+    bind("c-pause", "v-pause", (v) => v + " ms", (v) => { HB.heartbeat.pauseMs = v; });
+    bind("c-round", "v-round", (v) => v, (v) => { HB.heartbeat.roundness = v; });
+    bind("c-depth", "v-depth", (v) => v + " px", (v) => { HB.hintText.depth = v; });
+    bind("c-maxshows", "v-maxshows", (v) => v, (v) => { HB.hintText.maxShows = v; updateShowsStatus(); });
+    bind("c-peakop", "v-peakop", (v) => v, (v) => { HB.hintText.peakOpacity = v; });
+    bind("c-restop", "v-restop", (v) => v, (v) => { HB.hintText.restOpacity = v; });
+    bind("c-restblur", "v-restblur", (v) => v + " px", (v) => { HB.hintText.restBlur = v; });
+    bind("c-fade", "v-fade", (v) => v + " ms", (v) => { HB.hintText.fadeMs = v; });
+    bind("c-tsize", "v-tsize", (v) => v, (v) => { HB.hintText.size = v; });
+    $("c-text").addEventListener("input", (e) => { HB.hintText.text = e.target.value; refreshConfig(); });
+    $("c-color").addEventListener("change", (e) => { HB.hintText.color = e.target.value; refreshConfig(); });
+    $("trigger-now").addEventListener("click", () => { beatStart = -1; nextBeatAt = 0; });
+
+    // clicking the cube simulates the real tap (which morphs to the face on the site):
+    // hint is retired permanently, exactly like production behaviour will be
+    canvas.addEventListener("click", () => { tapped = true; updateShowsStatus(); });
+
+    $("reset-shows").addEventListener("click", () => { shows = 0; tapped = false; updateShowsStatus(); });
+
+    function updateShowsStatus() {
+        $("shows-status").textContent =
+            "shows: " + shows + " / " + HB.hintText.maxShows + (tapped ? " · TAPPED — hint retired" : " · not tapped");
+    }
+    updateShowsStatus();
+
+    function refreshConfig() {
+        $("config-box").value = JSON.stringify(HB, null, 2);
+    }
+    $("copy-config").addEventListener("click", () => {
+        navigator.clipboard.writeText($("config-box").value).then(() => {
+            $("copied").textContent = "copied ✓";
+            setTimeout(() => { $("copied").textContent = ""; }, 1500);
+        });
+    });
+    refreshConfig();
+
+    // ===== Animation loop =====
+    let t = 0, angle = 0, lastNow = performance.now();
+    const col = geo.attributes.color;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        const now = performance.now();
+        const dt = Math.min(50, now - lastNow); lastNow = now;
+
+        t += 0.01;
+        angle += BASE.rot; // rotation continues through the pulse — cube stays a cube
+
+        // heartbeat scale on top of the normal breathe
+        const hb = heartbeat(now);
+        const breathe = 1 + Math.sin(t * BASE.breatheSpeed) * BASE.breathe;
+        figure.scale.setScalar(BASE.scale * breathe * (1 + hb.pulse));
+
+        // cube -> sphere bulge, driven by the pulse strength
+        const pulseNorm = Math.min(1, hb.pulse / (HB.heartbeat.mainAmp || 1));
+        applySpherify(HB.heartbeat.roundness * pulseNorm);
+
+        // text visibility: fast attack, slow melt back into blur
+        const target = (hb.inWindow && windowHasText) ? 1 : 0;
+        const speed = target > textVis ? dt / 120 : dt / HB.hintText.fadeMs;
+        textVis += (target - textVis) * Math.min(1, speed);
+        if (textVis < 0.001) textVis = 0;
+
+        const ht = HB.hintText;
+        textMat.opacity = ht.restOpacity + (ht.peakOpacity - ht.restOpacity) * textVis;
+        textPlane.scale.setScalar(ht.size);
+
+        // staged wording: word 1 on the lub, full phrase on the dub,
+        // trailing dots grow as the text melts away
+        const words = (ht.text || "").trim().toUpperCase().split(/\s+/);
+        let str = "";
+        let dots = 0;
+        if (hb.inWindow && windowHasText) {
+            str = hb.echoPhase ? words.join(" ") : words[0];
+        } else if (textVis > 0) {
+            str = words.join(" ");
+            dots = textVis > 0.75 ? 1 : textVis > 0.45 ? 2 : 3;
+        }
+        drawText(str, ht.restBlur * (1 - textVis), dots);
+
+        // orange node flares (whole node flares, dots are stacked)
+        if (Math.random() < BASE.twinkle.rate / 60) {
+            const n = (Math.random() * nodeCount) | 0;
+            for (let p = n; p < N; p += nodeCount) flash[p] = 1;
+        }
+
+        // per-dot palette drift ink -> teal -> orange -> back
+        const INK = BASE.colors.ink, CUB = BASE.colors.cube, ORANGE = BASE.colors.orange;
+        for (let i = 0; i < N; i++) {
+            const j = i * 3;
+            phase[i] += BASE.twinkle.blinkSpeed;
+            const drift = BASE.twinkle.blinkAmp * (0.5 + 0.5 * Math.sin(phase[i]));
+            let r, g, bl;
+            if (drift < 0.5) {
+                const d2 = drift * 2;
+                r = INK[0] + (CUB[0] - INK[0]) * d2;
+                g = INK[1] + (CUB[1] - INK[1]) * d2;
+                bl = INK[2] + (CUB[2] - INK[2]) * d2;
+            } else {
+                const d2 = (drift - 0.5) * 2;
+                r = CUB[0] + (ORANGE[0] - CUB[0]) * d2;
+                g = CUB[1] + (ORANGE[1] - CUB[1]) * d2;
+                bl = CUB[2] + (ORANGE[2] - CUB[2]) * d2;
+            }
+            if (flash[i] > 0) { flash[i] -= BASE.twinkle.decay; if (flash[i] < 0) flash[i] = 0; }
+            const f = flash[i];
+            col.array[j] = r + (ORANGE[0] - r) * f;
+            col.array[j + 1] = g + (ORANGE[1] - g) * f;
+            col.array[j + 2] = bl + (ORANGE[2] - bl) * f;
+        }
+        col.needsUpdate = true;
+
+        // camera: orbit + slow axis precession, same as the hero
+        const camR = Math.max(3.0, HALF * BASE.scale * 2.4);
+        camera.position.x = Math.sin(angle) * camR + Math.sin(t * 0.23) * BASE.wobble;
+        camera.position.y = Math.sin(angle * 0.5) * 0.5 + Math.sin(t * 0.31) * BASE.wobble;
+        camera.position.z = Math.cos(angle) * camR;
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+
+        // countdown readout
+        const st = document.getElementById("status");
+        if (beatStart >= 0) st.textContent = "♥ beating…";
+        else st.textContent = "next beat in " + Math.max(0, (nextBeatAt - now) / 1000).toFixed(1) + " s";
+    }
+    animate();
+
+    window.addEventListener("resize", () => {
+        camera.aspect = stage.clientWidth / stage.clientHeight;
+        renderer.setSize(stage.clientWidth, stage.clientHeight);
+    });
+})();
+</script>
+</body>
+</html>
