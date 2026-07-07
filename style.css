@@ -183,12 +183,15 @@ body.intro-lock {
         transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
             background-color 0.4s ease;
     }
-}
 
-.block:active .deco-line {
-    width: var(--deco-hover);
-    background: var(--accent);
-    transition: width 0.2s ease, background-color 0.2s ease;
+    /* click-and-hold draw-out — desktop only. On touch, tapping a descendant
+       (e.g. an Expertise pill) propagates :active up to .block and makes the
+       deco-line above the header flicker, so gate it behind hover pointers */
+    .block:active .deco-line {
+        width: var(--deco-hover);
+        background: var(--accent);
+        transition: width 0.2s ease, background-color 0.2s ease;
+    }
 }
 
 /* ===== REVEAL (blur-in) ===== */
@@ -277,8 +280,8 @@ body.intro-lock {
     align-self: start;
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.76rem;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.22em;
     line-height: 2;
@@ -478,7 +481,8 @@ body.intro-lock {
     position: relative;
     padding-left: 1.3rem;
     margin-bottom: 0.35rem;
-    color: var(--ink);
+    color: var(--muted);
+    font-size: 0.95rem;
     line-height: 1.55;
 }
 
@@ -597,17 +601,19 @@ h3 {
     color: var(--ink);
 }
 
+/* Expertise pills are decorative (no link/action). Feedback is desktop-only:
+   on touch they stay calm so a tap doesn't imply a button that does nothing */
 @media (hover: hover) {
     .exp-tags span:hover {
         color: var(--accent);
         border-color: var(--accent);
         cursor: pointer;
     }
-}
 
-.exp-tags span:active {
-    color: var(--accent);
-    border-color: var(--accent);
+    .exp-tags span:active {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
 }
 
 /* ===== SCROLL ARROW ===== */
@@ -897,11 +903,11 @@ h3 {
         color: var(--accent);
         border-color: var(--accent);
     }
-}
 
-#lower.dark .exp-tags span:active {
-    color: var(--accent);
-    border-color: var(--accent);
+    #lower.dark .exp-tags span:active {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
 }
 
 /* Footer colors follow the light/dark inversion of #lower — previously they
@@ -961,10 +967,10 @@ h3 {
     #lower.dark .block:hover .deco-line {
         background: var(--accent);
     }
-}
 
-#lower.dark .block:active .deco-line {
-    background: var(--accent);
+    #lower.dark .block:active .deco-line {
+        background: var(--accent);
+    }
 }
 
 #lower.dark .proc-step.active .proc-label {
@@ -1040,11 +1046,11 @@ h3 {
         color: var(--accent);
         border-color: var(--accent);
     }
-}
 
-.domain-tags span:active {
-    color: var(--accent);
-    border-color: var(--accent);
+    .domain-tags span:active {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
 }
 
 /* ===== LINKS ===== */

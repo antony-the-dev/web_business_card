@@ -109,8 +109,17 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
         const e = easeOut(clamp01(window.scrollY / (vh * 1.72)));
 
         // MOBILE: plain scroll — no dim/scale/blur (the fade flashed grey
-        // on fast phone scroll and cost performance for no visual gain)
+        // on fast phone scroll and cost performance for no visual gain).
+        // Clear any inline transform/opacity the desktop branch may have parked
+        // on the grid/canvas — otherwise crossing the 900px line (e.g. a
+        // landscape→portrait rotation) can leave the hero stuck faded to white
+        // with no scroll event able to restore it.
         if (window.matchMedia("(max-width: 900px)").matches) {
+            if (grid.style.opacity !== "" || grid.style.transform !== "") {
+                grid.style.transform = "";
+                grid.style.opacity = "";
+                if (cv) { cv.style.transform = ""; cv.style.opacity = ""; }
+            }
             return;
         }
 
@@ -386,7 +395,7 @@ function makeCircleTexture() {
             restOpacity: 0,     // ghost opacity in resting state (0 = fully hidden)
             restBlur: 2,        // blur px in resting state (0 at the peak)
             fadeMs: 750,        // how slowly the text melts back into blur
-            size: 1.5           // hint plane width in scene units
+            size: 2           // hint plane width in scene units
         }
     };
     const C = SCENE_CONFIG;
