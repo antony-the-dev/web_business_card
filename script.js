@@ -152,6 +152,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         },
         morph: { durationMs: 4000, stagger: 0.75, reveal: 0.4, holdMs: 6000 },
         cubeDot: { size: 0.05, opacity: 0.5 },   // dot size/opacity in the CUBE state
+        // in-flight dots during the morph: thinShare of the swarm slims down to
+        // thinScale of normal size mid-flight, landing back at full size
+        flightDots: { thinShare: 0.7, thinScale: 0.45 },
         colors: {
             ink: [0.039, 0.145, 0.251],    // portrait dot color (site --ink #0a2540)
             cube: [0.08, 0.72, 0.77],      // CUBE dot & line color (site teal — matches the intro)
@@ -168,9 +171,9 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         panFrac: 0.20,         // shift figure toward screen-right on desktop (0 = centred)
         // ----- heartbeat teaser: periodic lub-dub pulse in cube state (tuned in lab_heartbeat.html) -----
         heartbeat: {
-            intervalMs: 4000,   // time between double-pulses
-            mainAmp: 0.05,      // main beat: +5% scale
-            echoAmp: 0.03,      // echo beat: +3% scale
+            intervalMs: 5000,   // time between double-pulses
+            mainAmp: 0.03,      // main beat: +5% scale
+            echoAmp: 0.02,      // echo beat: +3% scale
             beatMs: 600,        // duration of one beat (attack + decay)
             pauseMs: 300,       // micro-pause between the two beats
             roundness: 0,       // 0..1: cube bulges toward a sphere at pulse peak (0 = off)
@@ -185,7 +188,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             restOpacity: 0,     // ghost opacity in resting state (0 = fully hidden)
             restBlur: 2,        // blur px in resting state (0 at the peak)
             fadeMs: 750,        // how slowly the text melts back into blur
-            size: 2.1           // hint plane width in scene units
+            size: 1.5           // hint plane width in scene units
         }
     };
     const C = SCENE_CONFIG;
@@ -226,9 +229,44 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
     geo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
-    const mat = new THREE.PointsMaterial({
-        size: C.cubeDot.size, map: makeCircleTexture(), vertexColors: true,
-        transparent: true, opacity: 0, depthWrite: false
+    // PointsMaterial only supports ONE global size, but in-flight dots need
+    // per-point sizes (30% stay bold, 70% slim down mid-flight). This shader
+    // replicates three r128 PointsMaterial size math exactly (size * pixelRatio,
+    // scale = canvasHeight / 2, perspective attenuation) plus an aSize multiplier.
+    geo.setAttribute("aSize", new THREE.BufferAttribute(new Float32Array(N).fill(1), 1));
+    const sizeTarget = new Float32Array(N); // per-dot mid-flight size multiplier
+    for (let i = 0; i < N; i++) {
+        sizeTarget[i] = Math.random() < C.flightDots.thinShare ? C.flightDots.thinScale : 1;
+    }
+    const mat = new THREE.ShaderMaterial({
+        uniforms: {
+            map: { value: makeCircleTexture() },
+            uSize: { value: C.cubeDot.size * renderer.getPixelRatio() },
+            uScale: { value: hero.clientHeight * 0.5 },
+            uOpacity: { value: 0 }
+        },
+        vertexShader: [
+            "attribute float aSize;",
+            "varying vec3 vColor;",
+            "uniform float uSize;",
+            "uniform float uScale;",
+            "void main() {",
+            "    vColor = color;",
+            "    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);",
+            "    gl_PointSize = uSize * aSize * (uScale / -mvPosition.z);",
+            "    gl_Position = projectionMatrix * mvPosition;",
+            "}"
+        ].join("\n"),
+        fragmentShader: [
+            "uniform sampler2D map;",
+            "uniform float uOpacity;",
+            "varying vec3 vColor;",
+            "void main() {",
+            "    vec4 tex = texture2D(map, gl_PointCoord);",
+            "    gl_FragColor = vec4(vColor, uOpacity) * tex;",
+            "}"
+        ].join("\n"),
+        transparent: true, depthWrite: false, vertexColors: true
     });
     figure.add(new THREE.Points(geo, mat));
 
@@ -422,7 +460,14 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             if (morph === 0 && morphTarget === 0 && !contracting) {
                 beatStart = now;
                 windowHasText = !tapped && hintShows < C.hintText.maxShows;
-                if (windowHasText) hintShows++;
+                if (windowHasText) {
+                    hintShows++;
+                    // align the plane with the cube face that currently looks at the
+                    // camera (yaw snapped to 90°) — the text stays true to the cube
+                    // lattice geometry instead of floating at an arbitrary angle
+                    const snapped = Math.round(Math.atan2(camera.position.x, camera.position.z) / (Math.PI / 2)) * (Math.PI / 2);
+                    hintPlane.rotation.set(0, snapped, 0);
+                }
             } else {
                 nextBeatAt = now + hb.intervalMs; // busy — try again next interval
             }
@@ -457,6 +502,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     let t = 0, angle = 0;
     const pos = geo.attributes.position;
     const col = geo.attributes.color;
+    const asz = geo.attributes.aSize;
 
     function animate() {
         requestAnimationFrame(animate);
@@ -527,8 +573,8 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
 
         // wireframe dissolves as the face forms; dots settle to full presence
         lineSeg.material.opacity = cube.lineOpacity * (1 - m) * bootFade;
-        mat.size = C.cubeDot.size + (face.dotSize - C.cubeDot.size) * m;
-        mat.opacity = (C.cubeDot.opacity + (1 - C.cubeDot.opacity) * morph) * bootFade;
+        mat.uniforms.uSize.value = (C.cubeDot.size + (face.dotSize - C.cubeDot.size) * m) * renderer.getPixelRatio();
+        mat.uniforms.uOpacity.value = (C.cubeDot.opacity + (1 - C.cubeDot.opacity) * morph) * bootFade;
 
         // twinkle ignition (rate = flares per frame): in cube state dots are stacked
         // on lattice nodes, so a single flaring dot stays buried under its stack —
@@ -554,6 +600,11 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
             pos.array[j] = homes[j] + (SRC[j] - homes[j]) * lp;
             pos.array[j + 1] = homes[j + 1] + (SRC[j + 1] - homes[j + 1]) * lp;
             pos.array[j + 2] = homes[j + 2] + (SRC[j + 2] * zK - homes[j + 2]) * lp;
+
+            // in-flight slimming: transit peaks mid-flight (0 at both endpoints),
+            // so dots take off and land at full size but thin out while flying
+            const transit = 4 * lp * (1 - lp);
+            asz.array[i] = 1 + (sizeTarget[i] - 1) * transit;
 
             // color: brightness-ordered reveal — strong features commit first,
             // light shadows fill in last ("developing photo")
@@ -591,6 +642,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
         }
         pos.needsUpdate = true;
         col.needsUpdate = true;
+        asz.needsUpdate = true;
 
         // camera: orbit + slow axis precession for the cube, straight-on for the face
         const camR = Math.max(3.0, HALF * cube.scale * 2.4);
@@ -608,6 +660,7 @@ const FACE_PTS = new Float32Array([0.33, 0.39, -0.02, -0.34, -0.56, 0.03, -0.27,
     window.addEventListener("resize", () => {
         camera.aspect = hero.clientWidth / hero.clientHeight;
         renderer.setSize(hero.clientWidth, hero.clientHeight);
+        mat.uniforms.uScale.value = hero.clientHeight * 0.5; // keep dot attenuation in sync
         applyHeroPan();
     });
 })();

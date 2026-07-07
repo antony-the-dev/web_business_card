@@ -404,7 +404,13 @@
         if (beatStart < 0 && now >= nextBeatAt) {
             beatStart = now;
             windowHasText = !tapped && shows < HB.hintText.maxShows;
-            if (windowHasText) shows++;
+            if (windowHasText) {
+                shows++;
+                // align the plane with the cube face that currently looks at the
+                // camera (yaw snapped to 90°) — text stays true to the lattice
+                const snapped = Math.round(Math.atan2(camera.position.x, camera.position.z) / (Math.PI / 2)) * (Math.PI / 2);
+                textPlane.rotation.set(0, snapped, 0);
+            }
             updateShowsStatus();
         }
         let pulse = 0, inWindow = false, echoPhase = false;
