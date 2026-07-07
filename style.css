@@ -10,6 +10,10 @@ html {
 }
 
 :root {
+    /* JetBrains Mono is loaded from Google Fonts (see index.html) so the mono
+       accents render identically on macOS / Windows / Linux; the rest of the
+       stack is a system fallback while the webfont loads */
+    --font-mono: "JetBrains Mono", "SF Mono", "Roboto Mono", ui-monospace, monospace;
     --bg: #ffffff;
     --ink: #0a2540;
     --muted: #46586d;
@@ -272,7 +276,7 @@ body.intro-lock {
     grid-area: credo;
     align-self: start;
     margin: 0;
-    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -297,7 +301,7 @@ body.intro-lock {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -366,7 +370,7 @@ body.intro-lock {
 
 .hero-contact a {
     position: relative;
-    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -448,7 +452,7 @@ body.intro-lock {
 
 .rail-text {
     writing-mode: vertical-rl;
-    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.2em;
     font-size: 0.72rem;
@@ -571,7 +575,7 @@ h3 {
 
 .exp-group-title {
     margin: 0 0 0.5rem;
-    font-family: "SF Mono", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.68rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -900,25 +904,45 @@ h3 {
     border-color: var(--accent);
 }
 
+/* Footer colors follow the light/dark inversion of #lower — previously they
+   were hardcoded white, which turned invisible (white-on-white) whenever the
+   dark band released near the bottom of the page (short/tall viewports). */
 .site-footer {
     margin-top: 0;
     padding-top: 1.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid var(--line);
     text-align: center;
+    transition: border-color 0.9s ease;
 }
 
 .site-footer .footer-name {
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ink);
     letter-spacing: 0.01em;
     margin: 0 0 0.3rem;
+    transition: color 0.9s ease;
 }
 
 .site-footer .footer-rights {
     font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--muted);
     letter-spacing: 0.02em;
     margin: 0;
+    transition: color 0.9s ease;
+}
+
+#lower.dark .site-footer {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* #lower.dark + class beats the blanket "#lower.dark p" rule, so the footer
+   keeps its own two-tone hierarchy in dark mode instead of flat 0.88 white */
+#lower.dark .site-footer .footer-name {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+#lower.dark .site-footer .footer-rights {
+    color: rgba(255, 255, 255, 0.45);
 }
 
 #lower.dark .proc-label {
