@@ -66,6 +66,7 @@
                     analysis.</span><br><span data-i18n="credo.l2">AI-native execution.</span></p>
 
             <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
+            <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
             <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
                 <div class="contact-links">
                     <a href="mailto:antonlisachenko@gmail.com" data-rail-en="email me"
@@ -76,6 +77,24 @@
                         data-rail-uk="мій GitHub">GitHub</a>
                 </div>
             </nav>
+
+            <!-- CTA: download CV — own grid area (under credo on desktop, after
+                 contacts on mobile). Links to the PDF sitting next to index.html -->
+            <div class="hero-cta reveal-blur" data-enter="5">
+                <a class="cv-btn" href="CV_BA_Anton-Lisachenko.pdf" download data-rail-en="grab my CV"
+                    data-rail-uk="забрати CV">
+                    <svg class="cv-ic" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3.5v11m0 0l-4-4m4 4l4-4M5 20.5h14" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span data-i18n="cv">Download CV</span>
+                </a>
+            </div>
+
+            <!-- cube hint: own slot (desktop under credo, mobile under the CV
+                 button). Fades out after the cube is tapped, returns after 8s of
+                 no interaction — opacity only, so nothing shifts either way. -->
+            <p class="cube-hint hex reveal-blur" data-enter="6" data-i18n="cubeHint">Tap the cube — that's me</p>
 
             <!-- center-left: identity -->
             <div class="col-left">
@@ -236,6 +255,11 @@
             </div>
 
             <footer class="site-footer">
+                <p class="footer-status">
+                    <span class="status-dot" aria-hidden="true"></span><span class="status-label"
+                        data-i18n="footer.status">Available for new projects</span><span class="status-meta"
+                        data-i18n="footer.statusMeta">Ukraine / EU / US &middot; GMT+2</span>
+                </p>
                 <p class="footer-name">Anton Lisachenko</p>
                 <p class="footer-rights">&copy; 2026 &middot; <span data-i18n="footer.rights">All rights
                         reserved</span> <br><a href="privacy.html" data-i18n="footer.privacy">Privacy

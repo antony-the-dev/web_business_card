@@ -8,6 +8,8 @@
         en: {
             meta: { title: "Anton Lisachenko — Business Analyst" },
             credo: { l1: "Classic business analysis.", l2: "AI-native execution." },
+            cv: "Download CV",
+            cubeHint: "Tap the cube — that's me",
             role: "Business Analyst",
             typed: ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "Discovery to handoff"],
             rail: { email: "email me", linkedin: "message me", github: "follow me" },
@@ -48,11 +50,13 @@
                     handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
                 }
             },
-            footer: { rights: "All rights reserved.", privacy: "Privacy Policy" }
+            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US · GMT+2" }
         },
         uk: {
             meta: { title: "Антон Лісаченко — Бізнес-аналітик" },
             credo: { l1: "Класичний бізнес-аналіз.", l2: "ШІ-орієнтоване виконання." },
+            cv: "Завантажити CV",
+            cubeHint: "Тисни на куб — це я",
             role: "Бізнес-аналітик",
             typed: ["BPMN та UML моделювання", "Схеми API та даних", "Інженерія вимог", "Консалтинг з препродажу", "Від дослідження до передачі"],
             rail: { email: "напишіть мені", linkedin: "напишіть в LinkedIn", github: "мій GitHub" },
@@ -93,7 +97,7 @@
                     handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
                 }
             },
-            footer: { rights: "Всі права захищені.", privacy: "Політика приватності" }
+            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США · GMT+2" }
         }
     };
 
@@ -123,7 +127,7 @@
 
     // contact-rail captions: copy the right language into the live data-rail
     // attribute the contact-rail script actually reads
-    Array.prototype.forEach.call(document.querySelectorAll(".hero-contact a[data-rail-en]"), function (a) {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rail-en]"), function (a) {
         a.setAttribute("data-rail", lang === "uk" ? a.getAttribute("data-rail-uk") : a.getAttribute("data-rail-en"));
     });
 

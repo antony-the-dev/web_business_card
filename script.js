@@ -196,6 +196,15 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     });
     nav.addEventListener("mouseleave", hide);
     nav.addEventListener("focusout", hide);
+
+    // the DOWNLOAD CV button drives the same right-edge rail caption ("grab my CV")
+    const cv = document.querySelector(".cv-btn[data-rail]");
+    if (cv) {
+        cv.addEventListener("mouseenter", () => show(cv));
+        cv.addEventListener("focus", () => show(cv));
+        cv.addEventListener("mouseleave", hide);
+        cv.addEventListener("blur", hide);
+    }
 })();
 
 
@@ -324,6 +333,63 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
+// ===== MOBILE: pin the cube band directly under the CV button (adaptive) =====
+// The cube canvas is absolutely positioned. Instead of a hard-coded top (which
+// slid the cube over the text whenever a row was added above it), measure the
+// CTA's real bottom edge and drop the band right under it. offsetTop/offsetHeight
+// ignore the reveal-blur transform, so the value is correct even mid-animation.
+(function () {
+    const canvasBox = document.getElementById("hero-canvas-container");
+    const cta = document.querySelector(".hero-cta");
+    const hint = document.querySelector(".cube-hint");
+    const cubeCanvas = document.getElementById("cube-canvas");
+    if (!canvasBox || !cta) return;
+    const GAP = 22; // px between the text stack and the top of the cube
+
+    function bottomOf(el) { return el ? el.offsetTop + el.offsetHeight : 0; }
+
+    function pin() {
+        if (window.matchMedia("(max-width: 900px)").matches) {
+            // offsetTop/offsetHeight ignore the reveal-blur transform AND the
+            // hint's opacity fade, so the band holds still whether the hint is
+            // shown or hidden — nothing shifts
+            const stackBottom = Math.max(bottomOf(cta), bottomOf(hint));
+            canvasBox.style.top = (stackBottom + GAP) + "px";
+        } else {
+            canvasBox.style.top = ""; // desktop: fall back to the full-bleed CSS
+        }
+    }
+
+    pin();
+    window.addEventListener("resize", pin);
+    // re-measure once the webfont has swapped (text height can change a hair)
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(pin);
+    setTimeout(pin, 800);
+    setTimeout(pin, 2600);
+
+    // ---- hint: fade out when the cube is tapped, return after 8s of no
+    // interaction. Opacity only (box stays), so the cube band never moves. ----
+    if (hint && cubeCanvas) {
+        const IDLE_MS = 8000;
+        let idleTimer = null;
+        function scheduleReturn() {
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(function () { hint.classList.remove("is-tapped"); }, IDLE_MS);
+        }
+        cubeCanvas.addEventListener("click", function () {
+            hint.classList.add("is-tapped");
+            scheduleReturn();
+        });
+        // any interaction while the hint is hidden restarts the idle countdown
+        ["pointerdown", "scroll", "keydown", "touchstart"].forEach(function (ev) {
+            window.addEventListener(ev, function () {
+                if (hint.classList.contains("is-tapped")) scheduleReturn();
+            }, { passive: true });
+        });
+    }
+})();
+
+
 // ===== shared: soft round sprite so points render as circles =====
 function makeCircleTexture() {
     const s = 64; const c = document.createElement("canvas"); c.width = c.height = s;
@@ -350,8 +416,8 @@ function makeCircleTexture() {
     // ===== SCENE_CONFIG — the single tuning surface =====
     const SCENE_CONFIG = {
         cube: {
-            desktop: { scale: 1, grid: 3, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09 },
-            mobile: { scale: 1, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
+            desktop: { scale: 0.9, grid: 3, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09 },
+            mobile: { scale: 0.82, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
         },
         face: {
             desktop: { scale: 1.6, camZ: 4.4, dotSize: 0.04, shade: 1, flatten: 0.9 },
@@ -390,7 +456,7 @@ function makeCircleTexture() {
             text: "tap me",     // word 1 appears on lub, the rest joins on dub
             color: "ink",       // teal | ink | orange
             depth: 0,           // fake-3D extrusion layers in px (0 = flat)
-            maxShows: 1,        // hint appears at most this many times per page load
+            maxShows: 0,        // 0 = 3D cube hint disabled; the "tap the cube" hint now lives as a static HTML line under the contacts
             peakOpacity: 0.5,   // opacity at the peak of the pulse
             restOpacity: 0,     // ghost opacity in resting state (0 = fully hidden)
             restBlur: 2,        // blur px in resting state (0 at the peak)
@@ -657,6 +723,7 @@ function makeCircleTexture() {
     }
 
     let beatStart = -1;    // -1 = resting
+    let beatSign = -1;     // flips each beat: +1 = grow-beat (lub-dub bigger), -1 = shrink-beat (lub-dub smaller) — reads as breathing in/out
     let nextBeatAt = performance.now() + C.heartbeat.firstDelayMs;
     let hintVis = 0;       // 0 = hidden/blurred, 1 = sharp peak
     let hintShows = 0;     // how many times the hint has been shown this page load
@@ -671,6 +738,7 @@ function makeCircleTexture() {
             // beats only fire in the resting cube state — never during morph or intro
             if (morph === 0 && morphTarget === 0 && !contracting) {
                 beatStart = now;
+                beatSign *= -1; // alternate grow-beat / shrink-beat so the cube "breathes"
                 windowHasText = !tapped && hintShows < C.hintText.maxShows;
                 if (windowHasText) {
                     hintShows++;
@@ -695,8 +763,8 @@ function makeCircleTexture() {
             } else {
                 inWindow = true;
                 echoPhase = el >= hb.beatMs + hb.pauseMs * 0.5; // second word joins on the dub
-                pulse += beatShape(el / hb.beatMs) * hb.mainAmp;                          // lub
-                pulse += beatShape((el - hb.beatMs - hb.pauseMs) / echoDur) * hb.echoAmp; // dub
+                pulse += beatShape(el / hb.beatMs) * hb.mainAmp * beatSign;                          // lub
+                pulse += beatShape((el - hb.beatMs - hb.pauseMs) / echoDur) * hb.echoAmp * beatSign; // dub
             }
         }
         return { pulse: pulse, inWindow: inWindow, echoPhase: echoPhase };

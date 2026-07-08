@@ -242,11 +242,12 @@ body.intro-lock {
     padding: 3rem 3.5rem;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    grid-template-rows: auto 0.6rem auto 1fr;
+    grid-template-rows: auto 0.6rem auto auto 1fr;
     grid-template-areas:
         "credo    lang"
         "credo    ."
         "credo    contact"
+        "cubehint cta"
         "identity right";
     column-gap: 3.5rem;
     row-gap: 0;
@@ -287,6 +288,92 @@ body.intro-lock {
     line-height: 2;
     color: var(--ink);
     pointer-events: auto;
+}
+
+/* ===== DOWNLOAD CV BUTTON (pill, gradient orange border -> ink fill on hover) ===== */
+.hero-cta {
+    grid-area: cta;
+    align-self: start;
+    justify-self: end;
+    margin-right: 1rem;
+    display: flex;
+    margin-top: 1.2rem;
+    pointer-events: auto;
+}
+
+.cv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.72rem 1.6rem;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    /* rounded pill WITH a gradient border: white fill clipped to padding-box,
+       orange gradient (solid left -> fading right) clipped to border-box —
+       this technique, unlike border-image, respects border-radius */
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(90deg, var(--accent) 0%, var(--accent) 55%, rgba(255, 87, 34, 0.18) 100%) border-box;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    /* line-height:1 + align-items:center keeps the label optically centered in
+       the pill (no baseline/descender drift that read as "crooked / too low") */
+    color: var(--ink);
+    cursor: pointer;
+    transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cv-ic {
+    width: 1.05em;
+    height: 1.05em;
+    flex: none;
+    margin-top: -0.05em;
+}
+
+@media (hover: hover) {
+    .cv-btn:hover {
+        color: #fff;
+        border-color: transparent;
+        background:
+            linear-gradient(var(--ink), var(--ink)) padding-box,
+            linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, rgba(255, 87, 34, 0.25) 100%) border-box;
+        box-shadow: 0 6px 18px -8px rgba(10, 37, 64, 0.5);
+    }
+}
+
+.cv-btn:active {
+    color: #fff;
+    border-color: transparent;
+    background:
+        linear-gradient(var(--ink), var(--ink)) padding-box,
+        linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, rgba(255, 87, 34, 0.25) 100%) border-box;
+}
+
+/* ===== CUBE HINT (static line that replaced the 3D "tap me") ===== */
+/* own grid slot: desktop -> under the credo (left); mobile -> under the CV
+   button. Fades on tap and returns after 8s idle (opacity only -> no shift). */
+.cube-hint {
+    grid-area: cubehint;
+    align-self: start;
+    margin: 0.6rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    pointer-events: auto;
+    transition: opacity 0.5s ease;
+}
+
+.cube-hint.is-tapped {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* language switch — two plain letter-codes, same mono/uppercase language as
@@ -937,6 +1024,74 @@ h3 {
     transition: color 0.9s ease;
 }
 
+/* ===== FOOTER AVAILABILITY STATUS (soft-pulsing dot) ===== */
+.footer-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    line-height: 1.4;
+}
+
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--teal);
+    flex: none;
+    animation: status-pulse 3s ease-in-out infinite;
+}
+
+.status-label {
+    color: var(--ink);
+    font-weight: 600;
+    transition: color 0.9s ease;
+}
+
+.status-meta {
+    color: var(--muted);
+    font-weight: 500;
+    transition: color 0.9s ease;
+}
+
+@keyframes status-pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        filter: blur(0.4px);
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(20, 184, 196, 0);
+    }
+
+    50% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1.2);
+        box-shadow: 0 0 7px 1px rgba(20, 184, 196, 0.5);
+    }
+}
+
+#lower.dark .status-label {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+#lower.dark .status-meta {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .status-dot {
+        animation: none;
+    }
+}
+
 #lower.dark .site-footer {
     border-top-color: rgba(255, 255, 255, 0.12);
 }
@@ -1081,7 +1236,13 @@ a:active {
     /* --band-top: where the portrait band starts (raise/lower the whole portrait) */
     /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
     :root {
-        --band-top: 12rem;
+        /* band-top = height of the text stack ABOVE the cube (lang + credo +
+           contacts + CV button + row gaps). The cube canvas is absolute at this
+           top, so it must equal where the reserved "portrait" row starts, or the
+           cube slides over the text. Re-derive this if you add/remove rows above
+           the cube. ~14.5rem = lang(1.2) + credo(3.2) + contact(1.6) + cta(2.5)
+           + 4 gaps(1.1) + padding-top(1.75). */
+        --band-top: 14.5rem;
         --band-h: 46vh;
     }
 
@@ -1091,17 +1252,36 @@ a:active {
 
     .hero-grid {
         grid-template-columns: 1fr;
+        /* Stack order (per mock): contacts -> DOWNLOAD CV -> hint -> cube.
+           The cube canvas top is pinned by JS to the real bottom of the text
+           stack, so adding/removing rows here no longer slides the cube up. */
         grid-template-areas:
             "lang"
             "credo"
             "contact"
+            "cta"
+            "cubehint"
             "portrait"
             "identity";
-        grid-template-rows: auto 3.2rem 1.6rem var(--band-h) auto;
+        grid-template-rows: auto 3.2rem 1.6rem auto auto var(--band-h) auto;
         column-gap: 0;
         row-gap: 1.1rem;
         padding: 1.75rem 1.5rem 1.5rem;
         align-content: start;
+    }
+
+    /* mobile: button + hint centered, stacked under the contacts, above the cube */
+    .hero-cta {
+        justify-self: center;
+        margin-right: 0;
+        margin-top: 0.2rem;
+        justify-content: center;
+    }
+
+    .cube-hint {
+        justify-self: center;
+        text-align: center;
+        margin-top: 0.4rem;
     }
 
     .lang-switch {
