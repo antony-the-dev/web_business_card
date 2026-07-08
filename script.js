@@ -153,8 +153,8 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
     bar.style.transition = "none";
 
-    const APPEAR_AT = 0.4;
-    const APPEAR_OVER = 0.18;
+    const APPEAR_AT = 0.7;
+    const APPEAR_OVER = 0.2;
     const FADE_DIST = 25;
     const BAR_H = 110;
 
@@ -426,7 +426,7 @@ function makeCircleTexture() {
         },
         face: {
             desktop: { scale: 1.6, camZ: 4.4, dotSize: 0.04, shade: 1, flatten: 0.9 },
-            mobile: { scale: 1.4, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
+            mobile: { scale: 1.5, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
         },
         morph: { durationMs: 4000, stagger: 0.75, reveal: 0.4, holdMs: 6000 },
         cubeDot: { size: 0.05, opacity: 0.5 },   // dot size/opacity in the CUBE state
