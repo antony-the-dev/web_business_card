@@ -1244,13 +1244,6 @@ a:active {
            + 4 gaps(1.1) + padding-top(1.75). */
         --band-top: 14.5rem;
         --band-h: 46vh;
-        /* --band-headroom: px the portrait band grows UPWARD over the hint to give
-           the taller face-morph room at the top. The cube scale is frozen to the
-           base --band-h (script.js), so this space stays empty in the cube state
-           instead of enlarging the figure. Bump this until the top cube lines just
-           kiss "tap the cube" — the same light overlap the band has on the name
-           below. Start ~80px. 0 = current look. */
-        --band-headroom: 0px;
     }
 
     #hero {
