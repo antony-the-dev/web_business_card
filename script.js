@@ -447,6 +447,10 @@ function makeCircleTexture() {
         bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
         scrollShrink: 0.2,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
         panFrac: 0.20,         // shift figure toward screen-right on desktop (0 = centred)
+        // nudges the figure UP/DOWN inside the existing frame — frame/canvas size
+        // is untouched, only what the camera frames within it shifts. Positive = up,
+        // negative = down, in (roughly) on-screen pixels. Start small (10-30) and tune.
+        facePanY: { mobile: 45, desktop: 0 },
         // ----- heartbeat teaser: periodic lub-dub pulse in cube state (tuned in lab_heartbeat.html) -----
         heartbeat: {
             intervalMs: 5000,   // time between double-pulses
@@ -518,10 +522,10 @@ function makeCircleTexture() {
             // up == down == 0  ->  hRef == h, offset 0  ->  identical to baseline.
             const hRef = heroScaleH();
             camera.aspect = w / hRef;                       // keep dots square vs frozen scale
-            camera.setViewOffset(w, hRef, 0, -bandPx("--band-up"), w, h);
+            camera.setViewOffset(w, hRef, 0, -bandPx("--band-up") + C.facePanY.mobile, w, h);
         } else {
             camera.aspect = w / h;
-            camera.setViewOffset(w, h, -w * C.panFrac, 0, w, h);
+            camera.setViewOffset(w, h, -w * C.panFrac, C.facePanY.desktop, w, h);
         }
     }
     applyHeroPan();
