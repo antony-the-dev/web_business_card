@@ -360,7 +360,7 @@ body.intro-lock {
 .cube-hint {
     grid-area: cubehint;
     align-self: start;
-    margin: 0.6rem 1 2;
+    margin: 0.6rem 0 0;
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 500;
@@ -1244,6 +1244,14 @@ a:active {
            + 4 gaps(1.1) + padding-top(1.75). */
         --band-top: 14.5rem;
         --band-h: 46vh;
+        /* TWO independent stretch levers. The cube's size AND screen position are
+           frozen (script.js) — these only add transparent margin, they never move
+           or resize the figure. Tune each side on its own:
+             --band-up:   px the band grows UPWARD, over the "tap the cube" hint
+             --band-down: px the band grows DOWNWARD, over the name below
+           0 / 0 = original look. Bump each until that edge overlaps the way you want. */
+        --band-up: 68px;
+        --band-down: 40px;
     }
 
     #hero {
@@ -1293,9 +1301,10 @@ a:active {
     /* confine the 3D portrait to a centered band; text flows above and below it */
     #hero-canvas-container {
         top: var(--band-top);
-        /* grow upward: extra height is added and the JS-pinned top is raised by
-           the same amount, so the band BOTTOM (and the cube) stays put */
-        height: calc(var(--band-h) + var(--band-headroom));
+        /* grow both ways: JS raises the pinned top by --band-up, and the height
+           adds up + down, so the band bottom drops by exactly --band-down. The
+           cube (frozen in script.js) stays put; only transparent margin changes. */
+        height: calc(var(--band-h) + var(--band-up) + var(--band-down));
         bottom: auto;
     }
 

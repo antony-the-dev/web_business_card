@@ -354,12 +354,12 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
             // hint's opacity fade, so the band holds still whether the hint is
             // shown or hidden — nothing shifts
             const stackBottom = Math.max(bottomOf(cta), bottomOf(hint));
-            // --band-headroom raises the top by N px so the band grows UPWARD over
-            // the hint. The CSS height grows by the same N (calc), so the band
-            // BOTTOM — and therefore the cube — stays exactly where it is.
-            const headroom = parseFloat(getComputedStyle(document.documentElement)
-                .getPropertyValue("--band-headroom")) || 0;
-            canvasBox.style.top = (stackBottom + GAP - headroom) + "px";
+            // --band-up raises the top so the band grows UPWARD over the hint.
+            // The CSS height adds --band-up + --band-down (calc), so --band-down
+            // extends the bottom over the name independently. Cube stays frozen.
+            const up = parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue("--band-up")) || 0;
+            canvasBox.style.top = (stackBottom + GAP - up) + "px";
         } else {
             canvasBox.style.top = ""; // desktop: fall back to the full-bleed CSS
         }
@@ -422,7 +422,7 @@ function makeCircleTexture() {
     const SCENE_CONFIG = {
         cube: {
             desktop: { scale: 0.9, grid: 3, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09 },
-            mobile: { scale: 1.1, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
+            mobile: { scale: 1, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
         },
         face: {
             desktop: { scale: 1.6, camZ: 4.4, dotSize: 0.04, shade: 1, flatten: 0.9 },
@@ -495,28 +495,30 @@ function makeCircleTexture() {
     renderer.setSize(hero.clientWidth, hero.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    // ----- mobile band headroom: extra px the band grows UPWARD (over the hint)
-    // to give the tall face-morph room at the top. Cube scale is frozen to the
-    // BASE band height (clientHeight - headroom), so this space stays empty in
-    // the cube state instead of inflating the figure. Tune via CSS --band-headroom. -----
-    function mobileHeadroom() {
-        const v = getComputedStyle(document.documentElement).getPropertyValue("--band-headroom");
-        return parseFloat(v) || 0;
+    // ----- mobile band stretch: two independent levers. --band-up grows the band
+    // UPWARD (over the hint), --band-down grows it DOWNWARD (over the name). Both
+    // only add transparent margin: the cube's size AND on-screen position stay
+    // frozen (scale locked to the BASE band height), so neither lever inflates or
+    // moves the figure — the frame just extends on whichever side you tune. -----
+    function bandPx(name) {
+        return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
     }
     // reference height that fixes the figure's on-screen scale (dots + geometry)
     function heroScaleH() {
-        return vp === "mobile" ? Math.max(1, hero.clientHeight - mobileHeadroom()) : hero.clientHeight;
+        if (vp !== "mobile") return hero.clientHeight;
+        return Math.max(1, hero.clientHeight - bandPx("--band-up") - bandPx("--band-down"));
     }
 
     function applyHeroPan() {
         const w = hero.clientWidth, h = hero.clientHeight;
         if (vp === "mobile") {
             // Freeze scale to the base band height; render into the full (taller)
-            // canvas and push the extra (h - hRef) px to the TOP as morph headroom.
-            // hRef == h when headroom is 0, so this is a no-op at the default.
+            // canvas. Offset by exactly --band-up so the figure holds its absolute
+            // screen position while the extra top/bottom space stays transparent.
+            // up == down == 0  ->  hRef == h, offset 0  ->  identical to baseline.
             const hRef = heroScaleH();
             camera.aspect = w / hRef;                       // keep dots square vs frozen scale
-            camera.setViewOffset(w, hRef, 0, -(h - hRef), w, h);
+            camera.setViewOffset(w, hRef, 0, -bandPx("--band-up"), w, h);
         } else {
             camera.aspect = w / h;
             camera.setViewOffset(w, h, -w * C.panFrac, 0, w, h);
