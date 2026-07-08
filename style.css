@@ -360,7 +360,7 @@ body.intro-lock {
 .cube-hint {
     grid-area: cubehint;
     align-self: start;
-    margin: 0.6rem 0 0;
+    margin: 0.6rem 1 2;
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 500;
@@ -1244,6 +1244,13 @@ a:active {
            + 4 gaps(1.1) + padding-top(1.75). */
         --band-top: 14.5rem;
         --band-h: 46vh;
+        /* --band-headroom: px the portrait band grows UPWARD over the hint to give
+           the taller face-morph room at the top. The cube scale is frozen to the
+           base --band-h (script.js), so this space stays empty in the cube state
+           instead of enlarging the figure. Bump this until the top cube lines just
+           kiss "tap the cube" — the same light overlap the band has on the name
+           below. Start ~80px. 0 = current look. */
+        --band-headroom: 0px;
     }
 
     #hero {
@@ -1293,7 +1300,9 @@ a:active {
     /* confine the 3D portrait to a centered band; text flows above and below it */
     #hero-canvas-container {
         top: var(--band-top);
-        height: var(--band-h);
+        /* grow upward: extra height is added and the JS-pinned top is raised by
+           the same amount, so the band BOTTOM (and the cube) stays put */
+        height: calc(var(--band-h) + var(--band-headroom));
         bottom: auto;
     }
 

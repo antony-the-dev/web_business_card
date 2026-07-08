@@ -354,7 +354,12 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
             // hint's opacity fade, so the band holds still whether the hint is
             // shown or hidden — nothing shifts
             const stackBottom = Math.max(bottomOf(cta), bottomOf(hint));
-            canvasBox.style.top = (stackBottom + GAP) + "px";
+            // --band-headroom raises the top by N px so the band grows UPWARD over
+            // the hint. The CSS height grows by the same N (calc), so the band
+            // BOTTOM — and therefore the cube — stays exactly where it is.
+            const headroom = parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue("--band-headroom")) || 0;
+            canvasBox.style.top = (stackBottom + GAP - headroom) + "px";
         } else {
             canvasBox.style.top = ""; // desktop: fall back to the full-bleed CSS
         }
@@ -490,10 +495,32 @@ function makeCircleTexture() {
     renderer.setSize(hero.clientWidth, hero.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
+    // ----- mobile band headroom: extra px the band grows UPWARD (over the hint)
+    // to give the tall face-morph room at the top. Cube scale is frozen to the
+    // BASE band height (clientHeight - headroom), so this space stays empty in
+    // the cube state instead of inflating the figure. Tune via CSS --band-headroom. -----
+    function mobileHeadroom() {
+        const v = getComputedStyle(document.documentElement).getPropertyValue("--band-headroom");
+        return parseFloat(v) || 0;
+    }
+    // reference height that fixes the figure's on-screen scale (dots + geometry)
+    function heroScaleH() {
+        return vp === "mobile" ? Math.max(1, hero.clientHeight - mobileHeadroom()) : hero.clientHeight;
+    }
+
     function applyHeroPan() {
         const w = hero.clientWidth, h = hero.clientHeight;
-        const frac = vp === "mobile" ? 0 : C.panFrac; // narrow screens: centered band, no pan
-        camera.setViewOffset(w, h, -w * frac, 0, w, h);
+        if (vp === "mobile") {
+            // Freeze scale to the base band height; render into the full (taller)
+            // canvas and push the extra (h - hRef) px to the TOP as morph headroom.
+            // hRef == h when headroom is 0, so this is a no-op at the default.
+            const hRef = heroScaleH();
+            camera.aspect = w / hRef;                       // keep dots square vs frozen scale
+            camera.setViewOffset(w, hRef, 0, -(h - hRef), w, h);
+        } else {
+            camera.aspect = w / h;
+            camera.setViewOffset(w, h, -w * C.panFrac, 0, w, h);
+        }
     }
     applyHeroPan();
 
@@ -517,7 +544,7 @@ function makeCircleTexture() {
         uniforms: {
             map: { value: makeCircleTexture() },
             uSize: { value: C.cubeDot.size * renderer.getPixelRatio() },
-            uScale: { value: hero.clientHeight * 0.5 },
+            uScale: { value: heroScaleH() * 0.5 },
             uOpacity: { value: 0 }
         },
         vertexShader: [
@@ -641,7 +668,7 @@ function makeCircleTexture() {
         lineSeg.geometry.attributes.position.needsUpdate = true;
     }
 
-    const onMq = () => { vp = mq.matches ? "mobile" : "desktop"; buildCube(C.cube[vp].grid); applyHeroPan(); };
+    const onMq = () => { vp = mq.matches ? "mobile" : "desktop"; buildCube(C.cube[vp].grid); applyHeroPan(); mat.uniforms.uScale.value = heroScaleH() * 0.5; };
     if (mq.addEventListener) mq.addEventListener("change", onMq); else mq.addListener(onMq);
 
     // ----- per-point animation state -----
@@ -938,10 +965,9 @@ function makeCircleTexture() {
     animate();
 
     window.addEventListener("resize", () => {
-        camera.aspect = hero.clientWidth / hero.clientHeight;
         renderer.setSize(hero.clientWidth, hero.clientHeight);
-        mat.uniforms.uScale.value = hero.clientHeight * 0.5; // keep dot attenuation in sync
-        applyHeroPan();
+        applyHeroPan();                                       // sets camera.aspect + view offset
+        mat.uniforms.uScale.value = heroScaleH() * 0.5;       // keep dot attenuation frozen to base band
     });
 })();
 
