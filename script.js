@@ -417,11 +417,11 @@ function makeCircleTexture() {
     const SCENE_CONFIG = {
         cube: {
             desktop: { scale: 0.9, grid: 3, lineOpacity: 0.5, rot: 0.0025, breathe: 0.09 },
-            mobile: { scale: 0.82, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
+            mobile: { scale: 1.1, grid: 3, lineOpacity: 0.25, rot: 0.0025, breathe: 0.04 }
         },
         face: {
             desktop: { scale: 1.6, camZ: 4.4, dotSize: 0.04, shade: 1, flatten: 0.9 },
-            mobile: { scale: 1.3, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
+            mobile: { scale: 1.4, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
         },
         morph: { durationMs: 4000, stagger: 0.75, reveal: 0.4, holdMs: 6000 },
         cubeDot: { size: 0.05, opacity: 0.5 },   // dot size/opacity in the CUBE state
