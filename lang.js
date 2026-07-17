@@ -20,7 +20,7 @@
             },
             now: {
                 heading: "Currently working with",
-                items: ["AI agent orchestration & vibe-coding", "Local LLM deployment (Hermes)", "Google Antigravity & VS Code", "Git & GitHub"]
+                items: ["AI agent orchestration & vibe-coding", "Local LLM deployment (Ollama, Apple Silicon)", "Model benchmarking & quantization", "Private RAG & remote access (Open WebUI, Tailscale)", "Google Antigravity & VS Code", "Git & GitHub"]
             },
             domains: {
                 heading: "Domains",
@@ -67,7 +67,7 @@
             },
             now: {
                 heading: "Зараз працюю з",
-                items: ["Оркестрація ШІ-агентів та вайбкодинг", "Локальний LLM (Hermes)", "Google Antigravity та VS Code", "Git та GitHub"]
+                items: ["Оркестрація ШІ-агентів та вайбкодинг", "Локальний LLM (Ollama, Apple Silicon)", "Бенчмаркінг та квантизація моделей", "Приватний RAG та віддалений доступ (Open WebUI, Tailscale)", "Google Antigravity та VS Code", "Git та GitHub"]
             },
             domains: {
                 heading: "Домени",
