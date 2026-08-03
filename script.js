@@ -145,7 +145,7 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
-// ===== PERSISTENT IDENTITY BAR: scroll-driven opacity (no time-based fade) =====
+// ===== PERSISTENT IDENTITY BAR: scroll-driven oacity (no time-based fade) =====
 (function () {
     const bar = document.getElementById("id-bar");
     const lower = document.getElementById("lower");
