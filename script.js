@@ -59,7 +59,7 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     if (reduceMotion) {
         enterEls.forEach((el) => el.classList.add("shown"));
     } else {
-        const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
+        const introWillPlay = (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
         const base = introWillPlay ? 2300 : 300; // start as the intro fades out
         enterEls.forEach((el, i) => setTimeout(() => reveal(el), base + i * 240));
     }
@@ -804,8 +804,14 @@ function makeCircleTexture() {
     }
 
     // ----- intro hand-off + boot fade -----
-    const introWillPlay = sessionStorage.getItem("introSeen") !== "1";
-    let contracting = introWillPlay;
+    const introWillPlay = (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
+    // The zoom-in used to run only after the intro. On repeat views the cube just
+    // popped in fully formed, which read as "broken/cheap" — so it now always plays,
+    // just without the intro's wait and from a gentler start scale.
+    let contracting = true;
+    const contractDelay = introWillPlay ? C.intro.delayMs : 0;
+    const contractFrom = introWillPlay ? C.intro.scale : 2.8;
+    const contractDur = introWillPlay ? C.intro.contractMs : 1100;
     const heroStart = performance.now();
 
     const easeOut = (p) => 1 - Math.pow(1 - p, 3);
@@ -843,13 +849,13 @@ function makeCircleTexture() {
 
         let base = cube.scale + (face.scale - cube.scale) * m;
         if (contracting) {
-            const el = performance.now() - heroStart - C.intro.delayMs;
+            const el = performance.now() - heroStart - contractDelay;
             if (el >= 0) {
-                const p = Math.min(el / C.intro.contractMs, 1);
-                base = C.intro.scale + (cube.scale - C.intro.scale) * easeOut(p);
+                const p = Math.min(el / contractDur, 1);
+                base = contractFrom + (cube.scale - contractFrom) * easeOut(p);
                 if (p >= 1) contracting = false;
             } else {
-                base = C.intro.scale;
+                base = contractFrom;
             }
         }
         // heartbeat: lub-dub pulse rides on top of breathe; dies out as the face forms
@@ -981,15 +987,29 @@ function makeCircleTexture() {
 // ===== INTRO SEQUENCE (explosion from a point -> cube emerges -> expands) =====
 (function () {
     const intro = document.getElementById("intro");
-    if (!intro || typeof THREE === "undefined") return;
-    const seen = sessionStorage.getItem("introSeen") === "1";
-    if (seen) { intro.remove(); return; }
+    if (!intro) return;
+    let seen = false;
+    try { seen = sessionStorage.getItem("introSeen") === "1"; } catch (e) { /* private mode */ }
+    // If Three.js failed to load (CDN blocked/slow), drop the intro instead of
+    // returning early — otherwise the fixed blue overlay would trap the page.
+    if (seen || typeof THREE === "undefined") { intro.remove(); document.body.classList.remove("intro-lock"); return; }
     document.body.classList.add("intro-lock");
     const canvas = document.getElementById("intro-canvas");
     const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.z = 3.0;
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(window.devicePixelRatio);
-    const TEAL = 0x14b8c4; const group = new THREE.Group(); const cubeMats = [];
-    function lineMat(opacity) { const m = new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0 }); m.userData = { base: opacity }; cubeMats.push(m); return m; }
+    const TEAL = 0x0e97a6; const group = new THREE.Group(); const cubeMats = [];   // deeper teal: reads properly on the white intro
+    // Edge-fade support: each line vertex gets its own colour, blended toward the
+    // backdrop as it approaches the screen border. That dissolves the cube's long
+    // near-face edges instead of letting them run into the screen edges.
+    const BGC = new THREE.Color(0xffffff), TEALC = new THREE.Color(TEAL), fadeSets = [];
+    function lineMat(opacity) { const m = new THREE.LineBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0 }); m.userData = { base: opacity }; cubeMats.push(m); return m; }
+    function attachFade(obj) {
+        const n = obj.geometry.attributes.position.count;
+        const col = new Float32Array(n * 3);
+        for (let i = 0; i < n; i++) { col[i * 3] = TEALC.r; col[i * 3 + 1] = TEALC.g; col[i * 3 + 2] = TEALC.b; }
+        obj.geometry.setAttribute("color", new THREE.BufferAttribute(col, 3));
+        fadeSets.push(obj); return obj;
+    }
     function wireCube(size, opacity) { const edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(size, size, size)); return new THREE.LineSegments(edges, lineMat(opacity)); }
     function faceDiagonals(h, opacity) {
         const axes = [0, 1, 2]; const pts = [];
@@ -1002,10 +1022,10 @@ function makeCircleTexture() {
         }
         const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3)); return new THREE.LineSegments(g, lineMat(opacity));
     }
-    const OH = 0.8, IH = 0.4; group.add(wireCube(OH * 2, 0.9)); group.add(faceDiagonals(OH, 0.4)); group.add(wireCube(IH * 2, 0.9));
+    const OH = 0.8, IH = 0.4; group.add(attachFade(wireCube(OH * 2, 0.9))); group.add(attachFade(faceDiagonals(OH, 0.4))); group.add(attachFade(wireCube(IH * 2, 0.9)));
     const signs = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]]; const cpts = [];
     for (const s of signs) { cpts.push(s[0] * OH, s[1] * OH, s[2] * OH); cpts.push(s[0] * IH, s[1] * IH, s[2] * IH); }
-    const cgeo = new THREE.BufferGeometry(); cgeo.setAttribute("position", new THREE.Float32BufferAttribute(cpts, 3)); group.add(new THREE.LineSegments(cgeo, lineMat(0.45)));
+    const cgeo = new THREE.BufferGeometry(); cgeo.setAttribute("position", new THREE.Float32BufferAttribute(cpts, 3)); group.add(attachFade(new THREE.LineSegments(cgeo, lineMat(0.45))));
     const NUM_DOTS = 450; const DOT_RADIUS = 2; const DOT_BURST_MS = 800; const DOT_TEAL = [0.08, 0.72, 0.77]; const DOT_ORANGE = [1.0, 0.34, 0.13];
     const dotTarget = new Float32Array(NUM_DOTS * 3); const dotPos = new Float32Array(NUM_DOTS * 3); const dotColors = new Float32Array(NUM_DOTS * 3); const dotFlash = new Float32Array(NUM_DOTS); const dotPhase = new Float32Array(NUM_DOTS);
     for (let i = 0; i < NUM_DOTS; i++) {
@@ -1013,23 +1033,64 @@ function makeCircleTexture() {
         dotTarget[i * 3] = d.x * r; dotTarget[i * 3 + 1] = d.y * r; dotTarget[i * 3 + 2] = d.z * r; dotColors[i * 3] = DOT_TEAL[0]; dotColors[i * 3 + 1] = DOT_TEAL[1]; dotColors[i * 3 + 2] = DOT_TEAL[2]; dotPhase[i] = Math.random() * Math.PI * 2;
     }
     const dotGeo = new THREE.BufferGeometry(); dotGeo.setAttribute("position", new THREE.BufferAttribute(dotPos, 3)); dotGeo.setAttribute("color", new THREE.BufferAttribute(dotColors, 3));
-    group.add(new THREE.Points(dotGeo, new THREE.PointsMaterial({ size: 0.06, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.8, depthWrite: false })));
+    // dot size is animated in render(): at t=0 every dot sits on the same point,
+    // so a full-size dot reads as one fat blob — they grow in with the burst
+    const DOT_SCALE = window.innerWidth < 600 ? 0.75 : 1;
+    const dotMat = new THREE.PointsMaterial({ size: 0.06 * DOT_SCALE, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
+    group.add(new THREE.Points(dotGeo, dotMat));
     scene.add(group);
+    const IS_PHONE = window.innerWidth < 600;
+    // Phone values mirror the desktop composition proportionally: on desktop the
+    // cube ends at ~1.09x the visible width, and starts at ~22% of it. A phone's
+    // visible width is ~2.1 units (vs ~7.4), so the same look needs 0.3 -> 1.45,
+    // not 1 -> 5 (which made it 4x wider than the screen = stray edge lines).
+    const S0 = 1.0;                       // start scale (original)
+    const S1 = 5.0;                       // end scale (original)
+    // Screen-space fade band, in NDC (1.0 = screen border). Desktop keeps its
+    // original look, so the fade is parked out of range there.
+    const EDGE0 = IS_PHONE ? 0.55 : 99, EDGE1 = IS_PHONE ? 0.95 : 100;
+    const _v = new THREE.Vector3();
+    camera.updateMatrixWorld(); camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
     let raf = null; const startTime = performance.now(); const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2); const easeOut = (p) => 1 - Math.pow(1 - p, 3);
     function render() {
         raf = requestAnimationFrame(render); const now = performance.now() - startTime; group.rotation.x += 0.0015; group.rotation.y += 0.003;
-        const p = Math.min(now / 1800, 1); const s = 1 + (4.0) * easeInOut(p); group.scale.set(s, s, s);
+        // Expansion range. Desktop keeps the original 1 -> 5 blow-up. On phones that
+        // made the cube ~4x wider than the viewport, so only stray edge lines were
+        // visible running off-screen ("края") — there we grow small -> still on-screen.
+        const p = Math.min(now / 1800, 1);
+        const s = S0 + (S1 - S0) * easeInOut(p); group.scale.set(s, s, s);
         const be = easeOut(Math.min(now / 800, 1));
         for (let i = 0; i < NUM_DOTS; i++) { const ix = i * 3; dotPos[ix] = dotTarget[ix] * be; dotPos[ix + 1] = dotTarget[ix + 1] * be; dotPos[ix + 2] = dotTarget[ix + 2] * be; }
         dotGeo.attributes.position.needsUpdate = true;
+        dotMat.size = 0.06 * DOT_SCALE * (0.18 + 0.82 * be);   // thin at the burst, full once spread
         const cubeReveal = easeOut(Math.min(Math.max(now - 450, 0) / 650, 1)); for (const m of cubeMats) m.opacity = m.userData.base * cubeReveal;
-        if (Math.random() < 0.2) { const nf = 1 + Math.floor(Math.random() * 4); for (let k = 0; k < nf; k++) dotFlash[Math.floor(Math.random() * NUM_DOTS)] = 1; }
+        if (Math.random() < 0.38) { const nf = 2 + Math.floor(Math.random() * 5); for (let k = 0; k < nf; k++) dotFlash[Math.floor(Math.random() * NUM_DOTS)] = 1; }
         for (let i = 0; i < NUM_DOTS; i++) {
             if (dotFlash[i] > 0) dotFlash[i] -= 0.02; if (dotFlash[i] < 0) dotFlash[i] = 0; const f = dotFlash[i];
             dotPhase[i] += 0.03 + (Math.random() * 0.02); const blink = Math.sin(dotPhase[i]) * 0.5 + 0.5;
             dotColors[i * 3] = (DOT_TEAL[0] + (DOT_ORANGE[0] - DOT_TEAL[0]) * f) * blink; dotColors[i * 3 + 1] = (DOT_TEAL[1] + (DOT_ORANGE[1] - DOT_TEAL[1]) * f) * blink; dotColors[i * 3 + 2] = (DOT_TEAL[2] + (DOT_ORANGE[2] - DOT_TEAL[2]) * f) * blink;
         }
-        dotGeo.attributes.color.needsUpdate = true; renderer.render(scene, camera);
+        dotGeo.attributes.color.needsUpdate = true;
+        // dissolve line vertices that approach (or pass) the screen border
+        if (EDGE0 < 9) {
+            group.updateMatrixWorld();
+            for (const o of fadeSets) {
+                const pos = o.geometry.attributes.position, col = o.geometry.attributes.color;
+                for (let i = 0; i < pos.count; i++) {
+                    _v.set(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(o.matrixWorld).applyMatrix4(camera.matrixWorldInverse);
+                    let t;
+                    if (_v.z > -0.25) { t = 1; }                       // at/behind the camera
+                    else {
+                        _v.applyMatrix4(camera.projectionMatrix);      // -> NDC (1 = screen border)
+                        const e = Math.abs(_v.x) > Math.abs(_v.y) ? Math.abs(_v.x) : Math.abs(_v.y);
+                        t = (e - EDGE0) / (EDGE1 - EDGE0); t = t < 0 ? 0 : t > 1 ? 1 : t;
+                    }
+                    col.setXYZ(i, TEALC.r + (BGC.r - TEALC.r) * t, TEALC.g + (BGC.g - TEALC.g) * t, TEALC.b + (BGC.b - TEALC.b) * t);
+                }
+                col.needsUpdate = true;
+            }
+        }
+        renderer.render(scene, camera);
     }
     render();
     const timers = [];
@@ -1063,7 +1124,7 @@ function makeCircleTexture() {
         })(t0);
     })();
     let exited = false;
-    function exitIntro() { if (exited) return; exited = true; sessionStorage.setItem("introSeen", "1"); timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
+    function exitIntro() { if (exited) return; exited = true; try { sessionStorage.setItem("introSeen", "1"); } catch (e) { } timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
     const auto = setTimeout(exitIntro, 4000);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();
