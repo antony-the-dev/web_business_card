@@ -38,10 +38,34 @@
     <!-- ===== INTRO ===== -->
     <div id="intro">
         <canvas id="intro-canvas"></canvas>
-        <div id="intro-words">
-            <span class="intro-word">Elicitation</span>
-            <span class="intro-word">Alignment</span>
-            <span class="intro-word">Business Value</span>
+        <div id="intro-loader">
+
+        <div class="al-corner al-tr"><span id="al-tw-tr"></span><span class="al-cur">|</span></div>
+        <div class="al-corner al-bl"><span id="al-tw-bl"></span><span class="al-cur">|</span></div>
+
+        <div class="al-row">
+            <div class="al-side">BUSINESS</div>
+            <div class="al-center">
+                <span class="al-pct" id="al-pct-l">1%</span>
+                <svg class="al-logo" viewBox="0 0 100 100" aria-hidden="true">
+                    <defs>
+                        <clipPath id="al-hexclip">
+                            <polygon points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" />
+                        </clipPath>
+                    </defs>
+                    <g clip-path="url(#al-hexclip)">
+                        <rect id="al-fill" x="0" y="100" width="100" height="100" fill="#ffffff" />
+                    </g>
+                    <polygon points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" fill="none" stroke="#ff5722"
+                        stroke-width="6" stroke-linejoin="round" />
+                    <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+                        font-family="'JetBrains Mono', ui-monospace, monospace" font-weight="700" font-size="38"
+                        fill="#0a2540">AL</text>
+                </svg>
+                <span class="al-pct" id="al-pct-r">1%</span>
+            </div>
+            <div class="al-side">ANALYSIS</div>
+        </div>
         </div>
     </div>
 
@@ -97,7 +121,8 @@
             <!-- cube hint: own slot (desktop under credo, mobile under the CV
                  button). Fades out after the cube is tapped, returns after 8s of
                  no interaction — opacity only, so nothing shifts either way. -->
-            <p class="cube-hint hex reveal-blur" data-enter="6" data-i18n="cubeHint">tap the object</p>
+            <p class="cube-hint hex reveal-blur" data-enter="6" data-i18n="cubeHint">Tap the cube — that's me</p>
+
             <!-- center-left: identity -->
             <div class="col-left">
                 <div class="block reveal-blur" data-enter="2">

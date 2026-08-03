@@ -1032,10 +1032,38 @@ function makeCircleTexture() {
         dotGeo.attributes.color.needsUpdate = true; renderer.render(scene, camera);
     }
     render();
-    const words = Array.from(document.querySelectorAll(".intro-word")); const timers = [];
-    words.forEach((w, idx) => { timers.push(setTimeout(() => { if (idx > 0) { words[idx - 1].classList.remove("sharp"); words[idx - 1].classList.add("blurred"); } w.classList.add("sharp"); }, 400 + idx * 700)); });
+    const timers = [];
+    // ===== INTRO LOADER animation (drives the #intro-loader markup in index.html) =====
+    (function () {
+        const fill = document.getElementById("al-fill");
+        if (!fill) return;
+        const pctEls = [document.getElementById("al-pct-l"), document.getElementById("al-pct-r")];
+        const sides = document.querySelectorAll(".al-side");
+        const topEl = document.getElementById("al-top");
+        const DUR = 3500;                                   // finishes just before exitIntro (2800ms)
+        const live = () => document.body.classList.contains("intro-lock");
+        const typeCol = (node, text) => {
+            if (!node) return; let i = 0; const per = (DUR * 0.85) / text.length;
+            (function s() { if (live() && i <= text.length) { node.textContent = text.slice(0, i++); timers.push(setTimeout(s, per)); } })();
+        };
+        typeCol(document.getElementById("al-tw-tr"), "Elicitation\nAlignment");
+        typeCol(document.getElementById("al-tw-bl"), "Risks Analysis\nBusiness Value");
+        const t0 = performance.now();
+        (function tick(now) {
+            if (!live()) return;                            // intro exited -> stop
+            const p = Math.min(1, (now - t0) / DUR);
+            const pct = Math.max(1, Math.round(p * 100));
+            pctEls.forEach((e) => { if (e) e.textContent = pct + "%"; });
+            fill.setAttribute("y", String(100 - pct));      // white fill rises bottom -> top
+            const s = Math.min(1, p / 0.8);
+            sides.forEach((n) => { n.style.filter = "blur(" + (12 * (1 - s)) + "px)"; n.style.opacity = s; });
+            const st = Math.min(1, p / 0.6);
+            if (topEl) { topEl.style.filter = "blur(" + (8 * (1 - st)) + "px)"; topEl.style.opacity = st * 0.9; }
+            if (p < 1) requestAnimationFrame(tick);
+        })(t0);
+    })();
     let exited = false;
     function exitIntro() { if (exited) return; exited = true; sessionStorage.setItem("introSeen", "1"); timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
-    const auto = setTimeout(exitIntro, 2800);
+    const auto = setTimeout(exitIntro, 4000);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();
