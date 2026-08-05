@@ -25,11 +25,24 @@ html {
     --deco-hover: 100px;
 }
 
+/* ===== DARK THEME (the default — set pre-paint in index.html <head>) ===== */
+html.dark {
+    color-scheme: dark;
+    --bg: #0a2540;
+    --ink: #eaf2fc;
+    --muted: #9fb3c9;
+    --accent: #ff5722;
+    --line: rgba(255, 255, 255, 0.14);
+    --deco: rgba(255, 255, 255, 0.32);
+    --teal: #22d3ee;
+}
+
 body {
     font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg);
     color: var(--ink);
     line-height: 1.7;
+    transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 body.intro-lock {
@@ -37,7 +50,7 @@ body.intro-lock {
     height: 100vh;
 }
 
-/* ===== PERSISTENT IDENTITY BAR (always solid white) ===== */
+/* ===== PERSISTENT IDENTITY BAR (solid theme bg) ===== */
 #id-bar {
     position: fixed;
     top: 0;
@@ -46,8 +59,8 @@ body.intro-lock {
     z-index: 50;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.45s ease;
-    background: #ffffff;
+    transition: opacity 0.45s ease, background-color 0.35s ease;
+    background: var(--bg);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
 }
@@ -93,12 +106,12 @@ body.intro-lock {
     animation: blink 1s step-end infinite;
 }
 
-/* ===== INTRO OVERLAY ===== */
+/* ===== INTRO OVERLAY (dark navy; hands off to the white page) ===== */
 #intro {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: var(--bg);
+    background: #0a2540;
     overflow: hidden;
     transition: opacity 0.6s ease;
 }
@@ -120,13 +133,13 @@ body.intro-lock {
     height: 100%;
 }
 
-/* ===== INTRO LOADER ===== */
+/* ===== INTRO LOADER (light-on-navy inversion of the white intro) ===== */
 #intro-loader {
     position: absolute;
     inset: 0;
     z-index: 2;
     pointer-events: none;
-    color: var(--ink);
+    color: #e9f2fc;
     font-family: var(--font-mono);
 }
 
@@ -137,7 +150,7 @@ body.intro-lock {
     transform: translateX(-50%);
     font-size: 0.72rem;
     letter-spacing: 0.42em;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(233, 242, 252, 0.5);
     filter: blur(8px);
     opacity: 0;
 }
@@ -147,7 +160,7 @@ body.intro-lock {
     font-size: 1.3rem;
     line-height: 1.7;
     letter-spacing: 0.12em;
-    color: var(--ink);
+    color: #dbe8f5;
     white-space: pre;
 }
 
@@ -186,7 +199,7 @@ body.intro-lock {
     font-size: clamp(15px, 2.1vw, 24px);
     font-weight: 400;
     letter-spacing: 0.24em;
-    color: var(--ink);
+    color: #dbe8f5;
     filter: blur(12px);
     opacity: 0;
 }
@@ -200,7 +213,7 @@ body.intro-lock {
 .al-pct {
     font-size: 0.72rem;
     letter-spacing: 0.08em;
-    color: rgba(10, 37, 64, 0.55);
+    color: rgba(219, 232, 245, 0.6);
     min-width: 40px;
     text-align: center;
     font-variant-numeric: tabular-nums;
@@ -318,7 +331,73 @@ body.intro-lock {
     will-change: transform, opacity;
 }
 
+/* soft light panel: on the dark theme the portrait "develops" on a gently
+   fading light card, then the card recedes and the dark takes over again */
+#face-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    /* mobile: a real circle (like desktop), not a band-wide oval — square box
+       + inscribed ellipse 50% 50% so the visible shape is round with soft
+       falloff and transparent corners. Center sits at 42% of the band (the
+       head, not the neck). */
+    background: radial-gradient(
+        ellipse 66% 60% at 50% 50%,
+        rgba(246, 250, 254, 0.96) 0%,
+        rgba(242, 247, 252, 0.88) 52%,
+        rgba(242, 247, 252, 0) 80%
+    );
+}
+
+@media (max-width: 900px) {
+    #face-panel {
+        inset: auto;
+        /* STRICTLY square box (same expression for both axes — % alone would
+           resolve against width for one axis and height for the other and
+           stretch the circle into a portrait oval). The inscribed ellipse
+           50% 50% then renders a true circle. */
+        width: min(94vw, 78vh);
+        height: min(94vw, 78vh);
+        left: 50%;
+        top: 42%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+            ellipse 50% 50% at 50% 50%,
+            rgba(246, 250, 254, 0.96) 0%,
+            rgba(242, 247, 252, 0.85) 45%,
+            rgba(242, 247, 252, 0) 100%
+        );
+    }
+}
+
+/* desktop: the figure sits right-of-center (camera view offset panFrac 0.2),
+   so the panel must hug the face instead of spreading across the whole hero.
+   Rounded to a circle sized to contain the face, with a long soft falloff so
+   no visible ring/edge forms. */
+@media (min-width: 901px) {
+    #face-panel {
+        inset: auto;
+        /* ~15% wider than the original circle (46vw/60vh) so the portrait's
+           edges sit on solid white instead of the thinning falloff */
+        width: min(53vw, 69vh);
+        height: min(53vw, 69vh);
+        left: 70%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+            ellipse 50% 50% at 50% 50%,
+            rgba(246, 250, 254, 0.96) 0%,
+            rgba(242, 247, 252, 0.85) 45%,
+            rgba(242, 247, 252, 0) 100%
+        );
+    }
+}
+
 #cube-canvas {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     display: block;
@@ -402,11 +481,11 @@ body.intro-lock {
     padding: 0.72rem 1.6rem;
     border: 1.5px solid transparent;
     border-radius: 999px;
-    /* rounded pill WITH a gradient border: white fill clipped to padding-box,
+    /* rounded pill WITH a gradient border: theme fill clipped to padding-box,
        orange gradient (solid left -> fading right) clipped to border-box —
        this technique, unlike border-image, respects border-radius */
     background:
-        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(var(--bg), var(--bg)) padding-box,
         linear-gradient(90deg, var(--accent) 0%, var(--accent) 55%, rgba(255, 87, 34, 0.18) 100%) border-box;
     font-family: var(--font-mono);
     font-size: 0.82rem;
@@ -447,9 +526,16 @@ body.intro-lock {
         linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, rgba(255, 87, 34, 0.25) 100%) border-box;
 }
 
+/* dark theme: the hover fill flips to the light ink, so the label must go
+   navy to stay readable (light-on-light would vanish) */
+html.dark .cv-btn:hover,
+html.dark .cv-btn:active {
+    color: #0a2540;
+}
+
 /* ===== CUBE HINT (static line that replaced the 3D "tap me") ===== */
 /* own grid slot: desktop -> under the credo (left); mobile -> under the CV
-   button. Fades on tap and returns after 8s idle (opacity only -> no shift). */
+   button. Fades on tap and stays hidden for the session (opacity only). */
 .cube-hint {
     grid-area: cubehint;
     align-self: start;
@@ -528,6 +614,55 @@ body.intro-lock {
 }
 
 .lang-opt:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* ===== THEME TOGGLE (moon/sun, sits right of the language switch) ===== */
+/* in dark mode show the sun (click to go light), in light mode the moon */
+.theme-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    opacity: 0.45;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.theme-ic {
+    width: 15px;
+    height: 15px;
+    display: block;
+}
+
+.theme-ic-sun {
+    display: none;
+}
+
+html.dark .theme-ic-sun {
+    display: block;
+}
+
+html.dark .theme-ic-moon {
+    display: none;
+}
+
+@media (hover: hover) {
+    .theme-toggle:hover {
+        opacity: 1;
+        color: var(--accent);
+    }
+}
+
+.theme-toggle:active {
+    opacity: 0.9;
+}
+
+.theme-toggle:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
 }
@@ -779,20 +914,52 @@ h3 {
     padding: 0.35rem 0.9rem;
     font-size: 0.85rem;
     color: var(--ink);
+    transition: color 0.2s ease, background-color 0.2s ease,
+        border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Expertise pills are decorative (no link/action). Feedback is desktop-only:
-   on touch they stay calm so a tap doesn't imply a button that does nothing */
+   on touch they stay calm so a tap doesn't imply a button that does nothing.
+   Hover = REVERSE (the .cv-btn idea, kept in the plain pill look): the pill
+   fills with the opposite color of its background — white fill + navy text
+   on navy bottoms, navy fill + white text on white bottoms (see the
+   overrides below) — plus a thin orange ring around the pill (both themes).
+   A 0.2s delay before the swap reads as the trendy "delayed highlight";
+   release is immediate. */
 @media (hover: hover) {
-    .exp-tags span:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-        cursor: pointer;
-    }
-
+    .exp-tags span:hover,
     .exp-tags span:active {
-        color: var(--accent);
-        border-color: var(--accent);
+        color: #0a2540;
+        background-color: #fff;
+        border-color: #fff;
+        box-shadow: 0 0 0 2px var(--accent);
+        cursor: pointer;
+        transition-delay: 0.2s;
+    }
+}
+
+/* white bottoms (light theme section + the dark theme's developed #lower.light):
+   the reverse swaps the other way — navy fill, white letters */
+@media (hover: hover) {
+    html:not(.dark) #lower:not(.dark) .exp-tags span:hover,
+    html:not(.dark) #lower:not(.dark) .exp-tags span:active,
+    html.dark #lower.light .exp-tags span:hover,
+    html.dark #lower.light .exp-tags span:active {
+        color: #fff;
+        background-color: #0a2540;
+        border-color: #0a2540;
+    }
+}
+
+/* navy bottoms in the light theme (#lower.dark): the default base rule's
+   white-ish colors beat a plain :hover, so the reverse needs its own rule */
+@media (hover: hover) {
+    #lower.dark .exp-tags span:hover,
+    #lower.dark .exp-tags span:active {
+        color: #0a2540;
+        background-color: #fff;
+        border-color: #fff;
+        transition-delay: 0.2s;
     }
 }
 
@@ -1061,6 +1228,26 @@ h3 {
     background-color: var(--ink);
 }
 
+/* dark theme: --ink flips to light, so the section bg must come from the
+   theme's dark background instead */
+html.dark #lower.dark {
+    background-color: var(--bg);
+}
+
+/* ===== REVEAL TO WHITE: dark theme only — the navy section "develops" into
+   the classic white design once it scrolls into the focus band (one-way, it
+   stays white after). Scoping the light values here flips every child (tags,
+   process tree, footer) at once through the existing 0.9s transitions. ===== */
+html.dark #lower.light {
+    --bg: #ffffff;
+    --ink: #0a2540;
+    --muted: #46586d;
+    --line: #e8ecf1;
+    --deco: #cfd6de;
+    --teal: #14b8c4;
+    background-color: #ffffff;
+}
+
 #lower.dark h2 {
     color: #ffffff;
 }
@@ -1076,18 +1263,6 @@ h3 {
 #lower.dark .exp-tags span {
     border-color: rgba(255, 255, 255, 0.22);
     color: rgba(255, 255, 255, 0.75);
-}
-
-@media (hover: hover) {
-    #lower.dark .exp-tags span:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-    }
-
-    #lower.dark .exp-tags span:active {
-        color: var(--accent);
-        border-color: var(--accent);
-    }
 }
 
 /* Footer colors follow the light/dark inversion of #lower — previously they
@@ -1271,33 +1446,53 @@ h3 {
     margin-top: 0.4rem;
 }
 
-.domain-tags span {
+#lower .domain-tags span {
     display: inline-block;
-    font-size: 0.9rem;
-    /* restore pill text size (container is 0) */
+    font-size: 0.85rem;
+    /* restore pill text size (container is 0) — same as .exp-tags */
     margin: 0 0.6rem 0.6rem 0;
     /* replaces the former flex gap */
     border: 1px solid var(--line);
     border-radius: 999px;
     padding: 0.35rem 0.9rem;
-    color: var(--muted);
+    color: var(--ink);
+    transition: color 0.2s ease, background-color 0.2s ease,
+        border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 @media (hover: hover) {
-    .domain-tags span:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-        cursor: pointer;
-    }
-
-    #lower.dark .domain-tags span:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-    }
-
+    .domain-tags span:hover,
     .domain-tags span:active {
-        color: var(--accent);
-        border-color: var(--accent);
+        color: #0a2540;
+        background-color: #fff;
+        border-color: #fff;
+        box-shadow: 0 0 0 2px var(--accent);
+        cursor: pointer;
+        transition-delay: 0.2s;
+    }
+}
+
+/* white bottoms: reverse the other way — navy fill, white letters */
+@media (hover: hover) {
+    html:not(.dark) #lower:not(.dark) .domain-tags span:hover,
+    html:not(.dark) #lower:not(.dark) .domain-tags span:active,
+    html.dark #lower.light .domain-tags span:hover,
+    html.dark #lower.light .domain-tags span:active {
+        color: #fff;
+        background-color: #0a2540;
+        border-color: #0a2540;
+    }
+}
+
+/* navy bottoms in the light theme (#lower.dark): same fix as .exp-tags —
+   the white-ish base rule beats a plain :hover, so the reverse needs its own */
+@media (hover: hover) {
+    #lower.dark .domain-tags span:hover,
+    #lower.dark .domain-tags span:active {
+        color: #0a2540;
+        background-color: #fff;
+        border-color: #fff;
+        transition-delay: 0.2s;
     }
 }
 

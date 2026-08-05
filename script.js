@@ -43,6 +43,8 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     function reveal(el) {
         el.classList.add("shown");
         setTimeout(() => {
+            // a tapped cube-hint stays hidden — never force it back to visible
+            if (el.classList.contains("is-tapped")) return;
             if (parseFloat(getComputedStyle(el).opacity) < 0.5) {
                 el.style.transition = "none";
                 el.style.opacity = "1";
@@ -175,6 +177,11 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     }, { passive: true });
     window.addEventListener("resize", update);
     update();
+    // iOS safety net: Safari can swallow the scroll event that would hide the bar
+    // (URL-bar collapse/expand, scroll restoration after the intro lock), which
+    // leaves the bar stuck visible at the top of the page — the "blue lines".
+    // A light interval re-reads the real state so the bar can never stay stuck.
+    setInterval(update, 250);
 })();
 
 
@@ -318,18 +325,60 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
-// ===== SCROLL INVERSION: lower section flips to dark while in the focus band =====
+// ===== BOTTOM SECTION THEME BEHAVIOUR =====
+// Dark theme: the navy section "develops" into the classic white design once it
+// enters the focus band — one-way, stays white after.
+// Light theme: the original inversion — the section turns navy while it is in
+// the focus band and releases back to white as it passes.
 (function () {
     const lower = document.getElementById("lower");
     if (!lower) return;
-    // Active when any part of #lower sits in the middle ~75% of the viewport.
-    // Tighter margins than before so the dark background arrives while the hero
-    // is still fading out overhead, instead of after a beat of plain white.
-    // Returns to light near the footer (top/bottom margins shrink the trigger zone).
+    const isDarkTheme = () => document.documentElement.classList.contains("dark");
+    let inView = false, revealed = false;
+    const apply = () => {
+        if (isDarkTheme()) lower.classList.toggle("light", revealed);
+        else lower.classList.toggle("dark", inView);
+    };
     const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => lower.classList.toggle("dark", entry.isIntersecting));
+        entries.forEach((entry) => {
+            inView = entry.isIntersecting;
+            if (inView) revealed = true; // dark theme: one-way develop
+        });
+        apply();
     }, { rootMargin: "-12% 0px -12% 0px", threshold: 0 });
     io.observe(lower);
+    window.addEventListener("themechange", apply);
+})();
+
+
+// ===== THEME TOGGLE (moon/sun button next to the language switch) =====
+(function () {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    const root = document.documentElement;
+    // keep the mobile browser chrome in sync with the current theme
+    function syncThemeColor() {
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
+    }
+    syncThemeColor();
+    btn.addEventListener("click", () => {
+        const dark = !root.classList.contains("dark");
+        root.classList.toggle("dark", dark);
+        try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+        window.dispatchEvent(new CustomEvent("themechange", { detail: { dark } }));
+        syncThemeColor();
+        // iOS Safari can leave stale navy tiles around the URL bar / home
+        // indicator while the background transitions; force repeated
+        // compositor repaints so the whole viewport (including the chrome
+        // zones) refreshes.
+        function repaint() {
+            document.body.style.webkitTransform = "translateZ(0)";
+            requestAnimationFrame(() => { document.body.style.webkitTransform = ""; });
+        }
+        repaint();
+        [150, 450].forEach((ms) => setTimeout(repaint, ms));
+    });
 })();
 
 
@@ -372,24 +421,20 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     setTimeout(pin, 800);
     setTimeout(pin, 2600);
 
-    // ---- hint: fade out when the cube is tapped, return after 8s of no
-    // interaction. Opacity only (box stays), so the cube band never moves. ----
+    // ---- hint: gently fades out once the cube is tapped and stays hidden for
+    // the whole session (matches the hero's heroTapped flag). Opacity only
+    // (box stays), so the cube band never moves. ----
     if (hint && cubeCanvas) {
-        const IDLE_MS = 8000;
-        let idleTimer = null;
-        function scheduleReturn() {
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(function () { hint.classList.remove("is-tapped"); }, IDLE_MS);
-        }
+        let tappedThisSession = false;
+        try { tappedThisSession = sessionStorage.getItem("heroTapped") === "1"; } catch (e) { /* private mode */ }
+        if (tappedThisSession) hint.classList.add("is-tapped");
         cubeCanvas.addEventListener("click", function () {
-            hint.classList.add("is-tapped");
-            scheduleReturn();
-        });
-        // any interaction while the hint is hidden restarts the idle countdown
-        ["pointerdown", "scroll", "keydown", "touchstart"].forEach(function (ev) {
-            window.addEventListener(ev, function () {
-                if (hint.classList.contains("is-tapped")) scheduleReturn();
-            }, { passive: true });
+            if (!tappedThisSession) {
+                tappedThisSession = true;
+                hint.classList.add("is-tapped");
+                // inline opacity so no reveal guard/class fight can re-show it
+                hint.style.opacity = "0";
+            }
         });
     }
 })();
@@ -418,6 +463,29 @@ function makeCircleTexture() {
     if (!canvas || typeof THREE === "undefined") return;
     const hero = document.getElementById("hero-canvas-container");
 
+    // ===== THEME PALETTES: the figure recolors itself when the theme flips =====
+    // light: the original look — navy portrait on white, teal cube.
+    // dark:  the face becomes a LIGHT hologram on navy (light dots instead of
+    //        navy-on-navy inversion), the cube glows bright cyan, orange pops.
+    const PALETTES = {
+        light: {
+            ink: [0.039, 0.145, 0.251],    // portrait dot color (site --ink #0a2540)
+            cube: [0.08, 0.72, 0.77],      // CUBE dot & line color (site teal)
+            orange: [1.0, 0.34, 0.13],     // twinkle accent (site --accent #ff5722)
+            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band background)
+        },
+        dark: {
+            ink: [0.93, 0.97, 1.0],        // portrait dots: luminous off-white (reads as a hologram on navy)
+            cube: [0.13, 0.83, 0.93],      // CUBE dots & lines: bright cyan (matches the intro)
+            orange: [1.0, 0.34, 0.13],     // twinkle accent (site --accent #ff5722)
+            fadeTo: [0.055, 0.11, 0.2]     // shadows/blink sink toward this (deep navy, just off the bg)
+        }
+    };
+    const isDarkTheme = () => document.documentElement.classList.contains("dark");
+    const THEME_COLORS = isDarkTheme() ? PALETTES.dark : PALETTES.light;
+    // the reveal panel reuses the light-theme palette while the portrait develops
+    const LIGHT_INK = PALETTES.light.ink, LIGHT_BG = PALETTES.light.fadeTo;
+
     // ===== SCENE_CONFIG — the single tuning surface =====
     const SCENE_CONFIG = {
         cube: {
@@ -429,16 +497,15 @@ function makeCircleTexture() {
             mobile: { scale: 1.5, camZ: 2.5, dotSize: 0.03, shade: 0.9, flatten: 0.9 }
         },
         morph: { durationMs: 4000, stagger: 0.75, reveal: 0.4, holdMs: 6000 },
+        // dark theme only: the portrait develops on a soft light panel with the
+        // original light-theme colors and STAYS there until the cube starts
+        // rebuilding — only then the panel recedes and the glow face shows.
+        facePanel: { on: true, fadeIn: 1.5, fadeOut: 1.1 },
         cubeDot: { size: 0.05, opacity: 0.5 },   // dot size/opacity in the CUBE state
         // in-flight dots during the morph: thinShare of the swarm slims down to
         // thinScale of normal size mid-flight, landing back at full size
         flightDots: { thinShare: 0.7, thinScale: 0.45 },
-        colors: {
-            ink: [0.039, 0.145, 0.251],    // portrait dot color (site --ink #0a2540)
-            cube: [0.08, 0.72, 0.77],      // CUBE dot & line color (site teal — matches the intro)
-            orange: [1.0, 0.34, 0.13],     // twinkle accent (site --accent #ff5722)
-            fadeTo: [0.859, 0.906, 0.984]  // shadows/blink sink toward this (band background)
-        },
+        colors: THEME_COLORS,
         cubeDiagonals: true,               // face diagonals on the cage (false = plain grid)
         twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
         breatheSpeed: 0.4,     // cube breathing tempo
@@ -685,6 +752,9 @@ function makeCircleTexture() {
 
     // ----- morph state: 0 = cube, 1 = face; click toggles -----
     let morph = 0, morphTarget = 0, holdTimer = null;
+    // reveal panel: 0 = navy (dark palette), 1 = light palette + panel visible
+    const panelEl = document.getElementById("face-panel");
+    let panelMix = 0, panelTarget = 0, panelRecedeAt = -1;
     canvas.style.cursor = FACE_OK ? "pointer" : "default";
     canvas.addEventListener("click", () => {
         if (!FACE_OK) return; // no portrait data — stay a cube
@@ -833,6 +903,25 @@ function makeCircleTexture() {
         else if (morph > morphTarget) morph = Math.max(morph - step, 0);
         const m = easeInOut(morph), inv = 1 - m;
 
+        // reveal panel (dark theme only): rises with the developing portrait and
+        // lingers ~1s into the rebuild before receding — the card outlives the
+        // face just enough that the dark glow face is never left alone on navy
+        if (panelEl && C.facePanel.on && isDarkTheme()) {
+            if (morphTarget === 1) {
+                panelRecedeAt = -1;
+                panelTarget = clamp01((morph - 0.15) / 0.55);
+            } else if (morph > 0.02 && panelRecedeAt < 0) {
+                panelRecedeAt = performance.now() + 1000; // the card lingers 1s into the rebuild
+                panelTarget = 1;
+            } else if (panelRecedeAt >= 0 && performance.now() >= panelRecedeAt) {
+                panelTarget = 0;
+            }
+            panelMix += (panelTarget - panelMix) * 0.03;
+            panelEl.style.opacity = panelMix.toFixed(3);
+        } else if (panelEl) {
+            panelEl.style.opacity = "0";
+        }
+
         t += 0.01;
         angle += cube.rot * (1 - morph); // orbit stops as the face forms
 
@@ -910,7 +999,14 @@ function makeCircleTexture() {
 
         const stag = C.morph.stagger, rev = C.morph.reveal, shade = face.shade;
         const zK = 1 - face.flatten * m; // relief collapses: flat crisp portrait at rest
-        const INK = C.colors.ink, CUB = C.colors.cube, ORANGE = C.colors.orange, BG = C.colors.fadeTo;
+        let INK = C.colors.ink, CUB = C.colors.cube, ORANGE = C.colors.orange, BG = C.colors.fadeTo;
+        // while the light panel is up, blend the dot colors toward the light-theme
+        // palette so the portrait develops exactly as it does on the white theme
+        if (panelMix > 0.001) {
+            const t = panelMix, o = 1 - t;
+            INK = [LIGHT_INK[0] * t + INK[0] * o, LIGHT_INK[1] * t + INK[1] * o, LIGHT_INK[2] * t + INK[2] * o];
+            BG = [LIGHT_BG[0] * t + BG[0] * o, LIGHT_BG[1] * t + BG[1] * o, LIGHT_BG[2] * t + BG[2] * o];
+        }
 
         for (let i = 0; i < N; i++) {
             const j = i * 3;
@@ -976,6 +1072,13 @@ function makeCircleTexture() {
     }
     animate();
 
+    // theme flip: swap the palette (dots recolor on the next frame) and rebuild
+    // the wireframe so its line color follows the theme too
+    window.addEventListener("themechange", () => {
+        C.colors = document.documentElement.classList.contains("dark") ? PALETTES.dark : PALETTES.light;
+        buildCube(C.cube[vp].grid);
+    });
+
     window.addEventListener("resize", () => {
         renderer.setSize(hero.clientWidth, hero.clientHeight);
         applyHeroPan();                                       // sets camera.aspect + view offset
@@ -992,16 +1095,16 @@ function makeCircleTexture() {
     try { seen = sessionStorage.getItem("introSeen") === "1"; } catch (e) { /* private mode */ }
     // If Three.js failed to load (CDN blocked/slow), drop the intro instead of
     // returning early — otherwise the fixed blue overlay would trap the page.
-    if (seen || typeof THREE === "undefined") { intro.remove(); document.body.classList.remove("intro-lock"); return; }
+    if (seen || typeof THREE === "undefined") { intro.remove(); document.body.classList.remove("intro-lock"); window.scrollTo(0, 0); return; }
     document.body.classList.add("intro-lock");
     const canvas = document.getElementById("intro-canvas");
     const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.z = 3.0;
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(window.devicePixelRatio);
-    const TEAL = 0x0e97a6; const group = new THREE.Group(); const cubeMats = [];   // deeper teal: reads properly on the white intro
+    const TEAL = 0x22d3ee; const group = new THREE.Group(); const cubeMats = [];   // bright cyan: reads properly on the dark navy intro
     // Edge-fade support: each line vertex gets its own colour, blended toward the
     // backdrop as it approaches the screen border. That dissolves the cube's long
     // near-face edges instead of letting them run into the screen edges.
-    const BGC = new THREE.Color(0xffffff), TEALC = new THREE.Color(TEAL), fadeSets = [];
+    const BGC = new THREE.Color(0x0a2540), TEALC = new THREE.Color(TEAL), fadeSets = [];
     function lineMat(opacity) { const m = new THREE.LineBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0 }); m.userData = { base: opacity }; cubeMats.push(m); return m; }
     function attachFade(obj) {
         const n = obj.geometry.attributes.position.count;
@@ -1026,7 +1129,7 @@ function makeCircleTexture() {
     const signs = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]]; const cpts = [];
     for (const s of signs) { cpts.push(s[0] * OH, s[1] * OH, s[2] * OH); cpts.push(s[0] * IH, s[1] * IH, s[2] * IH); }
     const cgeo = new THREE.BufferGeometry(); cgeo.setAttribute("position", new THREE.Float32BufferAttribute(cpts, 3)); group.add(attachFade(new THREE.LineSegments(cgeo, lineMat(0.45))));
-    const NUM_DOTS = 450; const DOT_RADIUS = 2; const DOT_BURST_MS = 800; const DOT_TEAL = [0.08, 0.72, 0.77]; const DOT_ORANGE = [1.0, 0.34, 0.13];
+    const NUM_DOTS = 450; const DOT_RADIUS = 2; const DOT_BURST_MS = 800; const DOT_TEAL = [0.13, 0.83, 0.93]; const DOT_ORANGE = [1.0, 0.34, 0.13];
     const dotTarget = new Float32Array(NUM_DOTS * 3); const dotPos = new Float32Array(NUM_DOTS * 3); const dotColors = new Float32Array(NUM_DOTS * 3); const dotFlash = new Float32Array(NUM_DOTS); const dotPhase = new Float32Array(NUM_DOTS);
     for (let i = 0; i < NUM_DOTS; i++) {
         const d = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(); const r = Math.cbrt(Math.random()) * DOT_RADIUS;
@@ -1101,7 +1204,7 @@ function makeCircleTexture() {
         const pctEls = [document.getElementById("al-pct-l"), document.getElementById("al-pct-r")];
         const sides = document.querySelectorAll(".al-side");
         const topEl = document.getElementById("al-top");
-        const DUR = 3500;                                   // finishes just before exitIntro (2800ms)
+        const DUR = 3500;                                   // finishes just before exitIntro (4000ms)
         const live = () => document.body.classList.contains("intro-lock");
         const typeCol = (node, text) => {
             if (!node) return; let i = 0; const per = (DUR * 0.85) / text.length;
@@ -1124,7 +1227,9 @@ function makeCircleTexture() {
         })(t0);
     })();
     let exited = false;
-    function exitIntro() { if (exited) return; exited = true; try { sessionStorage.setItem("introSeen", "1"); } catch (e) { } timers.forEach(clearTimeout); intro.classList.add("is-exiting"); document.body.classList.remove("intro-lock"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 650); }
+    function exitIntro() { if (exited) return; exited = true; try { sessionStorage.setItem("introSeen", "1"); } catch (e) { } timers.forEach(clearTimeout); document.body.classList.remove("intro-lock"); window.scrollTo(0, 0); // exit: kill the loader text fast (no lingering text strips on iOS), then fade the navy screen WITH the cube still contracting — the handoff to the hero cube
+        const loaderEl = document.getElementById("intro-loader"); if (loaderEl) { loaderEl.style.transition = "opacity 0.18s ease"; loaderEl.style.opacity = "0"; }
+        intro.classList.add("is-exiting"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 700); }
     const auto = setTimeout(exitIntro, 4000);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();

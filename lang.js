@@ -50,7 +50,7 @@
                     handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
                 }
             },
-            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US · GMT+2" }
+            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US" }
         },
         uk: {
             meta: { title: "Антон Лісаченко — Бізнес-аналітик" },
@@ -88,7 +88,7 @@
             how: {
                 heading: "Як я працюю",
                 hint: "Натисни на етап, щоб розгорнути активності.",
-                steps: { discovery: "Дослідження", elicitation: "Елісітація", modeling: "Моделювання", uat: "UAT", handoff: "Передача" },
+                steps: { discovery: "Дослідження", elicitation: "Збір вимог", modeling: "Моделювання", uat: "UAT", handoff: "Передача" },
                 phases: {
                     discovery: ["Визначення цілей", "Мапування зацікавлених сторін", "Виявлення обмежень", "Оцінка здійсненності"],
                     elicitation: ["Фасилітація воркшопів", "Інтерв'ю та опитування", "Виявлення та збір вимог", "Розв'язання конфліктів"],
@@ -97,7 +97,7 @@
                     handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
                 }
             },
-            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США · GMT+2" }
+            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США" }
         }
     };
 
