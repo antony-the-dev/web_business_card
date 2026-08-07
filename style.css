@@ -18,6 +18,12 @@ html {
     --ink: #0a2540;
     --muted: #46586d;
     --accent: #ff5722;
+    /* --accent orange is the brand color and stays untouched for GRAPHICS
+       (hex bullets, deco lines, nodes, rings, borders — those only need 3:1).
+       Small orange TEXT on white measures 3.16:1, which fails WCAG AA (4.5:1),
+       so text-only orange uses this slightly darker tone: 4.97:1 on white.
+       Same hue family, indistinguishable at 0.7-0.8rem. */
+    --accent-text: #c9400f;
     --line: #e8ecf1;
     --deco: #cfd6de;
     --teal: #14b8c4;
@@ -32,6 +38,9 @@ html.dark {
     --ink: #eaf2fc;
     --muted: #9fb3c9;
     --accent: #ff5722;
+    /* on navy the full-strength orange already clears AA (4.96:1), so text
+       keeps the pure brand color here */
+    --accent-text: #ff5722;
     --line: rgba(255, 255, 255, 0.14);
     --deco: rgba(255, 255, 255, 0.32);
     --teal: #22d3ee;
@@ -577,26 +586,32 @@ html.dark .cv-btn:active {
     pointer-events: auto;
 }
 
+/* The inactive state used to be `opacity: 0.4`, which dropped EN to 3.40:1 and
+   UA to 1.70:1 against navy — both below the 4.5:1 AA floor for text this
+   small. Dimming is now done with COLOR instead of opacity: inactive reads as
+   --muted (a token already tuned to pass in both themes, 7.4:1), active is
+   full-strength ink / orange. Same hierarchy, legible either way — and the
+   active UA now gets the real orange instead of a washed-out one. */
 .lang-opt {
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
-    opacity: 0.4;
-    transition: opacity 0.2s ease;
-}
-
-.lang-opt[data-lang="en"] {
-    color: var(--ink);
-}
-
-.lang-opt[data-lang="uk"] {
-    color: var(--accent);
+    position: relative;
+    color: var(--muted);
+    transition: color 0.2s ease;
 }
 
 .lang-opt.is-active {
-    opacity: 1;
     cursor: default;
+}
+
+.lang-opt[data-lang="en"].is-active {
+    color: var(--ink);
+}
+
+.lang-opt[data-lang="uk"].is-active {
+    color: var(--accent-text);
 }
 
 .lang-sep {
@@ -605,12 +620,12 @@ html.dark .cv-btn:active {
 
 @media (hover: hover) {
     .lang-opt:not(.is-active):hover {
-        opacity: 0.75;
+        color: var(--ink);
     }
 }
 
 .lang-opt:not(.is-active):active {
-    opacity: 0.9;
+    color: var(--ink);
 }
 
 .lang-opt:focus-visible {
@@ -618,8 +633,30 @@ html.dark .cv-btn:active {
     outline-offset: 3px;
 }
 
+/* Invisible 44px-tall hit area around EN / UA / the theme toggle. The visible
+   glyphs stay exactly the same size and nothing shifts in the layout — the
+   pseudo-element only enlarges what a finger can land on (WCAG 2.5.5: the
+   bare buttons were ~24x20px and ~15x15px). */
+.lang-opt::before,
+.theme-toggle::before {
+    content: "";
+    position: absolute;
+    left: -0.5rem;
+    right: -0.5rem;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+}
+
+.theme-toggle::before {
+    left: -0.85rem;
+    right: -0.85rem;
+}
+
 /* ===== THEME TOGGLE (moon/sun, sits right of the language switch) ===== */
 /* in dark mode show the sun (click to go light), in light mode the moon */
+/* same fix as .lang-opt: opacity 0.45 put the icon strokes at ~3.6:1; --muted
+   is a token that already passes in both themes */
 .theme-toggle {
     background: none;
     border: none;
@@ -628,14 +665,14 @@ html.dark .cv-btn:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--ink);
-    opacity: 0.45;
-    transition: opacity 0.2s ease, color 0.2s ease;
+    position: relative;
+    color: var(--muted);
+    transition: color 0.2s ease;
 }
 
 .theme-ic {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     display: block;
 }
 
@@ -653,13 +690,12 @@ html.dark .theme-ic-moon {
 
 @media (hover: hover) {
     .theme-toggle:hover {
-        opacity: 1;
         color: var(--accent);
     }
 }
 
 .theme-toggle:active {
-    opacity: 0.9;
+    color: var(--accent);
 }
 
 .theme-toggle:focus-visible {
@@ -713,7 +749,7 @@ html.dark .theme-ic-moon {
 }
 
 .hero-contact a:hover {
-    color: var(--accent);
+    color: var(--accent-text);
     border-color: transparent;
 }
 
@@ -733,7 +769,7 @@ html.dark .theme-ic-moon {
     }
 
     .hero-contact a:active {
-        color: var(--accent);
+        color: var(--accent-text);
         border-color: transparent;
     }
 
@@ -775,7 +811,7 @@ html.dark .theme-ic-moon {
     letter-spacing: 0.2em;
     font-size: 0.72rem;
     font-weight: 500;
-    color: var(--accent);
+    color: var(--accent-text);
     opacity: 0;
     transform: rotate(180deg) translateY(10px);
     transition: opacity 0.4s ease, transform 0.4s ease;
@@ -933,7 +969,9 @@ h3 {
         background-color: #fff;
         border-color: #fff;
         box-shadow: 0 0 0 2px var(--accent);
-        cursor: pointer;
+        /* cursor: pointer removed — these pills are decorative, nothing
+           happens on click, and the hand cursor promised an action that
+           doesn't exist. The hover swap itself is unchanged. */
         transition-delay: 0.2s;
     }
 }
@@ -1127,7 +1165,7 @@ h3 {
 }
 
 .proc-step.active .proc-label {
-    color: var(--accent);
+    color: var(--accent-text);
 }
 
 @media (hover: hover) {
@@ -1137,7 +1175,7 @@ h3 {
     }
 
     .proc-step:hover .proc-label {
-        color: var(--accent);
+        color: var(--accent-text);
     }
 }
 
@@ -1156,7 +1194,7 @@ h3 {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-weight: 600;
-    color: var(--accent);
+    color: var(--accent-text);
     margin-bottom: 0.25rem;
     opacity: 0;
     transition: opacity 0.4s ease, color 0.6s ease;
@@ -1226,6 +1264,9 @@ h3 {
 /* ===== INVERSION: dark while the section is in focus ===== */
 #lower.dark {
     background-color: var(--ink);
+    /* navy band (either theme): orange text sits on navy, where the full
+       brand orange already clears AA */
+    --accent-text: #ff5722;
 }
 
 /* dark theme: --ink flips to light, so the section bg must come from the
@@ -1245,6 +1286,8 @@ html.dark #lower.light {
     --line: #e8ecf1;
     --deco: #cfd6de;
     --teal: #14b8c4;
+    /* developed to white -> orange text needs the darker tone again */
+    --accent-text: #c9400f;
     background-color: #ffffff;
 }
 
@@ -1350,8 +1393,10 @@ html.dark #lower.light {
     color: rgba(255, 255, 255, 0.85);
 }
 
+/* 0.45 white on navy = 4.25:1, just under the 4.5:1 floor at 0.72rem.
+   0.55 = 5.66:1 and still reads as the quieter half of the pair. */
 #lower.dark .status-meta {
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1370,8 +1415,9 @@ html.dark #lower.light {
     color: rgba(255, 255, 255, 0.85);
 }
 
+/* same 4.25:1 -> 5.66:1 bump as .status-meta */
 #lower.dark .site-footer .footer-rights {
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.55);
 }
 
 #lower.dark .proc-label {
@@ -1397,12 +1443,12 @@ html.dark #lower.light {
 }
 
 #lower.dark .proc-step.active .proc-label {
-    color: var(--accent);
+    color: var(--accent-text);
 }
 
 @media (hover: hover) {
     #lower.dark .proc-step:hover .proc-label {
-        color: var(--accent);
+        color: var(--accent-text);
     }
 }
 
@@ -1418,13 +1464,13 @@ html.dark #lower.light {
 
 @media (hover: hover) {
     #lower.dark a:hover {
-        color: var(--accent);
+        color: var(--accent-text);
         border-color: var(--accent);
     }
 }
 
 #lower.dark a:active {
-    color: var(--accent);
+    color: var(--accent-text);
     border-color: var(--accent);
 }
 
@@ -1467,7 +1513,7 @@ html.dark #lower.light {
         background-color: #fff;
         border-color: #fff;
         box-shadow: 0 0 0 2px var(--accent);
-        cursor: pointer;
+        /* cursor: pointer removed — decorative pill, see .exp-tags above */
         transition-delay: 0.2s;
     }
 }
@@ -1507,14 +1553,36 @@ a {
 
 @media (hover: hover) {
     a:hover {
-        color: var(--accent);
+        color: var(--accent-text);
         border-color: var(--accent);
     }
 }
 
 a:active {
-    color: var(--accent);
+    color: var(--accent-text);
     border-color: var(--accent);
+}
+
+/* ===== KEYBOARD FOCUS =====
+   There was no visible focus style on links or the CV button, so tabbing
+   through the page was invisible (WCAG 2.4.7). Only shows for keyboard users
+   — :focus-visible never fires on mouse clicks, so nothing changes visually
+   for pointer users. */
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+.cv-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.proc-step:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 8px;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1680,6 +1748,14 @@ a:active {
         min-height: 7.5rem;
     }
 
+    /* .proc-branches li is nowrap so the tree keeps clean single-line branches
+       on desktop. On a narrow phone (esp. the longer UA strings) that pushes
+       past the viewport and creates horizontal scroll, so let it wrap here.
+       .proc-detail uses min-height, not height, so the block just grows. */
+    .proc-branches li {
+        white-space: normal;
+    }
+
     .proc-tree-title {
         font-size: 0.72rem;
     }
@@ -1760,11 +1836,12 @@ a:active {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1.6rem 4rem;
-
-        .process-strip {
-            margin: 1.5rem -2.5rem 0;
-        }
     }
+    /* NOTE: a nested `.process-strip { margin: 1.5rem -2.5rem 0 }` used to sit
+       inside the block above. .process-strip is a SIBLING block, never a
+       descendant of .exp-groups, so the rule could never match — removed as
+       dead code. If the intent was to let the pipeline bleed wider than the
+       text column on desktop, say so and it can be added as a real rule. */
 
     /* subtle vertical divider between the two columns */
     .exp-groups::before {
