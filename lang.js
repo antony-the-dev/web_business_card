@@ -31,10 +31,10 @@
                 // key order mirrors the visual order in index.html (BA-logic flow)
                 groups: {
                     requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories"] },
-                    notations: { title: "Modeling Notations", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    diagramming: { title: "Design & Visual Tools", items: ["Miro", "Lucidchart", "Figma", "Photoshop"] },
-                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "Postman", "n8n"] },
-                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
+                    notations: { title: "Modeling & Architecture", items: ["BPMN", "UML", "System Architecture"] },
+                    diagramming: { title: "Design & Visual Tools", items: ["Miro", "Lucidchart", "Figma"] },
+                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "n8n", "AI Agents"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
@@ -77,12 +77,12 @@
                 heading: "Експертиза",
                 // key order mirrors the visual order in index.html (BA-logic flow)
                 groups: {
-                    requirements: { title: "Вимоги та документація", items: ["BRD", "PRD", "SRS", "User Stories"] },
-                    notations: { title: "Нотації моделювання", items: ["BPMN", "UML", "ERD", "DFD"] },
-                    diagramming: { title: "Дизайн та візуалізація", items: ["Miro", "Lucidchart", "Figma", "Photoshop"] },
-                    api: { title: "API та автоматизація", items: ["REST API", "Swagger", "Postman", "n8n"] },
-                    query: { title: "Запити та технічне", items: ["SQL", "JQL", "HTML / CSS", "JavaScript"] },
-                    delivery: { title: "Постачання та PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
+                    requirements: { title: "Requirements & Docs", items: ["BRD", "PRD", "SRS", "User Stories"] },
+                    notations: { title: "Modeling & Architecture", items: ["BPMN", "UML", "System Architecture"] },
+                    diagramming: { title: "Design & Visual Tools", items: ["Miro", "Lucidchart", "Figma"] },
+                    api: { title: "APIs & Automation", items: ["REST API", "Swagger", "n8n", "AI Agents"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
+                    delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
             how: {
