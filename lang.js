@@ -45,8 +45,8 @@
                 phases: {
                     discovery: ["Define objectives", "Map stakeholders", "Identify constraints", "Assess feasibility"],
                     elicitation: ["Run workshops", "Interviews & surveys", "Capture requirements", "Resolve conflicts"],
-                    modeling: ["BPMN / UML diagrams", "Data entity schemas", "User stories", "BRD / SRS"],
-                    uat: ["Test scenarios", "Acceptance criteria", "Defect triage", "Sign-off"],
+                    modeling: ["BPMN / UML / Architecture", "Figma prototyping", "Data entity schemas", "BRD / SRS / FRD"],
+                    uat: ["Test scenarios", "Acceptance criteria", "AI-powered verification", "Sign-off"],
                     handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
                 }
             },
@@ -92,8 +92,8 @@
                 phases: {
                     discovery: ["Визначення цілей", "Мапування зацікавлених сторін", "Виявлення обмежень", "Оцінка здійсненності"],
                     elicitation: ["Фасилітація воркшопів", "Інтерв'ю та опитування", "Виявлення та збір вимог", "Розв'язання конфліктів"],
-                    modeling: ["BPMN / UML моделювання", "Схеми сутностей даних", "Користувацькі історії", "BRD / SRS"],
-                    uat: ["Тест-сценарії", "Критерії приймання", "Тріаж дефектів", "Формальне погодження результатів"],
+                    modeling: ["BPMN / UML / Архітектура", "Прототипування у Figma", "Схеми сутностей даних", "BRD / SRS / FRD"],
+                    uat: ["Тест-сценарії", "Критерії приймання", "AI-верифікація вимог", "Формальне погодження результатів"],
                     handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
                 }
             },
