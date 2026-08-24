@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <pattern id="dg" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="rgba(159,179,201,0.16)"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="#0d2b4c"/>
+  <rect width="1600" height="1000" fill="url(#dg)"/>
+  <!-- phone frame helper: header bar, media X-box, text lines, pill button -->
+  <!-- phone 1 -->
+  <g>
+    <rect x="180" y="110" width="330" height="700" rx="36" fill="#102f52" stroke="rgba(34,211,238,0.55)" stroke-width="2.6"/>
+    <line x1="305" y1="146" x2="385" y2="146" stroke="rgba(234,242,252,0.3)" stroke-width="5" stroke-linecap="round"/>
+    <rect x="210" y="176" width="270" height="44" rx="8" fill="rgba(255,87,34,0.12)" stroke="rgba(255,87,34,0.5)" stroke-width="1.6"/>
+    <rect x="230" y="192" width="130" height="11" rx="5.5" fill="rgba(234,242,252,0.32)"/>
+    <g fill="#123458" stroke="rgba(159,179,201,0.4)" stroke-width="1.8">
+      <rect x="210" y="248" width="270" height="170" rx="10"/>
+      <rect x="210" y="438" width="128" height="128" rx="10"/>
+      <rect x="352" y="438" width="128" height="128" rx="10"/>
+    </g>
+    <g stroke="rgba(234,242,252,0.3)" stroke-width="2">
+      <path d="M232 272l226 122M458 272L232 394"/>
+      <path d="M228 462l92 92M320 462l-92 92"/>
+      <path d="M370 462l92 92M462 462l-92 92"/>
+    </g>
+    <g fill="rgba(234,242,252,0.22)">
+      <rect x="210" y="594" width="240" height="11" rx="5.5"/>
+      <rect x="210" y="618" width="190" height="9" rx="4.5"/>
+    </g>
+    <rect x="210" y="668" width="270" height="58" rx="29" fill="none" stroke="rgba(34,211,238,0.6)" stroke-width="2.2"/>
+    <rect x="290" y="691" width="110" height="12" rx="6" fill="rgba(34,211,238,0.5)"/>
+  </g>
+  <!-- phone 2 -->
+  <g>
+    <rect x="620" y="110" width="330" height="700" rx="36" fill="#102f52" stroke="rgba(34,211,238,0.55)" stroke-width="2.6"/>
+    <line x1="745" y1="146" x2="825" y2="146" stroke="rgba(234,242,252,0.3)" stroke-width="5" stroke-linecap="round"/>
+    <g fill="#123458" stroke="rgba(159,179,201,0.4)" stroke-width="1.8">
+      <rect x="650" y="180" width="270" height="64" rx="10"/>
+      <rect x="650" y="260" width="270" height="64" rx="10"/>
+      <rect x="650" y="340" width="270" height="64" rx="10"/>
+      <rect x="650" y="420" width="270" height="64" rx="10"/>
+    </g>
+    <g fill="rgba(234,242,252,0.24)">
+      <rect x="674" y="204" width="150" height="11" rx="5.5"/>
+      <rect x="674" y="284" width="170" height="11" rx="5.5"/>
+      <rect x="674" y="364" width="130" height="11" rx="5.5"/>
+      <rect x="674" y="444" width="160" height="11" rx="5.5"/>
+    </g>
+    <g fill="none" stroke="rgba(34,211,238,0.55)" stroke-width="2.4">
+      <circle cx="886" cy="212" r="14"/>
+      <circle cx="886" cy="292" r="14"/>
+      <path d="M879 340l7 7 14-14"/>
+      <circle cx="886" cy="452" r="14"/>
+    </g>
+    <rect x="650" y="520" width="270" height="150" rx="10" fill="rgba(255,87,34,0.08)" stroke="rgba(255,87,34,0.5)" stroke-width="1.8"/>
+    <g fill="rgba(234,242,252,0.2)">
+      <rect x="674" y="548" width="200" height="10" rx="5"/>
+      <rect x="674" y="572" width="160" height="9" rx="4.5"/>
+      <rect x="674" y="596" width="185" height="9" rx="4.5"/>
+    </g>
+    <rect x="650" y="700" width="270" height="58" rx="29" fill="rgba(255,87,34,0.15)" stroke="rgba(255,87,34,0.65)" stroke-width="2.2"/>
+    <rect x="730" y="723" width="110" height="12" rx="6" fill="rgba(255,87,34,0.55)"/>
+  </g>
+  <!-- tablet / wide screen -->
+  <g>
+    <rect x="1060" y="220" width="430" height="480" rx="18" fill="#102f52" stroke="rgba(34,211,238,0.55)" stroke-width="2.6"/>
+    <rect x="1090" y="252" width="370" height="48" rx="8" fill="rgba(34,211,238,0.1)" stroke="rgba(34,211,238,0.45)" stroke-width="1.6"/>
+    <rect x="1110" y="268" width="140" height="13" rx="6.5" fill="rgba(234,242,252,0.3)"/>
+    <g fill="#123458" stroke="rgba(159,179,201,0.4)" stroke-width="1.8">
+      <rect x="1090" y="322" width="175" height="150" rx="10"/>
+      <rect x="1285" y="322" width="175" height="150" rx="10"/>
+      <rect x="1090" y="492" width="370" height="90" rx="10"/>
+    </g>
+    <g stroke="rgba(234,242,252,0.3)" stroke-width="2">
+      <path d="M1112 344l131 106M1243 344l-131 106"/>
+      <path d="M1307 344l131 106M1438 344l-131 106"/>
+    </g>
+    <g fill="rgba(234,242,252,0.22)">
+      <rect x="1112" y="520" width="200" height="11" rx="5.5"/>
+      <rect x="1112" y="546" width="150" height="9" rx="4.5"/>
+    </g>
+    <rect x="1090" y="606" width="170" height="54" rx="27" fill="none" stroke="rgba(255,87,34,0.6)" stroke-width="2.2"/>
+    <rect x="1130" y="627" width="90" height="11" rx="5.5" fill="rgba(255,87,34,0.5)"/>
+  </g>
+</svg>

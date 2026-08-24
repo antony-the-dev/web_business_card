@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio — Anton Lisachenko</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="description"
+        content="Redacted BA portfolio: BPMN, UML, architecture, ERDs, story maps and AI-agent flows from real projects. Blurred by design — everything is under NDA.">
+    <meta name="author" content="Anton Lisachenko">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://alisachenko.com/portfolio.html">
+    <meta property="og:site_name" content="Anton Lisachenko">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Portfolio — Anton Lisachenko">
+    <meta property="og:description"
+        content="Real business analysis artifacts — redacted. Process models, sequence diagrams, architecture, ERDs, story maps, AI-agent flows.">
+    <!-- TODO: dedicated og-image with the blurred-artifact / NDA-stamp motif -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://alisachenko.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Redacted portfolio.">
+    <meta name="theme-color" content="#0a2540">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
+    <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
+    <script>document.documentElement.classList.add("js");</script>
+    <style>
+        /* ===== PAGE-SCOPED (always-dark vault page) ===== */
+        .pf-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 4rem;
+            background: var(--bg);
+            min-height: 100vh;
+        }
+
+        body {
+            background-color: var(--bg);
+        }
+
+        .pf-toprow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .legal-back {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .pf-toprow .lang-switch {
+            margin-right: 0;
+        }
+
+        .pf-kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--muted);
+            margin-bottom: 0.9rem;
+        }
+
+        .pf-kicker b {
+            color: var(--accent-text);
+            font-weight: inherit;
+        }
+
+        .pf-head h1 {
+            margin-bottom: 1rem;
+        }
+
+        .pf-intro {
+            color: var(--muted);
+            max-width: 46rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pf-intro strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* ===== CARD STRIP ===== */
+        .pf-strip {
+            display: grid;
+            gap: 2rem;
+            margin-top: 3.5rem;
+        }
+
+        .pf-card {
+            display: grid;
+            grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease, box-shadow 0.3s ease,
+                opacity 0.8s ease, filter 0.8s ease;
+        }
+
+        @media (hover: hover) {
+            .pf-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(255, 87, 34, 0.45);
+                box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
+            }
+        }
+
+        .pf-card:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        .pf-card:active {
+            transform: translateY(-1px);
+            border-color: rgba(255, 87, 34, 0.45);
+        }
+
+        /* ===== MEDIA (blurred preview + stamp) ===== */
+        .pf-media {
+            position: relative;
+            overflow: hidden;
+            min-height: 260px;
+            background: #0d2b4c;
+        }
+
+        .pf-media img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* scale hides the transparent fringe blur leaves at the edges */
+            transform: scale(1.09);
+            filter: blur(9px) saturate(1.05);
+        }
+
+        .pf-media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 70px rgba(10, 37, 64, 0.6);
+        }
+
+        .pf-media::before {
+            content: "";
+            position: absolute;
+            right: -26px;
+            bottom: -30px;
+            width: 150px;
+            height: 150px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.07;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="12,1.6 20.9,6.8 20.9,17.2 12,22.4 3.1,17.2 3.1,6.8" fill="none" stroke="%23ffffff" stroke-width="1.2"/></svg>') no-repeat center / contain;
+        }
+
+        .pf-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 2;
+            transform: translate(-50%, -50%) rotate(-6deg);
+            padding: 0.55em 1.1em;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            white-space: nowrap;
+            color: #ff5722;
+            border: 2px solid rgba(255, 87, 34, 0.75);
+            border-radius: 6px;
+            background: rgba(10, 37, 64, 0.55);
+            -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+            pointer-events: none;
+        }
+
+        /* ===== BODY ===== */
+        .pf-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.7rem;
+            padding: 1.8rem 2rem;
+        }
+
+        .pf-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .pf-body h2 {
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .pf-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pf-pill {
+            flex: none;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 0.28rem 0.8rem;
+            font-size: 0.76rem;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .pf-pill-tool {
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .pf-desc {
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: var(--muted);
+        }
+
+        .pf-more {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        .pf-more b {
+            color: var(--accent-text);
+            font-weight: 500;
+        }
+
+        /* ===== CTA ===== */
+        .pf-cta {
+            margin-top: 4.5rem;
+        }
+
+        .pf-cta h2 {
+            font-size: 1.35rem;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .pf-cta p {
+            color: var(--muted);
+            max-width: 44rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .cta-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+        }
+
+        /* ===== FOOTER ===== */
+        .pf-footer {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 2rem 3rem;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .pf-footer a {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        /* ===== LIGHTBOX ===== */
+        #pf-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        #pf-lightbox[hidden] {
+            display: none;
+        }
+
+        .lb-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 16, 30, 0.82);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: none;
+            padding: 0;
+            cursor: default;
+        }
+
+        .lb-panel {
+            position: relative;
+            width: min(980px, 100%);
+            max-height: calc(100vh - 3rem);
+            overflow-y: auto;
+            background: #0a2540;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(14px) scale(0.985);
+            transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #pf-lightbox.open .lb-panel {
+            opacity: 1;
+            transform: none;
+        }
+
+        .lb-media {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+            background: #0d2b4c;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .lb-media img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.09);
+            filter: blur(9px) saturate(1.05);
+        }
+
+        .lb-info {
+            padding: 1.6rem 2rem 2rem;
+        }
+
+        .lb-info h2 {
+            margin-bottom: 0.8rem;
+        }
+
+        .lb-desc {
+            color: var(--muted);
+            margin-top: 0.8rem;
+            line-height: 1.65;
+        }
+
+        .lb-note {
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--muted);
+            margin-top: 1.4rem;
+        }
+
+        .lb-note b {
+            color: var(--accent-text);
+            font-weight: 500;
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 3;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--line);
+            background: rgba(10, 37, 64, 0.85);
+            color: var(--ink);
+            font-size: 1.25rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .lb-close:hover {
+                color: var(--accent-text);
+                border-color: var(--accent);
+            }
+        }
+
+        .lb-close:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        body.lb-open {
+            overflow: hidden;
+        }
+
+        /* ===== ENTRANCE (JS-gated so no-JS visitors still see everything).
+           Keyframes, not transitions — so the card's own fast hover
+           transitions (transform/border/shadow) stay untouched forever. ===== */
+        html.js .pf-reveal {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(14px);
+        }
+
+        html.js .pf-reveal.shown {
+            animation: pf-develop 0.8s ease both;
+        }
+
+        @keyframes pf-develop {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                filter: blur(0);
+                transform: none;
+            }
+        }
+
+        /* stamp slams in after its card develops */
+        html.js .pf-reveal.shown .pf-stamp {
+            animation: pf-stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s backwards;
+        }
+
+        @keyframes pf-stamp-in {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) rotate(-6deg) scale(1.7);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(-6deg) scale(1);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 820px) {
+            .pf-wrap {
+                padding: 2.5rem 1.25rem 3rem;
+            }
+
+            .pf-toprow {
+                margin-bottom: 2.5rem;
+            }
+
+            .pf-card {
+                grid-template-columns: 1fr;
+            }
+
+            .pf-media {
+                min-height: 0;
+                aspect-ratio: 16 / 10;
+            }
+
+            .pf-body {
+                padding: 1.4rem 1.4rem 1.6rem;
+            }
+
+            .pf-stamp {
+                font-size: 0.62rem;
+            }
+
+            .pf-strip {
+                gap: 1.6rem;
+            }
+        }
+
+        /* ===== REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+
+            html.js .pf-reveal,
+            html.js .pf-reveal.shown,
+            .pf-card,
+            .lb-panel {
+                transition: none;
+                animation: none;
+                opacity: 1;
+                filter: none;
+                transform: none;
+            }
+
+            html.js .pf-reveal.shown .pf-stamp {
+                animation: none;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body data-title-key="portfolio.title">
+
+    <main class="pf-wrap">
+        <header class="pf-head pf-reveal">
+            <div class="pf-toprow">
+                <a class="legal-back" href="index.html" data-i18n="portfolio.back">Back to home</a>
+                <div class="lang-switch" aria-label="Language">
+                    <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                        class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
+                        type="button" aria-label="Українська">UA</button>
+                </div>
+            </div>
+
+            <p class="pf-kicker"><b>NDA //</b> <span data-i18n="portfolio.kicker">Selected work · Redacted</span></p>
+            <h1 class="hex" data-i18n="portfolio.heading">Portfolio</h1>
+            <p class="pf-intro" data-i18n="portfolio.intro.p1"></p>
+            <p class="pf-intro" data-i18n="portfolio.intro.p2"></p>
+        </header>
+
+        <section class="pf-strip" aria-label="Artifacts">
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/bpmn-onboarding.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // SANITIZED</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn.type"></span>
+                        <span class="pf-pill pf-pill-tool">Camunda</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/uml-checkout-sequence.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">CONFIDENTIAL — STRUCTURE ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.uml.type"></span>
+                        <span class="pf-pill pf-pill-tool">PlantUML</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.uml.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.uml.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/arch-system.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // TOPOLOGY ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.arch.type"></span>
+                        <span class="pf-pill pf-pill-tool">draw.io</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.arch.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.arch.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/erd-model.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // SANITIZED</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.erd.type"></span>
+                        <span class="pf-pill pf-pill-tool">dbdiagram.io</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.erd.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.erd.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/story-map.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">INTERNAL // REDACTED</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.map.type"></span>
+                        <span class="pf-pill pf-pill-tool">Miro</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.map.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.map.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/brd-template.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // PATTERN ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.doc.type"></span>
+                        <span class="pf-pill pf-pill-tool">Confluence</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.doc.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.doc.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/wireframes-mobile.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">CONFIDENTIAL — STRUCTURE ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.wireframe.type"></span>
+                        <span class="pf-pill pf-pill-tool">Figma</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.wireframe.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.wireframe.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/ai-agent-flow.svg" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // SANITIZED</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.agent.type"></span>
+                        <span class="pf-pill pf-pill-tool">n8n</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.agent.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.agent.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="pf-cta pf-reveal">
+            <span class="deco-line" style="width:60px;"></span>
+            <h2 class="hex" data-i18n="portfolio.cta.heading"></h2>
+            <p data-i18n="portfolio.cta.text"></p>
+            <div class="cta-links">
+                <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>
+                <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
+                    rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pf-footer">
+        <p>Anton Lisachenko &middot; &copy; 2026 &middot; <a href="index.html">alisachenko.com</a></p>
+    </footer>
+
+    <!-- expanded artifact view -->
+    <div id="pf-lightbox" hidden>
+        <button class="lb-backdrop" type="button" tabindex="-1" aria-label="Close"></button>
+        <figure class="lb-panel" role="dialog" aria-modal="true" aria-labelledby="pf-lb-title">
+            <button class="lb-close" type="button" aria-label="Close">&#215;</button>
+            <div class="lb-media">
+                <img src="" alt="">
+                <span class="pf-stamp"></span>
+            </div>
+            <figcaption class="lb-info">
+                <div class="pf-tags">
+                    <span class="pf-pill lb-type"></span>
+                    <span class="pf-pill pf-pill-tool lb-tool"></span>
+                </div>
+                <h2 id="pf-lb-title" class="hex"></h2>
+                <p class="lb-desc"></p>
+                <p class="lb-note"><b>NDA //</b> <span data-i18n="portfolio.note"></span></p>
+            </figcaption>
+        </figure>
+    </div>
+
+    <script src="lang.js"></script>
+    <script>
+        (function () {
+            var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
+            var cards = Array.prototype.slice.call(document.querySelectorAll(".pf-card"));
+
+            // stagger cards slightly so the strip "develops" top-down
+            // (animation-delay touches only the entrance, never hover)
+            cards.forEach(function (card, i) { card.style.animationDelay = (i % 3) * 0.09 + "s"; });
+
+            if ("IntersectionObserver" in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        entry.target.classList.add("shown");
+                        io.unobserve(entry.target);
+                    });
+                }, { threshold: 0.12 });
+                reveals.forEach(function (el) { io.observe(el); });
+            } else {
+                reveals.forEach(function (el) { el.classList.add("shown"); });
+            }
+
+            // ===== EXPANDED VIEW =====
+            var lb = document.getElementById("pf-lightbox");
+            var lbImg = lb.querySelector(".lb-media img");
+            var lbStamp = lb.querySelector(".lb-media .pf-stamp");
+            var lbTitle = lb.querySelector("#pf-lb-title");
+            var lbDesc = lb.querySelector(".lb-desc");
+            var lbType = lb.querySelector(".lb-type");
+            var lbTool = lb.querySelector(".lb-tool");
+            var closeBtn = lb.querySelector(".lb-close");
+            var lastFocus = null;
+            var hideTimer = null;
+
+            function openLb(card) {
+                lastFocus = document.activeElement;
+                var media = card.querySelector(".pf-media img");
+                var stamp = card.querySelector(".pf-stamp");
+                lbImg.src = media.getAttribute("src");
+                lbImg.alt = media.getAttribute("alt") || "";
+                lbStamp.textContent = stamp ? stamp.textContent : "";
+                lbType.textContent = card.querySelector(".pf-pill").textContent;
+                lbTool.textContent = card.querySelector(".pf-pill-tool").textContent;
+                lbTitle.textContent = card.querySelector("h2").textContent;
+                lbDesc.textContent = card.querySelector(".pf-desc").textContent;
+                if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+                lb.hidden = false;
+                requestAnimationFrame(function () { lb.classList.add("open"); });
+                document.body.classList.add("lb-open");
+                closeBtn.focus();
+            }
+
+            function closeLb() {
+                lb.classList.remove("open");
+                document.body.classList.remove("lb-open");
+                hideTimer = setTimeout(function () { lb.hidden = true; }, 280);
+                if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener("click", function () { openLb(card); });
+                card.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+                        e.preventDefault();
+                        openLb(card);
+                    }
+                });
+            });
+
+            closeBtn.addEventListener("click", closeLb);
+            lb.querySelector(".lb-backdrop").addEventListener("click", closeLb);
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && !lb.hidden) closeLb();
+            });
+        })();
+    </script>
+</body>
+
+</html>

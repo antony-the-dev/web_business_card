@@ -1593,12 +1593,13 @@ a:focus-visible {
     /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
     :root {
         /* band-top = height of the text stack ABOVE the cube (lang + credo +
-           contacts + CV button + row gaps). The cube canvas is absolute at this
-           top, so it must equal where the reserved "portrait" row starts, or the
-           cube slides over the text. Re-derive this if you add/remove rows above
-           the cube. ~14.5rem = lang(1.2) + credo(3.2) + contact(1.6) + cta(2.5)
-           + 4 gaps(1.1) + padding-top(1.75). */
-        --band-top: 14.5rem;
+           contacts + CV button + row gaps). NO-JS FALLBACK ONLY — pin() in
+           script.js measures the CTA's real bottom edge and overrides this
+           inline. Re-derive if you add/remove rows above the cube.
+           ~16.3rem = lang(1.2) + credo(3.2) + contacts TWO lines (~3.4,
+           Email·LinkedIn·GitHub / centered Portfolio) + cta(2.5) + gaps +
+           padding-top(1.75). */
+        --band-top: 16.3rem;
         --band-h: 46vh;
         /* TWO independent stretch levers. The cube's size AND screen position are
            frozen (script.js) — these only add transparent margin, they never move
@@ -1627,7 +1628,10 @@ a:focus-visible {
             "cubehint"
             "portrait"
             "identity";
-        grid-template-rows: auto 3.2rem 1.6rem auto auto var(--band-h) auto;
+        /* contact must be AUTO, not a fixed spacer track: contacts stack on
+           TWO lines on mobile (Email·LinkedIn·GitHub / centered Portfolio +
+           neon beam), a fixed height overflows onto the CV button below */
+        grid-template-rows: auto 3.2rem auto auto auto var(--band-h) auto;
         column-gap: 0;
         row-gap: 1.1rem;
         padding: 1.75rem 1.5rem 1.5rem;
@@ -1885,5 +1889,141 @@ a:focus-visible {
 
     .exp-group:nth-child(6) {
         grid-area: 3 / 1;
+    }
+}
+
+/* ===== PORTFOLIO LINK IN HERO CONTACT =====
+   Looks like Email/LinkedIn/GitHub — same mono uppercase base, same orange
+   draw-in above the word on hover, same accent-text colour.
+   Signature difference: a thin neon scanning beam under the word — a small
+   bright gradient highlight that slowly glides left→right on an infinite
+   loop over a faint base line. Elegant, not dashed.
+    The link itself is position:relative; all decorations live on the inner
+    .pf-word span (display:inline-block) so they hug the WORD, not the <a>:
+    on mobile the anchor is stretched full-width to force its own wrapped row,
+    and pseudos on the stretched box would span the whole screen. A small
+    overshoot (negative inset) lets the glow breathe ~6px past the word edges. */
+.hero-contact a.contact-portfolio {
+    position: relative;
+}
+
+.hero-contact a.contact-portfolio .pf-word {
+    position: relative;
+    display: inline-block;
+}
+
+/* the shared orange draw-in line ABOVE contact links doesn't apply here —
+   portfolio's signature is the neon beam BELOW the word instead */
+.hero-contact a.contact-portfolio::after {
+    display: none;
+}
+
+/* faint base line across the word */
+.hero-contact a.contact-portfolio .pf-word::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    bottom: -0.55em;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 87, 34, 0.15) 10%,
+            rgba(255, 87, 34, 0.15) 90%,
+            transparent 100%);
+    border-radius: 1px;
+}
+
+/* the neon beam gliding along that base line */
+.hero-contact a.contact-portfolio .pf-word::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    bottom: -0.55em;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 87, 34, 0.1) 25%,
+            var(--accent) 48%,
+            var(--accent) 52%,
+            rgba(255, 87, 34, 0.1) 75%,
+            transparent 100%);
+    background-size: 200% 100%;
+    border-radius: 1px;
+    filter: blur(0.3px) drop-shadow(0 0 3px rgba(255, 87, 34, 0.4));
+    opacity: 0.85;
+    transition: opacity 0.25s ease, filter 0.25s ease;
+    animation: neon-scan 3s ease-in-out infinite;
+}
+
+@keyframes neon-scan {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+@media (hover: hover) {
+    /* hover: beam brightens + glow intensifies; text colour comes from the
+       shared .hero-contact a:hover rule */
+    .hero-contact a.contact-portfolio:hover .pf-word::after {
+        opacity: 1;
+        filter: blur(0.2px) drop-shadow(0 0 5px rgba(255, 87, 34, 0.6));
+    }
+}
+
+/* touch devices — no static grey underline (the neon beam is the
+   affordance), brighten on tap */
+@media (hover: none) {
+    .hero-contact a.contact-portfolio {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .hero-contact a.contact-portfolio:active .pf-word::after {
+        opacity: 1;
+        filter: blur(0.2px) drop-shadow(0 0 5px rgba(255, 87, 34, 0.6));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-contact a.contact-portfolio .pf-word::after {
+        animation: none;
+        /* park at center so the beam is visible but still */
+        background-position: 0% 0;
+    }
+}
+
+/* ===== MOBILE: Portfolio on its own row, centered =====
+   Desktop order: Portfolio · Email · LinkedIn · GitHub (all one row).
+   Mobile: Email LinkedIn GitHub (row 1) → Portfolio (row 2, centered) → CV */
+@media (max-width: 900px) {
+    .contact-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 0.9rem;
+    }
+
+    /* flex-basis:100% stretches the ANCHOR across the container so it always
+       wraps onto its own row; text-align:center then centers the inner word.
+       (width:fit-content + margin:auto can't do this — flex-basis wins over
+       width on the main axis, which left the word stuck LEFT with a beam
+       spanning the whole screen.) The beam stays word-wide because it lives
+       on .pf-word, not on the stretched anchor. */
+    .hero-contact a.contact-portfolio {
+        order: 1;
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    /* keep Email/LinkedIn/GitHub on first row */
+    .hero-contact a:not(.contact-portfolio) {
+        order: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .contact-links {
+        gap: 1.25rem;
+        row-gap: 0.9rem;
     }
 }

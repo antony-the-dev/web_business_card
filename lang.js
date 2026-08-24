@@ -9,6 +9,7 @@
             meta: { title: "Anton Lisachenko — Business Analyst" },
             credo: { l1: "Classic business analysis.", l2: "AI-native execution." },
             cv: "Download CV",
+            nav: { portfolio: "Portfolio" },
             cubeHint: "tap the object",
             role: "Business Analyst",
             typed: ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "Discovery to handoff"],
@@ -50,12 +51,39 @@
                     handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
                 }
             },
-            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US" }
+            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US" },
+            portfolio: {
+                title: "Portfolio — Anton Lisachenko",
+                back: "Back to home",
+                kicker: "Selected work · Redacted",
+                heading: "Portfolio",
+                more: "tap to inspect",
+                note: "preview intentionally blurred · details available on call",
+                intro: {
+                    p1: "A slice of real delivery work from the last seven years.",
+                    p2: "Every artifact lives under an NDA, so previews stay blurred on purpose — you see the shape of the thinking, not the client's data. The structure, notation and craft are mine; the details stay in the vault."
+                },
+                items: {
+                    bpmn: { type: "BPMN", title: "Client Onboarding Flow", desc: "Swimlane process across client, back office and compliance lanes, with KYC gateways and an SLA timer on the manual review step." },
+                    uml: { type: "UML · Sequence", title: "Checkout Sequence", desc: "Payment orchestration across gateway, fraud check and ledger services — including the refund alternative flow." },
+                    arch: { type: "Architecture", title: "Marketplace Architecture", desc: "Layered system view: clients, API gateway, core services, queue and three data stores behind one contract boundary." },
+                    erd: { type: "ERD", title: "Booking Data Model", desc: "Entities, keys and relations for the booking domain — a junction table resolves the many-to-many between listings and reservations." },
+                    map: { type: "Story Map", title: "SaaS Story Map", desc: "User activities as the backbone, stories sliced into release bands; the highlighted band is the MVP scope agreement." },
+                    doc: { type: "BRD / SRS", title: "BRD Template Spread", desc: "Sanitized two-page spread of my requirements document structure: scope table, functional sections and the sign-off block." },
+                    wireframe: { type: "Wireframes", title: "Mobile App Wireframes", desc: "Low-fidelity screens for navigation, list/detail flows and empty states — built for early usability testing." },
+                    agent: { type: "AI Agents", title: "AI Agent Flow", desc: "Tool-calling agent with guardrails, a memory loop and fallback paths — the AI-native way I run elicitation follow-ups." }
+                },
+                cta: {
+                    heading: "Want the full picture?",
+                    text: "Under NDA I can walk through any of these live — process decisions, trade-offs and templates included. Let's talk."
+                }
+            }
         },
         uk: {
             meta: { title: "Антон Лісаченко — Бізнес-аналітик" },
             credo: { l1: "Класичний бізнес-аналіз.", l2: "ШІ-орієнтоване виконання." },
             cv: "Завантажити CV",
+            nav: { portfolio: "Портфоліо" },
             cubeHint: "торкнись об'єкта",
             role: "Бізнес-аналітик",
             typed: ["BPMN та UML моделювання", "Схеми API та даних", "Інженерія вимог", "Консалтинг з препродажу", "Від дослідження до передачі"],
@@ -97,7 +125,33 @@
                     handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
                 }
             },
-            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США" }
+            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США" },
+            portfolio: {
+                title: "Портфоліо — Антон Лісаченко",
+                back: "На головну",
+                kicker: "Обрані роботи · Під NDA",
+                heading: "Портфоліо",
+                more: "натисни, щоб розглянути",
+                note: "прев'ю свідомо заблюрене · деталі — на дзвінку",
+                intro: {
+                    p1: "Зріз реальної роботи за останні сім років.",
+                    p2: "Кожен артефакт під NDA, тому прев'ю свідомо заблюрені — видно форму мислення, а не дані клієнта. Структура, нотація і майстерність — мої; деталі лишаються в сховищі."
+                },
+                items: {
+                    bpmn: { type: "BPMN", title: "Процес онбордингу клієнта", desc: "Процес із доріжками клієнта, бекофісу та комплаєнсу, шлюзами KYC і SLA-таймером на ручній перевірці." },
+                    uml: { type: "UML · Sequence", title: "Sequence-діаграма оплати", desc: "Оркестрація платежу між платіжним шлюзом, антифродом і сервісом бухгалтерії — з альтернативним флоу повернення коштів." },
+                    arch: { type: "Архітектура", title: "Архітектура маркетплейсу", desc: "Шарова система: клієнти, API-шлюз, ключові сервіси, черга та три сховища даних за одним контрактом." },
+                    erd: { type: "ERD", title: "Модель даних бронювань", desc: "Сутності, ключі та зв'язки домену бронювань — junction-таблиця розв'язує many-to-many між листингами й резервуваннями." },
+                    map: { type: "Карта історій", title: "Story Map для SaaS", desc: "Активності користувачів як backbone, історії, нарізані на релізні смуги; виділена смуга — узгоджений MVP-скоуп." },
+                    doc: { type: "BRD / SRS", title: "Розгорт BRD-шаблону", desc: "Знеболений двосторінковий розгорт структури документа вимог: таблиця скоупу, функціональні секції та блок погодження." },
+                    wireframe: { type: "Вайфрейми", title: "Вайфрейми мобільного додатку", desc: "Лоу-фай екрани навігації, флоу список/деталь і порожніх станів — зроблені для раннього юзабіліті-тестування." },
+                    agent: { type: "ШІ-агенти", title: "Флоу ШІ-агента", desc: "Агент із викликом інструментів, guardrails, циклом пам'яті та fallback-шляхами — так я ШІ-нативно веду уточнення вимог." }
+                },
+                cta: {
+                    heading: "Хочеш повну картину?",
+                    text: "Під NDA можу пройтися по будь-якій роботі наживо — з рішеннями по процесу, трейд-оффами та шаблонами. Гайда."
+                }
+            }
         }
     };
 
@@ -118,7 +172,11 @@
     // DOM is already fully parsed at this point (this script sits right before
     // the content-consuming scripts, all placed at the end of <body>)
     document.documentElement.lang = lang;
-    if (dict.meta && dict.meta.title) document.title = dict.meta.title;
+    // per-page title: a page can declare <body data-title-key="portfolio.title">
+    // to use its own key instead of the home-page meta.title
+    var titleKey = document.body.getAttribute("data-title-key");
+    var pageTitle = titleKey ? get(titleKey, dict) : (dict.meta && dict.meta.title);
+    if (typeof pageTitle === "string") document.title = pageTitle;
 
     Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
         var val = get(el.getAttribute("data-i18n"), dict);

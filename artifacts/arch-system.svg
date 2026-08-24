@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <pattern id="dg" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="rgba(159,179,201,0.16)"/>
+    </pattern>
+    <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="rgba(34,211,238,0.7)"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1000" fill="#0d2b4c"/>
+  <rect width="1600" height="1000" fill="url(#dg)"/>
+  <!-- layer bands -->
+  <g fill="none" stroke="rgba(159,179,201,0.28)" stroke-width="1.6" stroke-dasharray="7 7">
+    <rect x="90" y="80" width="1420" height="230" rx="14"/>
+    <rect x="90" y="360" width="1420" height="270" rx="14"/>
+    <rect x="90" y="680" width="1420" height="240" rx="14"/>
+  </g>
+  <!-- band labels -->
+  <g fill="rgba(234,242,252,0.25)">
+    <rect x="120" y="104" width="120" height="12" rx="6"/>
+    <rect x="120" y="384" width="150" height="12" rx="6"/>
+    <rect x="120" y="704" width="110" height="12" rx="6"/>
+  </g>
+  <!-- client layer -->
+  <g fill="#123458" stroke="rgba(34,211,238,0.55)" stroke-width="2">
+    <rect x="200" y="140" width="240" height="130" rx="12"/>
+    <rect x="620" y="140" width="240" height="130" rx="12"/>
+    <rect x="1040" y="140" width="240" height="130" rx="12"/>
+  </g>
+  <g fill="rgba(234,242,252,0.26)">
+    <rect x="232" y="180" width="176" height="13" rx="6.5"/>
+    <rect x="652" y="180" width="176" height="13" rx="6.5"/>
+    <rect x="1072" y="180" width="176" height="13" rx="6.5"/>
+    <rect x="232" y="212" width="130" height="9" rx="4.5"/>
+    <rect x="652" y="212" width="130" height="9" rx="4.5"/>
+    <rect x="1072" y="212" width="130" height="9" rx="4.5"/>
+  </g>
+  <!-- api gateway -->
+  <rect x="640" y="420" width="320" height="150" rx="14" fill="rgba(255,87,34,0.1)" stroke="rgba(255,87,34,0.65)" stroke-width="2.4"/>
+  <polygon points="800,452 852,482 852,508 800,538 748,508 748,482" fill="none" stroke="rgba(255,87,34,0.75)" stroke-width="3"/>
+  <g fill="rgba(234,242,252,0.3)">
+    <rect x="720" y="530" width="160" height="11" rx="5.5"/>
+  </g>
+  <!-- services layer -->
+  <g fill="#123458" stroke="rgba(34,211,238,0.55)" stroke-width="2">
+    <rect x="200" y="430" width="300" height="130" rx="12"/>
+    <rect x="1090" y="430" width="300" height="130" rx="12"/>
+  </g>
+  <g fill="rgba(234,242,252,0.26)">
+    <rect x="232" y="468" width="170" height="13" rx="6.5"/>
+    <rect x="1122" y="468" width="170" height="13" rx="6.5"/>
+    <rect x="232" y="500" width="120" height="9" rx="4.5"/>
+    <rect x="1122" y="500" width="120" height="9" rx="4.5"/>
+  </g>
+  <!-- queue -->
+  <rect x="1330" y="450" width="130" height="90" rx="18" fill="none" stroke="rgba(34,211,238,0.5)" stroke-width="2"/>
+  <line x1="1330" y1="480" x2="1460" y2="480" stroke="rgba(34,211,238,0.5)" stroke-width="2"/>
+  <line x1="1330" y1="510" x2="1460" y2="510" stroke="rgba(34,211,238,0.5)" stroke-width="2"/>
+  <!-- data layer -->
+  <g fill="none" stroke="rgba(159,179,201,0.5)" stroke-width="2.2">
+    <ellipse cx="330" cy="750" rx="90" ry="22"/>
+    <path d="M240 750v90q0 22 90 22t90-22v-90"/>
+    <ellipse cx="800" cy="750" rx="90" ry="22"/>
+    <path d="M710 750v90q0 22 90 22t90-22v-90"/>
+    <ellipse cx="1270" cy="750" rx="90" ry="22"/>
+    <path d="M1180 750v90q0 22 90 22t90-22v-90"/>
+  </g>
+  <g fill="rgba(234,242,252,0.22)">
+    <rect x="280" y="800" width="100" height="10" rx="5"/>
+    <rect x="750" y="800" width="100" height="10" rx="5"/>
+    <rect x="1220" y="800" width="100" height="10" rx="5"/>
+  </g>
+  <!-- connectors -->
+  <g stroke="rgba(34,211,238,0.55)" stroke-width="2.4" fill="none">
+    <path d="M320 270v160" marker-end="url(#fa)"/>
+    <path d="M740 270v150" marker-end="url(#fa)"/>
+    <path d="M1160 270v160h-220q-60 0-60 40v50" marker-end="url(#fa)"/>
+    <path d="M350 560v190" marker-end="url(#fa)"/>
+    <path d="M860 495h230" marker-end="url(#fa)"/>
+    <path d="M1240 560v190" marker-end="url(#fa)"/>
+  </g>
+  <path d="M800 570v180" stroke="rgba(255,87,34,0.65)" stroke-width="2.4" fill="none" marker-end="url(#fa)"/>
+</svg>
