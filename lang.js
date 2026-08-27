@@ -71,6 +71,7 @@
                     map: { type: "Story Map", title: "SaaS Story Map", desc: "User activities as the backbone, stories sliced into release bands; the highlighted band is the MVP scope agreement." },
                     doc: { type: "BRD / SRS", title: "BRD Template Spread", desc: "Sanitized two-page spread of my requirements document structure: scope table, functional sections and the sign-off block." },
                     wireframe: { type: "Wireframes", title: "Mobile App Wireframes", desc: "Low-fidelity screens for navigation, list/detail flows and empty states — built for early usability testing." },
+                    approval: { type: "UML · Sequence", title: "Document Approval Flow", desc: "Component interactions behind a submit-for-approval action: front-end validation, qualified e-signature, service-side checks, status transitions, audit trail and queued notifications." },
                     agent: { type: "AI Agents", title: "AI Agent Flow", desc: "Tool-calling agent with guardrails, a memory loop and fallback paths — the AI-native way I run elicitation follow-ups." }
                 },
                 cta: {
@@ -145,6 +146,7 @@
                     map: { type: "Карта історій", title: "Story Map для SaaS", desc: "Активності користувачів як backbone, історії, нарізані на релізні смуги; виділена смуга — узгоджений MVP-скоуп." },
                     doc: { type: "BRD / SRS", title: "Розгорт BRD-шаблону", desc: "Знеболений двосторінковий розгорт структури документа вимог: таблиця скоупу, функціональні секції та блок погодження." },
                     wireframe: { type: "Вайфрейми", title: "Вайфрейми мобільного додатку", desc: "Лоу-фай екрани навігації, флоу список/деталь і порожніх станів — зроблені для раннього юзабіліті-тестування." },
+                    approval: { type: "UML · Sequence", title: "Флоу погодження документа", desc: "Взаємодія компонентів навколо дії «надіслати на погодження»: валідація в кабінеті, накладання КЕП/УЕП, перевірки та статусні переходи на сервісі, журнал аудиту і сповіщення через черги." },
                     agent: { type: "ШІ-агенти", title: "Флоу ШІ-агента", desc: "Агент із викликом інструментів, guardrails, циклом пам'яті та fallback-шляхами — так я ШІ-нативно веду уточнення вимог." }
                 },
                 cta: {

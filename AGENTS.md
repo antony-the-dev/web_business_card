@@ -98,6 +98,7 @@ Separate `og:image` and `og:description` for portfolio.html. Recruiters share li
 - Index link: `.contact-portfolio` (first item) in `.hero-contact .contact-links` with inner `.pf-word` span — identical to sibling links + the neon scan beam under the word (see "To portfolio from index" above for the locked spec + mobile gotchas); rail captions wired (`see my work` / `мої кейси`). `.contact-links` wraps ≤900px (Portfolio own centred row) and tightens gap ≤600px.
 - sitemap.xml: portfolio.html added (priority 0.8), index lastmod bumped.
 - TODOs: replace placeholder SVGs with real artifact exports (≥1600px wide); dedicated og-image with NDA-stamp motif (og:image currently reuses the main one); user review of layout/wording EN+UA.
+- First REAL artifact swapped in (Aug 24): card #7 `artifacts/wireframes-mobile.svg` → `artifacts/sequence-diagram.png` (user's own edit). i18n key renamed `wireframe` → `approval` (EN+UK texts are NDA-sanitized: no role names / registry names / product names from the source doc — only interaction shape + generic tech breadth). Second pill = `GovTech` (tool unknown; ask user which tool exported the PNG and swap the pill text). PNG is 1113×857 — below the 1600px guideline but acceptable under blur(9px)+cover (lightbox caps at ~980px wide); re-export wider if convenient.
 
 ## User preferences
 - Baby steps; never rush a big refactor unprompted.
