@@ -29,7 +29,7 @@ Separate page (not a section on index.html). Rationale: `#lower` has fragile the
 
 ### Design decisions (locked)
 - **Always dark** — no theme toggle, no pre-paint light script. Navy `#0a2540` background only. Blurred artifacts look far better on navy than on white.
-- **"Redacted Vault" concept**: every artifact image has `filter: blur(8px)` + a mono-uppercase NDA stamp overlay (e.g. `NDA // SANITIZED`, `CONFIDENTIAL — STRUCTURE ONLY`). Hexagon watermark optional. This is a feature, not a workaround — everything is under NDA, and the blur signals "real work, not internet tutorials". Fits the existing design language perfectly.
+- **"Redacted Vault" concept**: real artifact images are pre-blurred BY THE USER at export, shown near-sharp (blur(1px)) in the strip, and carry a mono-uppercase NDA stamp overlay (e.g. `NDA // SANITIZED`, `CONFIDENTIAL — STRUCTURE ONLY`) that only appears in the lightbox (see Status for the locked Sep 5 rule). Hexagon watermark optional. This is a feature, not a workaround — everything is under NDA, and the redaction signals "real work, not internet tutorials". Fits the existing design language perfectly.
 
 ### Design tokens (reuse from style.css)
 | Token | Value |
@@ -44,7 +44,7 @@ Separate page (not a section on index.html). Rationale: `#lower` has fragile the
 Reuse patterns: `.hex` hexagon before headings, `.deco-line` above sections, mono uppercase with `letter-spacing: 0.12–0.18em` for small captions, pill-tags for artifact types (same `.domain-tags` / `.exp-tags` style).
 
 ### Layout
-- **Desktop**: vertical card strip (each card = blurred preview image + NDA stamp overlay + title + type pill + 1-line description). Click opens full-view lightbox or expanded card.
+- **Desktop**: vertical card strip (each card = near-sharp preview image + title + type pill + 1-line description; NDA stamp only in the lightbox). Click opens full-view lightbox or expanded card.
 - **Mobile**: same vertical stack, naturally responsive.
 - **No split-pane** (list-left / preview-right) — overkill for 5–8 artifacts and breaks on mobile.
 - **No filter UI** — with 5–8 items, filters look empty. Type pills on each card serve as visual categorization.
@@ -90,15 +90,16 @@ Separate `og:image` and `og:description` for portfolio.html. Recruiters share li
 | 3 – Interactivity | AI | ~60 lines vanilla JS: card click → expanded view, NDA stamp animations |
 | 4 – Polish | AI | Reveal-blur entrance animations, mobile responsive, link from index hero-contact, sitemap.xml update |
 
-### Status (built Aug 23 2026 — Phases 2+3+4 done, pending user review + real content)
-- `portfolio.html` — full page: back-link + lang-switch top row, kicker `NDA //`, intro ("vault" framing), 8 static cards (media left / text right on desktop ≥821px, stacked below), CTA block, footer. Lightbox = expanded view (same blurred image, type/tool pills, title, desc, note). Esc / backdrop / × close; body scroll lock; focus restore; reopen-race guarded by hideTimer.
-- `artifacts/*.svg` — 8 hand-crafted PLACEHOLDER diagrams in the site palette (navy panel #0d2b4c, teal/orange strokes, fake-text bars instead of readable words). Swap with real PNG/JPG exports by replacing `src` paths — nothing else changes. Blur: `filter: blur(9px)` + `transform: scale(1.09)` inside `overflow:hidden` (scale hides the transparent blur fringe).
-- Entrance is **keyframes-based** (`pf-develop`), NOT transitions — so the card's own fast hover transitions are untouched forever. Stagger via inline `style.animationDelay` (0/.09/.18s cycle). NDA stamp slams in (`pf-stamp-in`, spring cubic-bezier) at .55s after its card reveals. All entrance states gated under `html.js` (class added by a tiny head script) — no-JS visitors see the full page statically.
+### Status (workflow: user exports real artifacts one-by-one; AI adds a card + lang.js keys each time — page grew to 8, then user had all 7 placeholder cards REMOVED Sep 5 2026; only real artifacts remain. Deploy once everything is real.)
+- `portfolio.html` — full page: back-link + lang-switch top row, kicker `NDA //`, intro ("vault" framing), card strip (media left / text right on desktop ≥821px, stacked below), CTA block, footer. Lightbox = expanded view (image, type/tool pills, title, desc, note). Esc / backdrop / × close; body scroll lock; focus restore; reopen-race guarded by hideTimer.
+- `artifacts/` — leftover placeholder SVGs still on disk but UNREFERENCED; delete when each real artifact lands. Real exports go here as PNG/JPG (≥1600px wide guideline; lightbox caps at ~980px).
+- **Blur / NDA-stamp rule (user's Sep 5 design, base for all future cards)**: user pre-blurs each image export HIMSELF. Strip preview CSS is `filter: blur(1px)` + `transform: scale(1.09)` — do NOT restore the old 8px/9px blur. The `.pf-stamp` overlay is `display:none` on strip cards (`.pf-strip .pf-stamp`) and ONLY appears in the lightbox, slamming in via `pf-stamp-in` (spring cubic-bezier, 0.18s delay after `.open`). The card's `.pf-stamp` element must stay in the HTML — JS copies its textContent into the lightbox stamp.
+- Entrance is **keyframes-based** (`pf-develop`), NOT transitions — so the card's own fast hover transitions are untouched forever. Stagger via inline `style.animationDelay` (0/.09/.18s cycle). All entrance states gated under `html.js` (class added by a tiny head script) — no-JS visitors see the full page statically.
 - i18n: all strings under `I18N.en.portfolio` / `I18N.uk.portfolio` in lang.js (+ `nav.portfolio` for the index link). Per-page `<title>` support added to lang.js: pages declare `<body data-title-key="portfolio.title">`; without it falls back to home `meta.title` as before.
 - Index link: `.contact-portfolio` (first item) in `.hero-contact .contact-links` with inner `.pf-word` span — identical to sibling links + the neon scan beam under the word (see "To portfolio from index" above for the locked spec + mobile gotchas); rail captions wired (`see my work` / `мої кейси`). `.contact-links` wraps ≤900px (Portfolio own centred row) and tightens gap ≤600px.
 - sitemap.xml: portfolio.html added (priority 0.8), index lastmod bumped.
 - TODOs: replace placeholder SVGs with real artifact exports (≥1600px wide); dedicated og-image with NDA-stamp motif (og:image currently reuses the main one); user review of layout/wording EN+UA.
-- First REAL artifact swapped in (Aug 24): card #7 `artifacts/wireframes-mobile.svg` → `artifacts/sequence-diagram.png` (user's own edit). i18n key renamed `wireframe` → `approval` (EN+UK texts are NDA-sanitized: no role names / registry names / product names from the source doc — only interaction shape + generic tech breadth). Second pill = `GovTech` (tool unknown; ask user which tool exported the PNG and swap the pill text). PNG is 1113×857 — below the 1600px guideline but acceptable under blur(9px)+cover (lightbox caps at ~980px wide); re-export wider if convenient.
+- First REAL artifact (Aug 24): `artifacts/sequence-diagram.png` (user's own edit). i18n key `approval` (EN+UK texts are NDA-sanitized: no role names / registry names / product names from the source doc — only interaction shape + generic tech breadth). Second pill = `GovTech` (tool unknown; ask user which tool exported the PNG and swap the pill text). PNG is 1113×857 — below the 1600px guideline but acceptable under blur(1px)+cover (lightbox caps at ~980px wide); re-export wider if convenient.
 
 ## User preferences
 - Baby steps; never rush a big refactor unprompted.

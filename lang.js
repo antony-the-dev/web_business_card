@@ -64,15 +64,8 @@
                     p2: "Every artifact lives under an NDA, so previews stay blurred on purpose — you see the shape of the thinking, not the client's data. The structure, notation and craft are mine; the details stay in the vault."
                 },
                 items: {
-                    bpmn: { type: "BPMN", title: "Client Onboarding Flow", desc: "Swimlane process across client, back office and compliance lanes, with KYC gateways and an SLA timer on the manual review step." },
-                    uml: { type: "UML · Sequence", title: "Checkout Sequence", desc: "Payment orchestration across gateway, fraud check and ledger services — including the refund alternative flow." },
-                    arch: { type: "Architecture", title: "Marketplace Architecture", desc: "Layered system view: clients, API gateway, core services, queue and three data stores behind one contract boundary." },
-                    erd: { type: "ERD", title: "Booking Data Model", desc: "Entities, keys and relations for the booking domain — a junction table resolves the many-to-many between listings and reservations." },
-                    map: { type: "Story Map", title: "SaaS Story Map", desc: "User activities as the backbone, stories sliced into release bands; the highlighted band is the MVP scope agreement." },
-                    doc: { type: "BRD / SRS", title: "BRD Template Spread", desc: "Sanitized two-page spread of my requirements document structure: scope table, functional sections and the sign-off block." },
-                    wireframe: { type: "Wireframes", title: "Mobile App Wireframes", desc: "Low-fidelity screens for navigation, list/detail flows and empty states — built for early usability testing." },
-                    approval: { type: "UML · Sequence", title: "Document Approval Flow", desc: "Component interactions behind a submit-for-approval action: front-end validation, qualified e-signature, service-side checks, status transitions, audit trail and queued notifications." },
-                    agent: { type: "AI Agents", title: "AI Agent Flow", desc: "Tool-calling agent with guardrails, a memory loop and fallback paths — the AI-native way I run elicitation follow-ups." }
+                    approval: { type: "UML · Sequence", title: "Nomenclature Approval Flow", desc: "Sequence for approving a nomenclature (catalogue) item: create in «Project» status, save to Postgres, submit with edits locked and a copy held in object storage, notify the clerk via a Redis queue; then either approve (status «Approved») or return with comments (back to «Project», edits unlocked). The founder's signature is not required at the submission stage." },
+                    agent: { type: "AI Agents", title: "Problem Radar", desc: "A zero-cost n8n flow that scans Hacker News for complaint-shaped posts, dedupes them by URL and files each into a Complaints board — a local Ollama model tags noise and theme. The one rule holds: the machine collects, counts and suggests; you decide what is worth building." }
                 },
                 cta: {
                     heading: "Want the full picture?",
@@ -139,15 +132,8 @@
                     p2: "Кожен артефакт під NDA, тому прев'ю свідомо заблюрені — видно форму мислення, а не дані клієнта. Структура, нотація і майстерність — мої; деталі лишаються в сховищі."
                 },
                 items: {
-                    bpmn: { type: "BPMN", title: "Процес онбордингу клієнта", desc: "Процес із доріжками клієнта, бекофісу та комплаєнсу, шлюзами KYC і SLA-таймером на ручній перевірці." },
-                    uml: { type: "UML · Sequence", title: "Sequence-діаграма оплати", desc: "Оркестрація платежу між платіжним шлюзом, антифродом і сервісом бухгалтерії — з альтернативним флоу повернення коштів." },
-                    arch: { type: "Архітектура", title: "Архітектура маркетплейсу", desc: "Шарова система: клієнти, API-шлюз, ключові сервіси, черга та три сховища даних за одним контрактом." },
-                    erd: { type: "ERD", title: "Модель даних бронювань", desc: "Сутності, ключі та зв'язки домену бронювань — junction-таблиця розв'язує many-to-many між листингами й резервуваннями." },
-                    map: { type: "Карта історій", title: "Story Map для SaaS", desc: "Активності користувачів як backbone, історії, нарізані на релізні смуги; виділена смуга — узгоджений MVP-скоуп." },
-                    doc: { type: "BRD / SRS", title: "Розгорт BRD-шаблону", desc: "Знеболений двосторінковий розгорт структури документа вимог: таблиця скоупу, функціональні секції та блок погодження." },
-                    wireframe: { type: "Вайфрейми", title: "Вайфрейми мобільного додатку", desc: "Лоу-фай екрани навігації, флоу список/деталь і порожніх станів — зроблені для раннього юзабіліті-тестування." },
-                    approval: { type: "UML · Sequence", title: "Флоу погодження документа", desc: "Взаємодія компонентів навколо дії «надіслати на погодження»: валідація в кабінеті, накладання КЕП/УЕП, перевірки та статусні переходи на сервісі, журнал аудиту і сповіщення через черги." },
-                    agent: { type: "ШІ-агенти", title: "Флоу ШІ-агента", desc: "Агент із викликом інструментів, guardrails, циклом пам'яті та fallback-шляхами — так я ШІ-нативно веду уточнення вимог." }
+                    approval: { type: "UML · Sequence", title: "Флоу погодження номенклатури", desc: "Sequence-діаграма погодження номенклатури: створення у статусі «Проєкт», збереження в PostgreSQL, подання на погодження з блокуванням редагування та копією в об'єктному сховищі, сповіщення діловода через чергу Redis; далі — «Погодити» (статус «Погоджена») або повернення з коментарями (статус «Проєкт», розблокування редагування). Підпис на етапі подання не вимагається." },
+                    agent: { type: "ШІ-агенти", title: "Problem Radar", desc: "Безкоштовний n8n-пайплайн, який сканує Hacker News на повідомлення у формі скарг, дедуплікує їх за URL і дописує кожне до дошки Complaints — локальна модель Ollama позначає шум і тему. Одне правило: машина збирає, рахує і підказує; ти вирішуєш, що варте того, щоб будувати." }
                 },
                 cta: {
                     heading: "Хочеш повну картину?",

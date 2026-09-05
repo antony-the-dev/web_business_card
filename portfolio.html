@@ -154,9 +154,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* scale hides the transparent fringe blur leaves at the edges */
+            /* scale hides any light seam at the image edges */
             transform: scale(1.09);
-            filter: blur(1px) saturate(1.05);
+            filter: none;
         }
 
         .pf-media::after {
@@ -200,6 +200,12 @@
             -webkit-backdrop-filter: blur(2px);
             backdrop-filter: blur(2px);
             pointer-events: none;
+        }
+
+        /* strip cards: no stamp on the closed preview — it only slaps in
+           when the artifact is opened in the lightbox (below). */
+        .pf-strip .pf-stamp {
+            display: none;
         }
 
         /* ===== BODY ===== */
@@ -371,7 +377,7 @@
             height: 100%;
             object-fit: cover;
             transform: scale(1.09);
-            filter: blur(0.5px) saturate(1.05);
+            filter: none;
         }
 
         .lb-info {
@@ -467,6 +473,11 @@
             animation: pf-stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s backwards;
         }
 
+        /* lightbox: the stamp "slaps in" as the expanded view opens */
+        #pf-lightbox.open .lb-media .pf-stamp {
+            animation: pf-stamp-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.18s backwards;
+        }
+
         @keyframes pf-stamp-in {
             from {
                 opacity: 0;
@@ -525,7 +536,8 @@
                 transform: none;
             }
 
-            html.js .pf-reveal.shown .pf-stamp {
+            html.js .pf-reveal.shown .pf-stamp,
+            #pf-lightbox.open .lb-media .pf-stamp {
                 animation: none;
                 opacity: 1;
             }
@@ -556,102 +568,6 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-onboarding.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">NDA // SANITIZED</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.bpmn.type"></span>
-                        <span class="pf-pill pf-pill-tool">Camunda</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.bpmn.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.bpmn.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
-                    <img src="artifacts/uml-checkout-sequence.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">CONFIDENTIAL — STRUCTURE ONLY</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.uml.type"></span>
-                        <span class="pf-pill pf-pill-tool">PlantUML</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.uml.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.uml.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
-                    <img src="artifacts/arch-system.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">NDA // TOPOLOGY ONLY</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.arch.type"></span>
-                        <span class="pf-pill pf-pill-tool">draw.io</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.arch.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.arch.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
-                    <img src="artifacts/erd-model.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">NDA // SANITIZED</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.erd.type"></span>
-                        <span class="pf-pill pf-pill-tool">dbdiagram.io</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.erd.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.erd.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
-                    <img src="artifacts/story-map.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">INTERNAL // REDACTED</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.map.type"></span>
-                        <span class="pf-pill pf-pill-tool">Miro</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.map.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.map.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
-                    <img src="artifacts/brd-template.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">NDA // PATTERN ONLY</span>
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.doc.type"></span>
-                        <span class="pf-pill pf-pill-tool">Confluence</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.doc.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.doc.desc"></p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
-                <figure class="pf-media">
                     <img src="artifacts/sequence-diagram.png" alt="" loading="lazy">
                     <span class="pf-stamp">CONFIDENTIAL — STRUCTURE ONLY</span>
                 </figure>
@@ -668,8 +584,8 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/ai-agent-flow.svg" alt="" loading="lazy">
-                    <span class="pf-stamp">NDA // SANITIZED</span>
+                    <img src="artifacts/n8n-problem-radar.png" alt="" loading="lazy">
+                    <span class="pf-stamp">OWN TOOL // AI-NATIVE</span>
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
