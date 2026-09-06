@@ -65,7 +65,8 @@
                 },
                 items: {
                     approval: { type: "UML · Sequence", title: "Nomenclature Approval Flow", desc: "Sequence for approving a nomenclature (catalogue) item: create in «Project» status, save to Postgres, submit with edits locked and a copy held in object storage, notify the clerk via a Redis queue; then either approve (status «Approved») or return with comments (back to «Project», edits unlocked). The founder's signature is not required at the submission stage." },
-                    agent: { type: "AI Agents", title: "Problem Radar", desc: "A zero-cost n8n flow that scans Hacker News for complaint-shaped posts, dedupes them by URL and files each into a Complaints board — a local Ollama model tags noise and theme. The one rule holds: the machine collects, counts and suggests; you decide what is worth building." }
+                    agent: { type: "AI Agents", title: "Problem Radar", desc: "A zero-cost n8n flow that scans Hacker News for complaint-shaped posts, dedupes them by URL and files each into a Complaints board — a local Ollama model tags noise and theme. The one rule holds: the machine collects, counts and suggests; you decide what is worth building." },
+                    digest: { type: "AI Agents", title: "News Digest Bot", desc: "An n8n workflow that delivers a daily 09:00 Telegram digest across 15 news sources, processed end-to-end by a local Ollama model. Instead of one oversized prompt it makes three small calls — pick topics, translate, summarise — so it fits on an 8 GB Mac, no paid APIs." }
                 },
                 cta: {
                     heading: "Want the full picture?",
@@ -133,7 +134,8 @@
                 },
                 items: {
                     approval: { type: "UML · Sequence", title: "Флоу погодження номенклатури", desc: "Sequence-діаграма погодження номенклатури: створення у статусі «Проєкт», збереження в PostgreSQL, подання на погодження з блокуванням редагування та копією в об'єктному сховищі, сповіщення діловода через чергу Redis; далі — «Погодити» (статус «Погоджена») або повернення з коментарями (статус «Проєкт», розблокування редагування). Підпис на етапі подання не вимагається." },
-                    agent: { type: "ШІ-агенти", title: "Problem Radar", desc: "Безкоштовний n8n-пайплайн, який сканує Hacker News на повідомлення у формі скарг, дедуплікує їх за URL і дописує кожне до дошки Complaints — локальна модель Ollama позначає шум і тему. Одне правило: машина збирає, рахує і підказує; ти вирішуєш, що варте того, щоб будувати." }
+                    agent: { type: "ШІ-агенти", title: "Problem Radar", desc: "Безкоштовний n8n-пайплайн, який сканує Hacker News на повідомлення у формі скарг, дедуплікує їх за URL і дописує кожне до дошки Complaints — локальна модель Ollama позначає шум і тему. Одне правило: машина збирає, рахує і підказує; ти вирішуєш, що варте того, щоб будувати." },
+                    digest: { type: "ШІ-агенти", title: "News Digest Bot", desc: "n8n-воркфлоу, який щодня о 09:00 надсилає у Telegram дайджест новин із 15 джерел, повністю оброблений локальною моделлю Ollama. Замість одного великого запиту — три малих: вибір тем, переклад і саммарі — тому все працює на Mac з 8 GB, без платних API." }
                 },
                 cta: {
                     heading: "Хочеш повну картину?",
