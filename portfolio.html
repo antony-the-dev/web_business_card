@@ -108,6 +108,43 @@
             margin-top: 3.5rem;
         }
 
+        /* ===== SECTION HEADERS (grouping the strip) ===== */
+        .pf-section-head {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-top: 0.75rem;
+        }
+
+        .pf-section-head:first-child {
+            margin-top: 0;
+        }
+
+        .pf-section-num {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--accent-text);
+        }
+
+        .pf-section-title {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--ink);
+        }
+
+        .pf-section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
         .pf-card {
             display: grid;
             grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
@@ -566,6 +603,12 @@
 
         <section class="pf-strip" aria-label="Artifacts">
 
+            <div class="pf-section-head pf-reveal">
+                <span class="pf-section-num">01 //</span>
+                <span class="pf-section-title" data-i18n="portfolio.sections.process">Process &amp; Notation</span>
+                <span class="pf-section-line"></span>
+            </div>
+
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
                     <img src="artifacts/sequence-diagram.png" alt="" loading="lazy">
@@ -584,13 +627,137 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
+                    <img src="artifacts/bpmn-archives-admin.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // PROCESS ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn.type"></span>
+                        <span class="pf-pill pf-pill-tool">Healthcare</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/bpmn-archive-extract.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // PROCESS ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn4.type"></span>
+                        <span class="pf-pill pf-pill-tool">GovTech</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn4.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn4.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/bpmn-annual-reporting.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // PROCESS ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn2.type"></span>
+                        <span class="pf-pill pf-pill-tool">Energy &amp; Utilities</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn2.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn2.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/bpmn-deposit-publication.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // PROCESS ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn3.type"></span>
+                        <span class="pf-pill pf-pill-tool">Energy &amp; Utilities</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn3.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn3.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <div class="pf-section-head pf-reveal">
+                <span class="pf-section-num">02 //</span>
+                <span class="pf-section-title" data-i18n="portfolio.sections.data">Architecture &amp; Data</span>
+                <span class="pf-section-line"></span>
+            </div>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/general-schematic-diagram.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // TOPOLOGY ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.arch.type"></span>
+                        <span class="pf-pill pf-pill-tool">SaaS</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.arch.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.arch.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/deployment-architecture.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // TOPOLOGY ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.deploy.type"></span>
+                        <span class="pf-pill pf-pill-tool">SaaS</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.deploy.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.deploy.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
+                    <img src="artifacts/dwh-medallion.png" alt="" loading="lazy">
+                    <span class="pf-stamp">NDA // STRUCTURE ONLY</span>
+                </figure>
+                <div class="pf-body">
+                    <div class="pf-tags">
+                        <span class="pf-pill" data-i18n="portfolio.items.dwh.type"></span>
+                        <span class="pf-pill pf-pill-tool">Blockchain &amp; Crypto</span>
+                    </div>
+                    <h2 class="hex" data-i18n="portfolio.items.dwh.title"></h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.dwh.desc"></p>
+                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
+                </div>
+            </article>
+
+            <div class="pf-section-head pf-reveal">
+                <span class="pf-section-num">03 //</span>
+                <span class="pf-section-title" data-i18n="portfolio.sections.ai">AI in Practice</span>
+                <span class="pf-section-line"></span>
+            </div>
+
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+                <figure class="pf-media">
                     <img src="artifacts/n8n-problem-radar.png" alt="" loading="lazy">
                     <span class="pf-stamp">OWN TOOL // AI-NATIVE</span>
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
                         <span class="pf-pill" data-i18n="portfolio.items.agent.type"></span>
-                        <span class="pf-pill pf-pill-tool">n8n</span>
+                        <span class="pf-pill pf-pill-tool">Automation</span>
                     </div>
                     <h2 class="hex" data-i18n="portfolio.items.agent.title"></h2>
                     <p class="pf-desc" data-i18n="portfolio.items.agent.desc"></p>
@@ -606,7 +773,7 @@
                 <div class="pf-body">
                     <div class="pf-tags">
                         <span class="pf-pill" data-i18n="portfolio.items.digest.type"></span>
-                        <span class="pf-pill pf-pill-tool">n8n</span>
+                        <span class="pf-pill pf-pill-tool">Automation</span>
                     </div>
                     <h2 class="hex" data-i18n="portfolio.items.digest.title"></h2>
                     <p class="pf-desc" data-i18n="portfolio.items.digest.desc"></p>
