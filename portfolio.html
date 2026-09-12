@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -35,6 +35,9 @@
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
     <script>document.documentElement.classList.add("js");</script>
+    <!-- apply the theme before first paint: dark is the default, light only if the
+         visitor explicitly toggled it (kills any white/light flash) -->
+    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
     <style>
         /* ===== PAGE-SCOPED (always-dark vault page) ===== */
         .pf-wrap {
@@ -43,6 +46,7 @@
             padding: 3.5rem 2rem 4rem;
             background: var(--bg);
             min-height: 100vh;
+            transition: background-color 0.35s ease, color 0.35s ease;
         }
 
         body {
@@ -346,6 +350,19 @@
             text-align: center;
             color: var(--muted);
             font-size: 0.85rem;
+            transition: color 0.35s ease, border-color 0.35s ease;
+        }
+
+        /* smooth theme transitions for all page elements */
+        .pf-card {
+            transition: border-color 0.35s ease, background-color 0.35s ease,
+                transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+        }
+        .pf-card h3,
+        .pf-card p,
+        .pf-kicker,
+        .pf-intro {
+            transition: color 0.35s ease;
         }
 
         .pf-footer a {
@@ -356,6 +373,19 @@
         }
 
         /* ===== LIGHTBOX ===== */
+        /* the lightbox is the always-dark "vault": its panel, media and stamp use
+           hardcoded navy, so pin the dark-theme tokens here regardless of the
+           page theme — otherwise var(--ink)/var(--muted) flip to navy-on-navy
+           and the info text vanishes in light mode */
+        #pf-lightbox {
+            --bg: #0a2540;
+            --ink: #eaf2fc;
+            --muted: #9fb3c9;
+            --line: rgba(255, 255, 255, 0.14);
+            --accent-text: #ff5722;
+            --accent: #ff5722;
+        }
+
         #pf-lightbox {
             position: fixed;
             inset: 0;
@@ -588,10 +618,22 @@
         <header class="pf-head pf-reveal">
             <div class="pf-toprow">
                 <a class="legal-back" href="index.html" data-i18n="portfolio.back">Back to home</a>
-                <div class="lang-switch" aria-label="Language">
+                <div class="lang-switch" aria-label="Language and theme">
                     <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                         class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
-                        type="button" aria-label="Українська">UA</button>
+                        type="button" aria-label="Українська">UA</button><span class="lang-sep"
+                        aria-hidden="true">·</span>
+                    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+                        <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                            <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
+                                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        </svg>
+                        <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
+                                stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -894,6 +936,32 @@
             lb.querySelector(".lb-backdrop").addEventListener("click", closeLb);
             document.addEventListener("keydown", function (e) {
                 if (e.key === "Escape" && !lb.hidden) closeLb();
+            });
+        })();
+
+        // ===== THEME TOGGLE (same behavior as index.html, standalone) =====
+        (function () {
+            var btn = document.getElementById("theme-toggle");
+            if (!btn) return;
+            var root = document.documentElement;
+            function syncThemeColor() {
+                var meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
+            }
+            syncThemeColor();
+            btn.addEventListener("click", function () {
+                var dark = !root.classList.contains("dark");
+                root.classList.toggle("dark", dark);
+                try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+                syncThemeColor();
+                // iOS Safari: force compositor repaints so the URL-bar / home
+                // indicator chrome refreshes with the theme
+                function repaint() {
+                    document.body.style.webkitTransform = "translateZ(0)";
+                    requestAnimationFrame(function () { document.body.style.webkitTransform = ""; });
+                }
+                repaint();
+                [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
             });
         })();
     </script>

@@ -352,12 +352,10 @@ body.intro-lock {
        + inscribed ellipse 50% 50% so the visible shape is round with soft
        falloff and transparent corners. Center sits at 42% of the band (the
        head, not the neck). */
-    background: radial-gradient(
-        ellipse 66% 60% at 50% 50%,
-        rgba(246, 250, 254, 0.96) 0%,
-        rgba(242, 247, 252, 0.88) 52%,
-        rgba(242, 247, 252, 0) 80%
-    );
+    background: radial-gradient(ellipse 66% 60% at 50% 50%,
+            rgba(246, 250, 254, 0.96) 0%,
+            rgba(242, 247, 252, 0.88) 52%,
+            rgba(242, 247, 252, 0) 80%);
 }
 
 @media (max-width: 900px) {
@@ -372,12 +370,10 @@ body.intro-lock {
         left: 50%;
         top: 42%;
         transform: translate(-50%, -50%);
-        background: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            rgba(246, 250, 254, 0.96) 0%,
-            rgba(242, 247, 252, 0.85) 45%,
-            rgba(242, 247, 252, 0) 100%
-        );
+        background: radial-gradient(ellipse 50% 50% at 50% 50%,
+                rgba(246, 250, 254, 0.96) 0%,
+                rgba(242, 247, 252, 0.85) 45%,
+                rgba(242, 247, 252, 0) 100%);
     }
 }
 
@@ -395,12 +391,10 @@ body.intro-lock {
         left: 70%;
         top: 50%;
         transform: translate(-50%, -50%);
-        background: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            rgba(246, 250, 254, 0.96) 0%,
-            rgba(242, 247, 252, 0.85) 45%,
-            rgba(242, 247, 252, 0) 100%
-        );
+        background: radial-gradient(ellipse 50% 50% at 50% 50%,
+                rgba(246, 250, 254, 0.96) 0%,
+                rgba(242, 247, 252, 0.85) 45%,
+                rgba(242, 247, 252, 0) 100%);
     }
 }
 
@@ -428,7 +422,7 @@ body.intro-lock {
         "credo    lang"
         "credo    ."
         "credo    contact"
-        "cubehint cta"
+        "pages    cta"
         "identity right";
     column-gap: 3.5rem;
     row-gap: 0;
@@ -474,11 +468,11 @@ body.intro-lock {
 /* ===== DOWNLOAD CV BUTTON (pill, gradient orange border -> ink fill on hover) ===== */
 .hero-cta {
     grid-area: cta;
-    align-self: start;
+    align-self: center;
     justify-self: end;
     margin-right: 1rem;
+    margin-top: 15px;
     display: flex;
-    margin-top: 1.2rem;
     pointer-events: auto;
 }
 
@@ -542,30 +536,9 @@ html.dark .cv-btn:active {
     color: #0a2540;
 }
 
-/* ===== CUBE HINT (static line that replaced the 3D "tap me") ===== */
-/* own grid slot: desktop -> under the credo (left); mobile -> under the CV
-   button. Fades on tap and stays hidden for the session (opacity only). */
-.cube-hint {
-    grid-area: cubehint;
-    align-self: start;
-    margin: 0.6rem 0 0;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    pointer-events: auto;
-    transition: opacity 0.5s ease;
-}
-
-.cube-hint.is-tapped {
-    opacity: 0;
-    pointer-events: none;
-}
-
+/* ===== LANGUAGE SWITCH ===== */
 /* language switch — two plain letter-codes, same mono/uppercase language as
-   the contact nav right below it. EN keeps the site's ink color, UA takes
+   the contact nav. EN keeps the site's ink color, UA takes
    the accent orange; whichever is active is full-strength, the other one
    dims — no icon/emoji to render inconsistently across systems. */
 .lang-switch {
@@ -573,9 +546,7 @@ html.dark .cv-btn:active {
     justify-self: end;
     align-self: end;
     margin-right: 1.5rem;
-    /* MUST match .hero-contact's margin-right so both share the same right
-       edge — they sit in the same grid column, justify-self:end pins them to
-       the column's right edge, and this offsets both by the same amount */
+    /* breathing room from the right edge (the right rail area) */
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -716,6 +687,19 @@ html.dark .theme-ic-moon {
     /* reserve space for the right rail */
     pointer-events: auto;
 }
+
+/* Portfolio + Services block UNDER the credo (left column). Shares the
+   .hero-contact link styling above via the extra hero-contact class, but
+   overrides placement + alignment here. */
+.hero-pages {
+    grid-area: pages;
+    justify-self: start;
+    align-self: center;
+    align-items: flex-start;
+    margin-right: 0;
+}
+
+/* .pages-sep removed — divider line was unnecessary */
 
 .contact-links {
     display: flex;
@@ -963,6 +947,7 @@ h3 {
    A 0.2s delay before the swap reads as the trendy "delayed highlight";
    release is immediate. */
 @media (hover: hover) {
+
     .exp-tags span:hover,
     .exp-tags span:active {
         color: #0a2540;
@@ -979,6 +964,7 @@ h3 {
 /* white bottoms (light theme section + the dark theme's developed #lower.light):
    the reverse swaps the other way — navy fill, white letters */
 @media (hover: hover) {
+
     html:not(.dark) #lower:not(.dark) .exp-tags span:hover,
     html:not(.dark) #lower:not(.dark) .exp-tags span:active,
     html.dark #lower.light .exp-tags span:hover,
@@ -992,6 +978,7 @@ h3 {
 /* navy bottoms in the light theme (#lower.dark): the default base rule's
    white-ish colors beat a plain :hover, so the reverse needs its own rule */
 @media (hover: hover) {
+
     #lower.dark .exp-tags span:hover,
     #lower.dark .exp-tags span:active {
         color: #0a2540;
@@ -1507,6 +1494,7 @@ html.dark #lower.light {
 }
 
 @media (hover: hover) {
+
     .domain-tags span:hover,
     .domain-tags span:active {
         color: #0a2540;
@@ -1520,6 +1508,7 @@ html.dark #lower.light {
 
 /* white bottoms: reverse the other way — navy fill, white letters */
 @media (hover: hover) {
+
     html:not(.dark) #lower:not(.dark) .domain-tags span:hover,
     html:not(.dark) #lower:not(.dark) .domain-tags span:active,
     html.dark #lower.light .domain-tags span:hover,
@@ -1533,6 +1522,7 @@ html.dark #lower.light {
 /* navy bottoms in the light theme (#lower.dark): same fix as .exp-tags —
    the white-ish base rule beats a plain :hover, so the reverse needs its own */
 @media (hover: hover) {
+
     #lower.dark .domain-tags span:hover,
     #lower.dark .domain-tags span:active {
         color: #0a2540;
@@ -1597,17 +1587,17 @@ a:focus-visible {
            script.js measures the CTA's real bottom edge and overrides this
            inline. Re-derive if you add/remove rows above the cube.
            ~16.3rem = lang(1.2) + credo(3.2) + contacts TWO lines (~3.4,
-           Email·LinkedIn·GitHub / centered Portfolio) + cta(2.5) + gaps +
-           padding-top(1.75). */
+           Email·LinkedIn·GitHub / centered Portfolio+Services) + cta(2.5) +
+           gaps + padding-top(1.75). */
         --band-top: 16.3rem;
         --band-h: 46vh;
         /* TWO independent stretch levers. The cube's size AND screen position are
            frozen (script.js) — these only add transparent margin, they never move
            or resize the figure. Tune each side on its own:
-             --band-up:   px the band grows UPWARD, over the "tap the cube" hint
+             --band-up:   px the band grows UPWARD
              --band-down: px the band grows DOWNWARD, over the name below
            0 / 0 = original look. Bump each until that edge overlaps the way you want. */
-        --band-up: 68px;
+        --band-up: 60px;
         --band-down: 40px;
     }
 
@@ -1624,13 +1614,14 @@ a:focus-visible {
             "lang"
             "credo"
             "contact"
+            "pages"
             "cta"
-            "cubehint"
             "portrait"
             "identity";
         /* contact must be AUTO, not a fixed spacer track: contacts stack on
            TWO lines on mobile (Email·LinkedIn·GitHub / centered Portfolio +
-           neon beam), a fixed height overflows onto the CV button below */
+           Services + neon beam), a fixed height overflows onto the CV button
+           below */
         grid-template-rows: auto 3.2rem auto auto auto var(--band-h) auto;
         column-gap: 0;
         row-gap: 1.1rem;
@@ -1638,18 +1629,12 @@ a:focus-visible {
         align-content: start;
     }
 
-    /* mobile: button + hint centered, stacked under the contacts, above the cube */
+    /* mobile: button centered, stacked under the contacts, above the cube */
     .hero-cta {
         justify-self: center;
         margin-right: 0;
         margin-top: 0.2rem;
         justify-content: center;
-    }
-
-    .cube-hint {
-        justify-self: center;
-        text-align: center;
-        margin-top: 0.4rem;
     }
 
     .lang-switch {
@@ -1841,6 +1826,7 @@ a:focus-visible {
         grid-template-columns: 1fr 1fr;
         gap: 1.6rem 4rem;
     }
+
     /* NOTE: a nested `.process-strip { margin: 1.5rem -2.5rem 0 }` used to sit
        inside the block above. .process-strip is a SIBLING block, never a
        descendant of .exp-groups, so the rule could never match — removed as
@@ -1954,15 +1940,78 @@ a:focus-visible {
     filter: blur(0.3px) drop-shadow(0 0 3px rgba(255, 87, 34, 0.4));
     opacity: 0.85;
     transition: opacity 0.25s ease, filter 0.25s ease;
-    animation: neon-scan 3s ease-in-out infinite;
+    animation: neon-relay-second 6s ease-in-out infinite;
 }
 
-@keyframes neon-scan {
-    0%   { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
+/* ── RELAY KEYFRAMES ──
+   Two beams coordinated as one continuous sweep:
+   Services (teal) sweeps L→R under first word, exits right;
+   Portfolio (orange) enters from left under second word, sweeps L→R.
+   Short gap between = the "crossing" through the space. */
+
+/* Services (first): sweeps 0–40%, exits right, invisible rest */
+@keyframes neon-relay-first {
+    0% {
+        background-position: 110% 0;
+        opacity: 0;
+    }
+
+    6% {
+        background-position: 90% 0;
+        opacity: 0.85;
+    }
+
+    38% {
+        background-position: -100% 0;
+        opacity: 0.85;
+    }
+
+    46% {
+        background-position: -160% 0;
+        opacity: 0;
+    }
+
+    100% {
+        background-position: -160% 0;
+        opacity: 0;
+    }
+}
+
+/* Portfolio (second): invisible first half, enters from left 52–92% */
+@keyframes neon-relay-second {
+    0% {
+        background-position: 160% 0;
+        opacity: 0;
+    }
+
+    50% {
+        background-position: 160% 0;
+        opacity: 0;
+    }
+
+    56% {
+        background-position: 100% 0;
+        opacity: 0.85;
+    }
+
+    88% {
+        background-position: -100% 0;
+        opacity: 0.85;
+    }
+
+    95% {
+        background-position: -120% 0;
+        opacity: 0;
+    }
+
+    100% {
+        background-position: -120% 0;
+        opacity: 0;
+    }
 }
 
 @media (hover: hover) {
+
     /* hover: beam brightens + glow intensifies; text colour comes from the
        shared .hero-contact a:hover rule */
     .hero-contact a.contact-portfolio:hover .pf-word::after {
@@ -1988,36 +2037,102 @@ a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
     .hero-contact a.contact-portfolio .pf-word::after {
         animation: none;
-        /* park at center so the beam is visible but still */
+        opacity: 0.85;
         background-position: 0% 0;
     }
 }
 
-/* ===== MOBILE: Portfolio on its own row, centered =====
-   Desktop order: Portfolio · Email · LinkedIn · GitHub (all one row).
-   Mobile: Email LinkedIn GitHub (row 1) → Portfolio (row 2, centered) → CV */
+/* ===== SERVICES LINK — TEAL NEON BEAM ===== */
+.hero-contact a.contact-services {
+    position: relative;
+}
+
+.hero-contact a.contact-services .sv-word {
+    position: relative;
+    display: inline-block;
+}
+
+/* suppress the shared orange draw-in line — services has its own teal beam */
+.hero-contact a.contact-services::after {
+    display: none;
+}
+
+/* faint base line across the word */
+.hero-contact a.contact-services .sv-word::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    bottom: -0.55em;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(0, 210, 170, 0.15) 10%,
+            rgba(0, 210, 170, 0.15) 90%,
+            transparent 100%);
+    border-radius: 1px;
+}
+
+/* teal neon beam gliding along the base line */
+.hero-contact a.contact-services .sv-word::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    bottom: -0.55em;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(0, 210, 170, 0.1) 25%,
+            #00d2aa 48%,
+            #00d2aa 52%,
+            rgba(0, 210, 170, 0.1) 75%,
+            transparent 100%);
+    background-size: 200% 100%;
+    border-radius: 1px;
+    filter: blur(0.3px) drop-shadow(0 0 3px rgba(0, 210, 170, 0.4));
+    opacity: 0.85;
+    transition: opacity 0.25s ease, filter 0.25s ease;
+    animation: neon-relay-first 6s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+    .hero-contact a.contact-services:hover .sv-word::after {
+        opacity: 1;
+        filter: blur(0.2px) drop-shadow(0 0 5px rgba(0, 210, 170, 0.6));
+    }
+}
+
+@media (hover: none) {
+    .hero-contact a.contact-services {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .hero-contact a.contact-services:active .sv-word::after {
+        opacity: 1;
+        filter: blur(0.2px) drop-shadow(0 0 5px rgba(0, 210, 170, 0.6));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-contact a.contact-services .sv-word::after {
+        animation: none;
+        opacity: 0.85;
+        background-position: 0% 0;
+    }
+}
+
+/* bridge beam removed — replaced by relay animation on individual beams */
+
+/* ===== MOBILE: Email · LinkedIn · GitHub → CV → Portfolio · Services =====
+   Desktop: Portfolio·Services + CV in same row, Email·LinkedIn·GitHub
+   top-right. Mobile: credo → contacts → CV → Portfolio Services → cube */
 @media (max-width: 900px) {
     .contact-links {
         flex-wrap: wrap;
         justify-content: center;
         row-gap: 0.9rem;
-    }
-
-    /* flex-basis:100% stretches the ANCHOR across the container so it always
-       wraps onto its own row; text-align:center then centers the inner word.
-       (width:fit-content + margin:auto can't do this — flex-basis wins over
-       width on the main axis, which left the word stuck LEFT with a beam
-       spanning the whole screen.) The beam stays word-wide because it lives
-       on .pf-word, not on the stretched anchor. */
-    .hero-contact a.contact-portfolio {
-        order: 1;
-        flex-basis: 100%;
-        text-align: center;
-    }
-
-    /* keep Email/LinkedIn/GitHub on first row */
-    .hero-contact a:not(.contact-portfolio) {
-        order: 0;
     }
 }
 

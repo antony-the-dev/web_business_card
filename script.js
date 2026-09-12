@@ -43,7 +43,7 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     function reveal(el) {
         el.classList.add("shown");
         setTimeout(() => {
-            // a tapped cube-hint stays hidden — never force it back to visible
+            // never force a deliberately-hidden element back to visible
             if (el.classList.contains("is-tapped")) return;
             if (parseFloat(getComputedStyle(el).opacity) < 0.5) {
                 el.style.transition = "none";
@@ -62,7 +62,7 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
         enterEls.forEach((el) => el.classList.add("shown"));
     } else {
         const introWillPlay = (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
-        const base = introWillPlay ? 2300 : 300; // start as the intro fades out
+        const base = introWillPlay ? 1610 : 300; // start as the intro fades out
         enterEls.forEach((el, i) => setTimeout(() => reveal(el), base + i * 240));
     }
 
@@ -187,12 +187,17 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 // ===== CONTACT RAIL: per-link vertical caption on the right edge =====
 (function () {
-    const nav = document.querySelector(".hero-contact");
+    const navs = Array.from(document.querySelectorAll(".hero-contact"));
     const rail = document.querySelector(".contact-rail");
-    if (!nav || !rail) return;
+    if (!navs.length || !rail) return;
     const railText = rail.querySelector(".rail-text");
     // data-rail is set by lang.js (localized) before this script runs
-    const links = Array.from(nav.querySelectorAll("a[data-rail]"));
+    const links = [];
+    navs.forEach((nav) => {
+        links.push(...Array.from(nav.querySelectorAll("a[data-rail]")));
+        nav.addEventListener("mouseleave", hide);
+        nav.addEventListener("focusout", hide);
+    });
 
     function show(a) { railText.textContent = a.dataset.rail; rail.classList.add("show"); }
     function hide() { rail.classList.remove("show"); }
@@ -201,8 +206,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
         a.addEventListener("mouseenter", () => show(a));
         a.addEventListener("focus", () => show(a));
     });
-    nav.addEventListener("mouseleave", hide);
-    nav.addEventListener("focusout", hide);
 
     // the DOWNLOAD CV button drives the same right-edge rail caption ("grab my CV")
     const cv = document.querySelector(".cv-btn[data-rail]");
@@ -390,8 +393,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 (function () {
     const canvasBox = document.getElementById("hero-canvas-container");
     const cta = document.querySelector(".hero-cta");
-    const hint = document.querySelector(".cube-hint");
-    const cubeCanvas = document.getElementById("cube-canvas");
     if (!canvasBox || !cta) return;
     const GAP = 22; // px between the text stack and the top of the cube
 
@@ -399,13 +400,12 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
     function pin() {
         if (window.matchMedia("(max-width: 900px)").matches) {
-            // offsetTop/offsetHeight ignore the reveal-blur transform AND the
-            // hint's opacity fade, so the band holds still whether the hint is
-            // shown or hidden — nothing shifts
-            const stackBottom = Math.max(bottomOf(cta), bottomOf(hint));
-            // --band-up raises the top so the band grows UPWARD over the hint.
-            // The CSS height adds --band-up + --band-down (calc), so --band-down
-            // extends the bottom over the name independently. Cube stays frozen.
+            // offsetTop/offsetHeight ignore the reveal-blur transform, so the
+            // band holds still whether the CTA is mid-animation or settled
+            const stackBottom = bottomOf(cta);
+            // --band-up raises the top so the band grows UPWARD. The CSS height
+            // adds --band-up + --band-down (calc), so --band-down extends the
+            // bottom over the name independently. Cube stays frozen.
             const up = parseFloat(getComputedStyle(document.documentElement)
                 .getPropertyValue("--band-up")) || 0;
             canvasBox.style.top = (stackBottom + GAP - up) + "px";
@@ -420,23 +420,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(pin);
     setTimeout(pin, 800);
     setTimeout(pin, 2600);
-
-    // ---- hint: gently fades out once the cube is tapped and stays hidden for
-    // the whole session (matches the hero's heroTapped flag). Opacity only
-    // (box stays), so the cube band never moves. ----
-    if (hint && cubeCanvas) {
-        let tappedThisSession = false;
-        try { tappedThisSession = sessionStorage.getItem("heroTapped") === "1"; } catch (e) { /* private mode */ }
-        if (tappedThisSession) hint.classList.add("is-tapped");
-        cubeCanvas.addEventListener("click", function () {
-            if (!tappedThisSession) {
-                tappedThisSession = true;
-                hint.classList.add("is-tapped");
-                // inline opacity so no reveal guard/class fight can re-show it
-                hint.style.opacity = "0";
-            }
-        });
-    }
 })();
 
 
@@ -510,7 +493,7 @@ function makeCircleTexture() {
         twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
         breatheSpeed: 0.4,     // cube breathing tempo
         wobble: 0.5,          // camera axis precession: 0 = plain orbit, higher = livelier
-        intro: { scale: 10.0, delayMs: 3000, contractMs: 2000 },
+        intro: { scale: 10.0, delayMs: 2100, contractMs: 1400 },
         bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
         scrollShrink: 0.2,    // desktop only: figure shrinks as the hero scrolls away (0 = off)
         panFrac: 0.20,         // shift figure toward screen-right on desktop (0 = centred)
@@ -1160,13 +1143,13 @@ function makeCircleTexture() {
         // Expansion range. Desktop keeps the original 1 -> 5 blow-up. On phones that
         // made the cube ~4x wider than the viewport, so only stray edge lines were
         // visible running off-screen ("края") — there we grow small -> still on-screen.
-        const p = Math.min(now / 1800, 1);
+        const p = Math.min(now / 1260, 1);
         const s = S0 + (S1 - S0) * easeInOut(p); group.scale.set(s, s, s);
-        const be = easeOut(Math.min(now / 800, 1));
+        const be = easeOut(Math.min(now / 560, 1));
         for (let i = 0; i < NUM_DOTS; i++) { const ix = i * 3; dotPos[ix] = dotTarget[ix] * be; dotPos[ix + 1] = dotTarget[ix + 1] * be; dotPos[ix + 2] = dotTarget[ix + 2] * be; }
         dotGeo.attributes.position.needsUpdate = true;
         dotMat.size = 0.06 * DOT_SCALE * (0.18 + 0.82 * be);   // thin at the burst, full once spread
-        const cubeReveal = easeOut(Math.min(Math.max(now - 450, 0) / 650, 1)); for (const m of cubeMats) m.opacity = m.userData.base * cubeReveal;
+        const cubeReveal = easeOut(Math.min(Math.max(now - 315, 0) / 455, 1)); for (const m of cubeMats) m.opacity = m.userData.base * cubeReveal;
         if (Math.random() < 0.38) { const nf = 2 + Math.floor(Math.random() * 5); for (let k = 0; k < nf; k++) dotFlash[Math.floor(Math.random() * NUM_DOTS)] = 1; }
         for (let i = 0; i < NUM_DOTS; i++) {
             if (dotFlash[i] > 0) dotFlash[i] -= 0.02; if (dotFlash[i] < 0) dotFlash[i] = 0; const f = dotFlash[i];
@@ -1204,7 +1187,7 @@ function makeCircleTexture() {
         const pctEls = [document.getElementById("al-pct-l"), document.getElementById("al-pct-r")];
         const sides = document.querySelectorAll(".al-side");
         const topEl = document.getElementById("al-top");
-        const DUR = 3500;                                   // finishes just before exitIntro (4000ms)
+        const DUR = 2450;                                   // finishes just before exitIntro (2800ms)
         const live = () => document.body.classList.contains("intro-lock");
         const typeCol = (node, text) => {
             if (!node) return; let i = 0; const per = (DUR * 0.85) / text.length;
@@ -1230,6 +1213,6 @@ function makeCircleTexture() {
     function exitIntro() { if (exited) return; exited = true; try { sessionStorage.setItem("introSeen", "1"); } catch (e) { } timers.forEach(clearTimeout); document.body.classList.remove("intro-lock"); window.scrollTo(0, 0); // exit: kill the loader text fast (no lingering text strips on iOS), then fade the navy screen WITH the cube still contracting — the handoff to the hero cube
         const loaderEl = document.getElementById("intro-loader"); if (loaderEl) { loaderEl.style.transition = "opacity 0.18s ease"; loaderEl.style.opacity = "0"; }
         intro.classList.add("is-exiting"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 700); }
-    const auto = setTimeout(exitIntro, 4000);
+    const auto = setTimeout(exitIntro, 2800);
     ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();

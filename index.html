@@ -118,12 +118,21 @@
             <p class="hero-credo reveal-blur" data-enter="1"><span data-i18n="credo.l1">Classic business
                     analysis.</span><br><span data-i18n="credo.l2">AI-native execution.</span></p>
 
-            <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
-            <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
-                <div class="contact-links">
+            <!-- under-credo: Portfolio · Services (own block with a thin divider) -->
+            <nav class="hero-contact hero-pages reveal-blur" data-enter="5" aria-label="Portfolio and services">
+                <div class="contact-links pages-links">
+                    <a class="contact-services" href="services.html"
+                        data-rail-en="what I deliver" data-rail-uk="що я пропоную"><span class="sv-word"
+                            data-i18n="nav.services">Services</span></a>
                     <a class="contact-portfolio" href="portfolio.html"
                         data-rail-en="see my work" data-rail-uk="мої кейси"><span class="pf-word"
                             data-i18n="nav.portfolio">Portfolio</span></a>
+                </div>
+            </nav>
+
+            <!-- top-right: contact nav (thin deco on hover, drives the right rail) -->
+            <nav class="hero-contact reveal-blur" data-enter="5" aria-label="Contact">
+                <div class="contact-links">
                     <a href="mailto:antonlisachenko@gmail.com" data-rail-en="email me"
                         data-rail-uk="напишіть мені">Email</a>
                     <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank" rel="noopener noreferrer"
@@ -133,7 +142,7 @@
                 </div>
             </nav>
 
-            <!-- CTA: download CV — own grid area (under credo on desktop, after
+            <!-- CTA: download CV — own grid area (right column on desktop, after
                  contacts on mobile). Links to the PDF sitting next to index.html -->
             <div class="hero-cta reveal-blur" data-enter="5">
                 <a class="cv-btn" href="CV_BA_Anton-Lisachenko.pdf" download data-rail-en="grab my CV"
@@ -145,11 +154,6 @@
                     <span data-i18n="cv">Download CV</span>
                 </a>
             </div>
-
-            <!-- cube hint: own slot (desktop under credo, mobile under the CV
-                 button). Text comes from lang.js; fades out on tap and stays
-                 hidden for the session (opacity only, so nothing shifts). -->
-            <p class="cube-hint hex reveal-blur" data-enter="6" data-i18n="cubeHint"></p>
 
             <!-- center-left: identity -->
             <div class="col-left">
@@ -213,6 +217,7 @@
                     <span data-i18n="domains.items.7">Energy & Utilities</span>
                     <span data-i18n="domains.items.8">IoT</span>
                     <span data-i18n="domains.items.9">Blockchain & Crypto</span>
+                    <span data-i18n="domains.items.10">Logistics</span>
                 </div>
             </div>
 

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services — Anton Lisachenko</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="description"
+        content="Business Analysis and AI-native development services: requirements, BPMN/UML modeling, architecture, websites and automation — solo, end-to-end.">
+    <meta name="author" content="Anton Lisachenko">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://alisachenko.com/services.html">
+    <meta property="og:site_name" content="Anton Lisachenko">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Services — Anton Lisachenko">
+    <meta property="og:description"
+        content="What I deliver: classic business analysis and AI-native execution — requirements, modeling, architecture, websites, automation. Solo, end-to-end.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://alisachenko.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Services.">
+    <meta name="theme-color" content="#0a2540">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://alisachenko.com/services.html" />
+    <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
+    <script>document.documentElement.classList.add("js");</script>
+    <!-- apply the theme before first paint: dark is the default, light only if the
+         visitor explicitly toggled it (kills any white/light flash) -->
+    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
+    <style>
+        /* ===== PAGE-SCOPED (always-dark services page) ===== */
+        .sv-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 4rem;
+            background: var(--bg);
+            min-height: 100vh;
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        body {
+            background-color: var(--bg);
+        }
+
+        .sv-toprow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .sv-toprow .legal-back {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .sv-toprow .lang-switch {
+            margin-right: 0;
+        }
+
+        .sv-kicker {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--muted);
+            margin-bottom: 0.9rem;
+        }
+
+        .sv-kicker b {
+            color: var(--accent-text);
+            font-weight: inherit;
+        }
+
+        .sv-head h1 {
+            margin-bottom: 1rem;
+        }
+
+        .sv-intro {
+            color: var(--muted);
+            max-width: 46rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== TWO TRACKS ===== */
+        .sv-track {
+            margin-top: 3.5rem;
+        }
+
+        .sv-track-head {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .sv-track-num {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--accent-text);
+        }
+
+        .sv-track-title {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--ink);
+        }
+
+        .sv-track-line {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .sv-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .sv-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .sv-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sv-card {
+            padding: 1.5rem 1.4rem;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s ease;
+        }
+
+        @media (hover: hover) {
+            .sv-card:hover {
+                border-color: rgba(255, 87, 34, 0.45);
+                transform: translateY(-3px);
+                box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
+            }
+        }
+
+        .sv-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sv-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.9rem;
+        }
+
+        .sv-pill {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent-text);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 0.28rem 0.7rem;
+        }
+
+        /* ===== WEBSITES I'VE BUILT (live links, no NDA) ===== */
+        .sv-sites {
+            margin-top: 4.5rem;
+        }
+
+        .sv-sites-head {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .sv-sites-note {
+            color: var(--muted);
+            max-width: 44rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .sv-sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .sv-site-card {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            overflow: hidden;
+            transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s ease;
+        }
+
+        @media (hover: hover) {
+            .sv-site-card:hover {
+                border-color: rgba(255, 87, 34, 0.45);
+                transform: translateY(-3px);
+                box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
+            }
+        }
+
+        .sv-site-thumb {
+            height: 140px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--line);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .sv-site-body {
+            padding: 1.2rem 1.4rem 1.4rem;
+        }
+
+        .sv-site-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .sv-site-card p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .sv-site-link {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0.45rem 0.9rem;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .sv-site-link:hover {
+                color: var(--accent-text);
+                border-color: rgba(255, 87, 34, 0.5);
+            }
+        }
+
+        /* ===== CTA ===== */
+        .sv-cta {
+            margin-top: 4.5rem;
+        }
+
+        .sv-cta h2 {
+            font-size: 1.35rem;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .sv-cta p {
+            color: var(--muted);
+            max-width: 44rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .cta-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+        }
+
+        /* ===== FOOTER ===== */
+        .sv-footer {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 2rem 3rem;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+            transition: color 0.35s ease, border-color 0.35s ease;
+        }
+
+        /* smooth theme transitions for all page elements */
+        .sv-card,
+        .sv-site-card {
+            transition: border-color 0.35s ease, background-color 0.35s ease,
+                transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+        }
+        .sv-card h3,
+        .sv-site-card h3,
+        .sv-kicker,
+        .sv-track-title,
+        .sv-intro,
+        .sv-card p,
+        .sv-site-card p,
+        .sv-sites-note,
+        .sv-cta p,
+        .sv-cta h2 {
+            transition: color 0.35s ease;
+        }
+        .sv-pill,
+        .sv-site-link,
+        .sv-track-line,
+        .sv-site-thumb {
+            transition: color 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+        }
+
+        .sv-footer a {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        /* ===== ENTRANCE (JS-gated so no-JS visitors still see everything) ===== */
+        html.js .sv-reveal {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(14px);
+        }
+
+        html.js .sv-reveal.shown {
+            animation: sv-develop 0.8s ease both;
+        }
+
+        @keyframes sv-develop {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                filter: blur(0);
+                transform: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html.js .sv-reveal { opacity: 1; filter: none; transform: none; }
+            html.js .sv-reveal.shown { animation: none; }
+        }
+
+        @media (max-width: 600px) {
+            .sv-wrap {
+                padding: 2.5rem 1.25rem 3rem;
+            }
+
+            .sv-sites-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sv-site-link {
+                display: block;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body data-title-key="services.title">
+
+    <main class="sv-wrap">
+        <header class="sv-head sv-reveal">
+            <div class="sv-toprow">
+                <a class="legal-back" href="index.html" data-i18n="services.back">Back to home</a>
+                <div class="lang-switch" aria-label="Language and theme">
+                    <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                        class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
+                        type="button" aria-label="Українська">UA</button><span class="lang-sep"
+                        aria-hidden="true">·</span>
+                    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+                        <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                            <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
+                                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        </svg>
+                        <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
+                                stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <p class="sv-kicker"><b>//</b> <span data-i18n="services.kicker">What I deliver</span></p>
+            <h1 class="hex" data-i18n="services.heading">Services</h1>
+            <p class="sv-intro" data-i18n="services.intro.p1"></p>
+            <p class="sv-intro" data-i18n="services.intro.p2"></p>
+        </header>
+
+        <section class="sv-track sv-reveal" aria-label="Business Analysis">
+            <div class="sv-track-head">
+                <span class="sv-track-num">01 //</span>
+                <span class="sv-track-title" data-i18n="services.tracks.analysis.heading">Business Analysis</span>
+                <span class="sv-track-line"></span>
+            </div>
+            <div class="sv-grid">
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.analysis.items.req.title">Requirements &amp; Docs</h3>
+                    <p data-i18n="services.tracks.analysis.items.req.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.req.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.analysis.items.model.title">Modeling</h3>
+                    <p data-i18n="services.tracks.analysis.items.model.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.model.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.analysis.items.arch.title">Architecture</h3>
+                    <p data-i18n="services.tracks.analysis.items.arch.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.arch.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.analysis.items.presale.title">Pre-sale &amp; Discovery</h3>
+                    <p data-i18n="services.tracks.analysis.items.presale.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.presale.pills"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="sv-track sv-reveal" aria-label="AI-native Delivery">
+            <div class="sv-track-head">
+                <span class="sv-track-num">02 //</span>
+                <span class="sv-track-title" data-i18n="services.tracks.delivery.heading">AI-native Delivery</span>
+                <span class="sv-track-line"></span>
+            </div>
+            <div class="sv-grid">
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.delivery.items.bcard.title">Business Cards</h3>
+                    <p data-i18n="services.tracks.delivery.items.bcard.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.bcard.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.delivery.items.landing.title">Landing Pages</h3>
+                    <p data-i18n="services.tracks.delivery.items.landing.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.landing.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.delivery.items.automation.title">Automation</h3>
+                    <p data-i18n="services.tracks.delivery.items.automation.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.automation.pills"></span>
+                </div>
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.delivery.items.fullstack.title">End-to-End Builds</h3>
+                    <p data-i18n="services.tracks.delivery.items.fullstack.desc"></p>
+                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.fullstack.pills"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="sv-sites sv-reveal" aria-label="My work">
+            <div class="sv-sites-head">
+                <span class="sv-track-num">03 //</span>
+                <span class="sv-track-title" data-i18n="services.sites.heading">Websites I've built</span>
+                <span class="sv-track-line"></span>
+            </div>
+            <p class="sv-sites-note" data-i18n="services.sites.note"></p>
+
+            <!-- TODO: replace placeholder hrefs with live site URLs + add real thumbnails -->
+            <div class="sv-sites-grid">
+                <div class="sv-site-card">
+                    <div class="sv-site-thumb" style="background-image:url(artifacts/thumb-alisachenko.png)"></div>
+                    <div class="sv-site-body">
+                        <h3 data-i18n="services.sites.items.pub.title"></h3>
+                        <p data-i18n="services.sites.items.pub.desc"></p>
+                        <a class="sv-site-link" href="https://alisachenko.com" target="_blank"
+                            rel="noopener noreferrer" data-i18n="services.sites.open">open site</a>
+                    </div>
+                </div>
+
+                <div class="sv-site-card">
+                    <div class="sv-site-thumb"></div>
+                    <div class="sv-site-body">
+                        <h3 data-i18n="services.sites.items.kate.title"></h3>
+                        <p data-i18n="services.sites.items.kate.desc"></p>
+                        <a class="sv-site-link" href="https://antony-the-dev.github.io/kate_onokalo/"
+                            target="_blank" rel="noopener noreferrer"
+                            data-i18n="services.sites.open">open site</a>
+                    </div>
+                </div>
+
+                <div class="sv-site-card">
+                    <div class="sv-site-thumb"></div>
+                    <div class="sv-site-body">
+                        <h3 data-i18n="services.sites.items.tesik.title"></h3>
+                        <p data-i18n="services.sites.items.tesik.desc"></p>
+                        <a class="sv-site-link" href="https://antony-the-dev.github.io/Tesik_Craft/"
+                            target="_blank" rel="noopener noreferrer"
+                            data-i18n="services.sites.open">open site</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="sv-cta sv-reveal">
+            <span class="deco-line" style="width:60px;"></span>
+            <h2 class="hex" data-i18n="services.cta.heading"></h2>
+            <p data-i18n="services.cta.text"></p>
+            <div class="cta-links">
+                <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>
+                <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
+                    rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="sv-footer">
+        <p>Anton Lisachenko &middot; &copy; 2026 &middot; <a href="index.html">alisachenko.com</a></p>
+    </footer>
+
+    <script src="lang.js"></script>
+    <script>
+        (function () {
+            var reveals = Array.prototype.slice.call(document.querySelectorAll(".sv-reveal"));
+            if ("IntersectionObserver" in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        entry.target.classList.add("shown");
+                        io.unobserve(entry.target);
+                    });
+                }, { threshold: 0.12 });
+                reveals.forEach(function (el) { io.observe(el); });
+            } else {
+                reveals.forEach(function (el) { el.classList.add("shown"); });
+            }
+        })();
+
+        // ===== THEME TOGGLE (same behavior as index.html, standalone) =====
+        (function () {
+            var btn = document.getElementById("theme-toggle");
+            if (!btn) return;
+            var root = document.documentElement;
+            function syncThemeColor() {
+                var meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
+            }
+            syncThemeColor();
+            btn.addEventListener("click", function () {
+                var dark = !root.classList.contains("dark");
+                root.classList.toggle("dark", dark);
+                try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+                syncThemeColor();
+                // iOS Safari: force compositor repaints so the URL-bar / home
+                // indicator chrome refreshes with the theme
+                function repaint() {
+                    document.body.style.webkitTransform = "translateZ(0)";
+                    requestAnimationFrame(function () { document.body.style.webkitTransform = ""; });
+                }
+                repaint();
+                [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
+            });
+        })();
+    </script>
+</body>
+
+</html>
