@@ -400,15 +400,15 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
     function pin() {
         if (window.matchMedia("(max-width: 900px)").matches) {
-            // offsetTop/offsetHeight ignore the reveal-blur transform, so the
-            // band holds still whether the CTA is mid-animation or settled
             const stackBottom = bottomOf(cta);
-            // --band-up raises the top so the band grows UPWARD. The CSS height
-            // adds --band-up + --band-down (calc), so --band-down extends the
-            // bottom over the name independently. Cube stays frozen.
             const up = parseFloat(getComputedStyle(document.documentElement)
                 .getPropertyValue("--band-up")) || 0;
-            canvasBox.style.top = (stackBottom + GAP - up) + "px";
+            const natural = stackBottom + GAP - up;
+            // keep the cube roughly vertically centered on screen: the band must
+            // not start higher than 30% of the viewport, so text can move up
+            // without dragging the cube along with it
+            const minTop = window.innerHeight * 0.27;
+            canvasBox.style.top = Math.max(natural, minTop) + "px";
         } else {
             canvasBox.style.top = ""; // desktop: fall back to the full-bleed CSS
         }

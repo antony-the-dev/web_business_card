@@ -352,10 +352,12 @@ body.intro-lock {
        + inscribed ellipse 50% 50% so the visible shape is round with soft
        falloff and transparent corners. Center sits at 42% of the band (the
        head, not the neck). */
-    background: radial-gradient(ellipse 66% 60% at 50% 50%,
-            rgba(246, 250, 254, 0.96) 0%,
-            rgba(242, 247, 252, 0.88) 52%,
-            rgba(242, 247, 252, 0) 80%);
+    background: radial-gradient(
+        ellipse 66% 60% at 50% 50%,
+        rgba(246, 250, 254, 0.96) 0%,
+        rgba(242, 247, 252, 0.88) 52%,
+        rgba(242, 247, 252, 0) 80%
+    );
 }
 
 @media (max-width: 900px) {
@@ -370,10 +372,12 @@ body.intro-lock {
         left: 50%;
         top: 42%;
         transform: translate(-50%, -50%);
-        background: radial-gradient(ellipse 50% 50% at 50% 50%,
-                rgba(246, 250, 254, 0.96) 0%,
-                rgba(242, 247, 252, 0.85) 45%,
-                rgba(242, 247, 252, 0) 100%);
+        background: radial-gradient(
+            ellipse 50% 50% at 50% 50%,
+            rgba(246, 250, 254, 0.96) 0%,
+            rgba(242, 247, 252, 0.85) 45%,
+            rgba(242, 247, 252, 0) 100%
+        );
     }
 }
 
@@ -391,10 +395,12 @@ body.intro-lock {
         left: 70%;
         top: 50%;
         transform: translate(-50%, -50%);
-        background: radial-gradient(ellipse 50% 50% at 50% 50%,
-                rgba(246, 250, 254, 0.96) 0%,
-                rgba(242, 247, 252, 0.85) 45%,
-                rgba(242, 247, 252, 0) 100%);
+        background: radial-gradient(
+            ellipse 50% 50% at 50% 50%,
+            rgba(246, 250, 254, 0.96) 0%,
+            rgba(242, 247, 252, 0.85) 45%,
+            rgba(242, 247, 252, 0) 100%
+        );
     }
 }
 
@@ -947,7 +953,6 @@ h3 {
    A 0.2s delay before the swap reads as the trendy "delayed highlight";
    release is immediate. */
 @media (hover: hover) {
-
     .exp-tags span:hover,
     .exp-tags span:active {
         color: #0a2540;
@@ -964,7 +969,6 @@ h3 {
 /* white bottoms (light theme section + the dark theme's developed #lower.light):
    the reverse swaps the other way — navy fill, white letters */
 @media (hover: hover) {
-
     html:not(.dark) #lower:not(.dark) .exp-tags span:hover,
     html:not(.dark) #lower:not(.dark) .exp-tags span:active,
     html.dark #lower.light .exp-tags span:hover,
@@ -978,7 +982,6 @@ h3 {
 /* navy bottoms in the light theme (#lower.dark): the default base rule's
    white-ish colors beat a plain :hover, so the reverse needs its own rule */
 @media (hover: hover) {
-
     #lower.dark .exp-tags span:hover,
     #lower.dark .exp-tags span:active {
         color: #0a2540;
@@ -1494,7 +1497,6 @@ html.dark #lower.light {
 }
 
 @media (hover: hover) {
-
     .domain-tags span:hover,
     .domain-tags span:active {
         color: #0a2540;
@@ -1508,7 +1510,6 @@ html.dark #lower.light {
 
 /* white bottoms: reverse the other way — navy fill, white letters */
 @media (hover: hover) {
-
     html:not(.dark) #lower:not(.dark) .domain-tags span:hover,
     html:not(.dark) #lower:not(.dark) .domain-tags span:active,
     html.dark #lower.light .domain-tags span:hover,
@@ -1522,7 +1523,6 @@ html.dark #lower.light {
 /* navy bottoms in the light theme (#lower.dark): same fix as .exp-tags —
    the white-ish base rule beats a plain :hover, so the reverse needs its own */
 @media (hover: hover) {
-
     #lower.dark .domain-tags span:hover,
     #lower.dark .domain-tags span:active {
         color: #0a2540;
@@ -1622,10 +1622,10 @@ a:focus-visible {
            TWO lines on mobile (Email·LinkedIn·GitHub / centered Portfolio +
            Services + neon beam), a fixed height overflows onto the CV button
            below */
-        grid-template-rows: auto 3.2rem auto auto auto var(--band-h) auto;
+        grid-template-rows: auto auto auto auto auto var(--band-h) auto;
         column-gap: 0;
-        row-gap: 1.1rem;
-        padding: 1.75rem 1.5rem 1.5rem;
+        row-gap: 0.6rem;
+        padding: 0.8rem 1.5rem 1.5rem;
         align-content: start;
     }
 
@@ -1633,7 +1633,7 @@ a:focus-visible {
     .hero-cta {
         justify-self: center;
         margin-right: 0;
-        margin-top: 0.2rem;
+        margin-top: 0.8rem;
         justify-content: center;
     }
 
@@ -1653,9 +1653,10 @@ a:focus-visible {
         bottom: auto;
     }
 
-    /* center the top cluster (credo + contacts) on mobil */
+    /* center the top cluster (credo + contacts) on mobile */
     .hero-credo {
         text-align: center;
+        margin-bottom: 0.25rem;
     }
 
     .hero-contact {
@@ -1692,7 +1693,7 @@ a:focus-visible {
 
 @media (max-width: 600px) {
     .hero-grid {
-        padding: 3rem 1.25rem;
+        padding: 0.8rem 1.25rem 1.5rem;
     }
 
     h1 {
@@ -1826,7 +1827,6 @@ a:focus-visible {
         grid-template-columns: 1fr 1fr;
         gap: 1.6rem 4rem;
     }
-
     /* NOTE: a nested `.process-strip { margin: 1.5rem -2.5rem 0 }` used to sit
        inside the block above. .process-strip is a SIBLING block, never a
        descendant of .exp-groups, so the rule could never match — removed as
@@ -1951,67 +1951,24 @@ a:focus-visible {
 
 /* Services (first): sweeps 0–40%, exits right, invisible rest */
 @keyframes neon-relay-first {
-    0% {
-        background-position: 110% 0;
-        opacity: 0;
-    }
-
-    6% {
-        background-position: 90% 0;
-        opacity: 0.85;
-    }
-
-    38% {
-        background-position: -100% 0;
-        opacity: 0.85;
-    }
-
-    46% {
-        background-position: -160% 0;
-        opacity: 0;
-    }
-
-    100% {
-        background-position: -160% 0;
-        opacity: 0;
-    }
+    0%   { background-position: 110% 0; opacity: 0; }
+    6%   { background-position: 90% 0;  opacity: 0.85; }
+    38%  { background-position: -100% 0; opacity: 0.85; }
+    46%  { background-position: -160% 0; opacity: 0; }
+    100% { background-position: -160% 0; opacity: 0; }
 }
 
 /* Portfolio (second): invisible first half, enters from left 52–92% */
 @keyframes neon-relay-second {
-    0% {
-        background-position: 160% 0;
-        opacity: 0;
-    }
-
-    50% {
-        background-position: 160% 0;
-        opacity: 0;
-    }
-
-    56% {
-        background-position: 100% 0;
-        opacity: 0.85;
-    }
-
-    88% {
-        background-position: -100% 0;
-        opacity: 0.85;
-    }
-
-    95% {
-        background-position: -120% 0;
-        opacity: 0;
-    }
-
-    100% {
-        background-position: -120% 0;
-        opacity: 0;
-    }
+    0%   { background-position: 160% 0; opacity: 0; }
+    50%  { background-position: 160% 0; opacity: 0; }
+    56%  { background-position: 100% 0; opacity: 0.85; }
+    88%  { background-position: -100% 0; opacity: 0.85; }
+    95%  { background-position: -120% 0; opacity: 0; }
+    100% { background-position: -120% 0; opacity: 0; }
 }
 
 @media (hover: hover) {
-
     /* hover: beam brightens + glow intensifies; text colour comes from the
        shared .hero-contact a:hover rule */
     .hero-contact a.contact-portfolio:hover .pf-word::after {

@@ -158,6 +158,8 @@
             background: rgba(255, 255, 255, 0.02);
             transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
                 box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         @media (hover: hover) {
@@ -180,16 +182,26 @@
             margin-bottom: 0.9rem;
         }
 
+        .sv-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-top: auto;
+            padding-top: 0.6rem;
+        }
+
         .sv-pill {
             display: inline-block;
             font-family: var(--font-mono);
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--accent-text);
+            letter-spacing: 0.08em;
+            color: var(--muted);
             border: 1px solid var(--line);
             border-radius: 999px;
-            padding: 0.28rem 0.7rem;
+            padding: 0.2rem 0.55rem;
+            white-space: nowrap;
+            line-height: 1.4;
         }
 
         /* ===== WEBSITES I'VE BUILT (live links, no NDA) ===== */
@@ -437,22 +449,22 @@
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.analysis.items.req.title">Requirements &amp; Docs</h3>
                     <p data-i18n="services.tracks.analysis.items.req.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.req.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.analysis.items.req.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.analysis.items.model.title">Modeling</h3>
                     <p data-i18n="services.tracks.analysis.items.model.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.model.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.analysis.items.model.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.analysis.items.arch.title">Architecture</h3>
                     <p data-i18n="services.tracks.analysis.items.arch.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.arch.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.analysis.items.arch.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.analysis.items.presale.title">Pre-sale &amp; Discovery</h3>
                     <p data-i18n="services.tracks.analysis.items.presale.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.analysis.items.presale.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.analysis.items.presale.pills"></div>
                 </div>
             </div>
         </section>
@@ -467,22 +479,22 @@
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.delivery.items.bcard.title">Business Cards</h3>
                     <p data-i18n="services.tracks.delivery.items.bcard.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.bcard.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.bcard.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.delivery.items.landing.title">Landing Pages</h3>
                     <p data-i18n="services.tracks.delivery.items.landing.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.landing.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.landing.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.delivery.items.automation.title">Automation</h3>
                     <p data-i18n="services.tracks.delivery.items.automation.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.automation.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.automation.pills"></div>
                 </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.delivery.items.fullstack.title">End-to-End Builds</h3>
                     <p data-i18n="services.tracks.delivery.items.fullstack.desc"></p>
-                    <span class="sv-pill" data-i18n="services.tracks.delivery.items.fullstack.pills"></span>
+                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.fullstack.pills"></div>
                 </div>
             </div>
         </section>
@@ -548,6 +560,23 @@
     </footer>
 
     <script src="lang.js"></script>
+    <script>
+        /* Split pill text ("BRD / SRS / FRD / Stories") into individual chip spans */
+        (function () {
+            document.querySelectorAll('.sv-pills').forEach(function (wrapper) {
+                var text = wrapper.textContent.trim();
+                if (!text) return;
+                var parts = text.split(/\s*[\/+]\s*/);
+                if (parts.length > 1) {
+                    wrapper.innerHTML = parts.map(function (p) {
+                        return '<span class="sv-pill">' + p.trim() + '</span>';
+                    }).join('');
+                } else {
+                    wrapper.innerHTML = '<span class="sv-pill">' + text + '</span>';
+                }
+            });
+        })();
+    </script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".sv-reveal"));
