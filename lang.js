@@ -12,7 +12,7 @@
             nav: { portfolio: "Portfolio", services: "Services" },
             role: "Business Analyst",
             typed: ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "Discovery to handoff"],
-            rail: { email: "email me", linkedin: "message me", github: "follow me" },
+            rail: { email: "email me", linkedin: "message me" },
             about: {
                 heading: "About",
                 p1: "Business Analyst with 7 years in IT and a background in project management.",
@@ -93,19 +93,19 @@
                     analysis: {
                         heading: "Business Analysis",
                         items: {
-                            req: { title: "Requirements & Docs", desc: "BRD, SRS, FRD and user stories — written so a team can actually build from them, with acceptance criteria that end arguments.", pills: "BRD / SRS / FRD / Stories" },
+                            req: { title: "Requirements & Docs", desc: "BRD, SRS, FRD and user stories — written so a team can actually build from them, with acceptance criteria that end arguments.", pills: "Stories | BRD / SRS / FRD" },
                             model: { title: "Process Modeling", desc: "BPMN and UML diagrams that make the current pain and the target flow visible to business and developers at the same time.", pills: "BPMN / UML / Sequence" },
-                            arch: { title: "Architecture & Data", desc: "System architecture, ERD / DWH schemas and API specs — the blueprint before a single line of code is spent.", pills: "Architecture / ERD / API" },
-                            presale: { title: "Pre-Sale & Discovery", desc: "Feasibility, scope and estimates at the very front of a deal, so stakeholders commit with their eyes open.", pills: "Discovery / Estimates / Workshops" }
+                            arch: { title: "Architecture & Data", desc: "System architecture, ERD / DWH schemas and API specs — the blueprint before a single line of code is spent.", pills: "API | ERD / Architecture" },
+                            presale: { title: "Pre-Sale & Discovery", desc: "Feasibility, scope and estimates at the very front of a deal, so stakeholders commit with their eyes open.", pills: "Workshops | Discovery / Estimates" }
                         }
                     },
                     delivery: {
                         heading: "AI-Native Delivery",
                         items: {
-                            bcard: { title: "Business Card Sites", desc: "A one-page web business card — dark, modern, bilingual — designed, coded and deployed. Live in days, not months.", pills: "HTML / CSS / JS" },
-                            landing: { title: "Landing Pages", desc: "A focused landing that sells one thing: your product, your profile, your offer. Clean copy, clean code, no framework.", pills: "Landing / SEO / Deploy" },
-                            automation: { title: "AI Automation", desc: "n8n workflows and local LLMs that scan, digest and remind for you — zero cloud cost, running on your own hardware.", pills: "n8n / Ollama / RAG" },
-                            fullstack: { title: "Analysis → Live Product", desc: "The full loop: requirements, model, design, build, launch. One person to talk to from discovery to handoff.", pills: "BA + Web + AI" }
+                            websites: { title: "Full Websites & Integrations", desc: "Multi-page sites with booking, payments, CMS and SEO — built to run a business.", pills: "HTML / CSS / JS | API / Integrations / CMS" },
+                            bcard: { title: "Business Card Sites", desc: "A one-page web business card — dark, modern, bilingual — designed, coded and deployed. Live in days, not months.", pills: "HTML / CSS / JS | Bilingual / Deploy" },
+                            landing: { title: "Landing Pages", desc: "A focused landing that sells one thing: your product, your profile, your offer. Clean copy, clean code, no framework.", pills: "HTML / CSS / JS | SEO / Copy" },
+                            automation: { title: "AI Automation", desc: "n8n workflows and local LLMs that scan, digest and remind for you — zero cloud cost, running on your own hardware.", pills: "AI / API | n8n / LLM / RAG" }
                         }
                     }
                 },
@@ -116,7 +116,8 @@
                     items: {
                         pub: { title: "This very site", desc: "A business card site with a dark theme, a 3D intro, bilingual switching and the contact rail you just used." },
                         kate: { title: "Kateryna Onokalo — Fine Art", desc: "An artist's portfolio and online store — gallery with four painting series, shopping cart and custom order flow." },
-                        tesik: { title: "Tesik Craft — Handmade Toys", desc: "A craft workshop storefront — cotton-wool Christmas ornaments and textile teddies, catalog with cart and a production showcase." }
+                        tesik: { title: "Tesik Craft — Handmade Toys", desc: "A craft workshop storefront — cotton-wool Christmas ornaments and textile teddies, catalog with cart and a production showcase." },
+                        shape: { title: "Shape Barbershop", desc: "A barbershop site with a dark, gritty look — services, price list, team and a booking that starts a WhatsApp chat." }
                     }
                 },
                 cta: {
@@ -132,7 +133,7 @@
             nav: { portfolio: "Портфоліо", services: "Послуги" },
             role: "Бізнес-аналітик",
             typed: ["BPMN та UML моделювання", "Схеми API та даних", "Інженерія вимог", "Консалтинг з препродажу", "Від дослідження до передачі"],
-            rail: { email: "напишіть мені", linkedin: "напишіть в LinkedIn", github: "мій GitHub" },
+            rail: { email: "напишіть мені", linkedin: "напишіть в LinkedIn" },
             about: {
                 heading: "Про мене",
                 p1: "Бізнес-аналітик з 7-річним досвідом в IT та кваліфікацією в проєктному менеджменті.",
@@ -213,19 +214,19 @@
                     analysis: {
                         heading: "Бізнес-аналіз",
                         items: {
-                            req: { title: "Вимоги та документація", desc: "BRD, SRS, FRD і юзер-сторі — написані так, щоб команда могла реально будувати за ними, з критеріями приймання, які знімають суперечки.", pills: "BRD / SRS / FRD / Stories" },
+                            req: { title: "Вимоги та документація", desc: "BRD, SRS, FRD і юзер-сторі — написані так, щоб команда могла реально будувати за ними, з критеріями приймання, які знімають суперечки.", pills: "Stories | BRD / SRS / FRD" },
                             model: { title: "Моделювання процесів", desc: "BPMN та UML діаграми, що роблять поточний біль і цільовий флоу видимими одночасно для бізнесу і розробників.", pills: "BPMN / UML / Sequence" },
-                            arch: { title: "Архітектура та дані", desc: "Архітектура системи, ERD / DWH-схеми і API-специфікації — «креслення» до того, як витрачено перший рядок коду.", pills: "Архітектура / ERD / API" },
-                            presale: { title: "Препродаж і дослідження", desc: "Здійсненність, обсяг і оцінки на самому старті угоди, щоб стейкхолдери брали на себе зобов'язання з відкритими очима.", pills: "Discovery / Оцінки / Воркшопи" }
+                            arch: { title: "Архітектура та дані", desc: "Архітектура системи, ERD / DWH-схеми і API-специфікації — «креслення» до того, як витрачено перший рядок коду.", pills: "API | ERD / Архітектура" },
+                            presale: { title: "Препродаж і дослідження", desc: "Здійсненність, обсяг і оцінки на самому старті угоди, щоб стейкхолдери брали на себе зобов'язання з відкритими очима.", pills: "Воркшопи | Discovery / Оцінки" }
                         }
                     },
                     delivery: {
                         heading: "AI-орієнтована розробка",
                         items: {
-                            bcard: { title: "Сайти-візитки", desc: "Односторінкова веб-візитка — темна, сучасна, двомовна — спроєктована, написана і задеплоєна. Живе за дні, а не місяці.", pills: "HTML / CSS / JS" },
-                            landing: { title: "Лендінги", desc: "Лендінг, що продає одну річ: твій продукт, твій профайл, твою пропозицію. Чистий текст, чистий код, без фреймворків.", pills: "Landing / SEO / Deploy" },
-                            automation: { title: "AI-автоматизація", desc: "n8n-воркфлоу та локальні LLM, які сканують, узагальнюють і нагадують за тебе — нульова вартість у хмарі, все працює на твоєму залізі.", pills: "n8n / Ollama / RAG" },
-                            fullstack: { title: "Від аналізу до живого продукту", desc: "Повне коло: вимоги, модель, дизайн, розробка, запуск. Один співрозмовник від дослідження до передачі.", pills: "БА + Web + AI" }
+                            websites: { title: "Повноцінні сайти та інтеграції", desc: "Багатосторінкові сайти із записом, оплатами, CMS та SEO — зроблені для бізнесу.", pills: "HTML / CSS / JS | API / Інтеграції / CMS" },
+                            bcard: { title: "Сайти-візитки", desc: "Односторінкова веб-візитка — темна, сучасна, двомовна — спроєктована, написана і задеплоєна. Живе за дні, а не місяці.", pills: "HTML / CSS / JS | Двомовний / Деплой" },
+                            landing: { title: "Лендінги", desc: "Лендінг, що продає одну річ: твій продукт, твій профайл, твою пропозицію. Чистий текст, чистий код, без фреймворків.", pills: "HTML / CSS / JS | SEO / Копірайт" },
+                            automation: { title: "AI-автоматизація", desc: "n8n-воркфлоу та локальні LLM, які сканують, узагальнюють і нагадують за тебе — нульова вартість у хмарі, все працює на твоєму залізі.", pills: "AI / API | n8n / LLM / RAG" }
                         }
                     }
                 },
@@ -236,7 +237,8 @@
                     items: {
                         pub: { title: "Цей самий сайт", desc: "Сайт-візитка з темною темою, 3D-інтро, перемиканням мови та рейлом контактів, яким ти щойно користувався (-лася)." },
                         kate: { title: "Катерина Онокало — живопис", desc: "Портфоліо та онлайн-магазин художниці — галерея з чотирма серіями, кошик і замовлення на індивідуальне полотно." },
-                        tesik: { title: "Tesik Craft — іграшки ручної роботи", desc: "Вітрина ремісничої майстерні — ватні ялинкові іграшки та текстильні тедді, каталог з кошиком і розділ «як це робиться»." }
+                        tesik: { title: "Tesik Craft — іграшки ручної роботи", desc: "Вітрина ремісничої майстерні — ватні ялинкові іграшки та текстильні тедді, каталог з кошиком і розділ «як це робиться»." },
+                        shape: { title: "Shape Barbershop", desc: "Сайт барбершопу з темним характерним стилем — послуги, прайс, команда і запис, що відкриває чат у WhatsApp." }
                     }
                 },
                 cta: {

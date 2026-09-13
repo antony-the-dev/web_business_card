@@ -184,10 +184,23 @@
 
         .sv-pills {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
+            flex-direction: column;
+            gap: 0.35rem;
             margin-top: auto;
             padding-top: 0.6rem;
+        }
+
+        .sv-pill-line {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.35rem;
+        }
+
+        /* Both tracks: chips hug the LEFT edge of the card (the centered
+           two-line stacks looked ragged there) */
+        .sv-track-left .sv-pill-line {
+            justify-content: flex-start;
         }
 
         .sv-pill {
@@ -202,6 +215,30 @@
             padding: 0.2rem 0.55rem;
             white-space: nowrap;
             line-height: 1.4;
+            transition: color 0.2s ease, background-color 0.2s ease,
+                border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* same hover feedback as the Expertise pills on index.html: the pill
+           REVERSES to the opposite of its background (white fill + navy text
+           on navy, navy fill + white text on white) plus a thin orange ring.
+           The 0.2s delayed swap reads as the trendy "delayed highlight". */
+        @media (hover: hover) {
+            .sv-pill:hover,
+            .sv-pill:active {
+                color: #0a2540;
+                background-color: #fff;
+                border-color: #fff;
+                box-shadow: 0 0 0 2px var(--accent);
+                transition-delay: 0.2s;
+            }
+
+            html:not(.dark) .sv-pill:hover,
+            html:not(.dark) .sv-pill:active {
+                color: #fff;
+                background-color: #0a2540;
+                border-color: #0a2540;
+            }
         }
 
         /* ===== WEBSITES I'VE BUILT (live links, no NDA) ===== */
@@ -257,6 +294,9 @@
 
         .sv-site-body {
             padding: 1.2rem 1.4rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .sv-site-card h3 {
@@ -272,6 +312,8 @@
 
         .sv-site-link {
             display: inline-block;
+            align-self: center;
+            margin-top: auto;
             font-family: var(--font-mono);
             font-size: 0.72rem;
             text-transform: uppercase;
@@ -439,7 +481,7 @@
             <p class="sv-intro" data-i18n="services.intro.p2"></p>
         </header>
 
-        <section class="sv-track sv-reveal" aria-label="Business Analysis">
+        <section class="sv-track sv-reveal sv-track-left" aria-label="Business Analysis">
             <div class="sv-track-head">
                 <span class="sv-track-num">01 //</span>
                 <span class="sv-track-title" data-i18n="services.tracks.analysis.heading">Business Analysis</span>
@@ -469,13 +511,18 @@
             </div>
         </section>
 
-        <section class="sv-track sv-reveal" aria-label="AI-native Delivery">
+        <section class="sv-track sv-reveal sv-track-left" aria-label="AI-native Delivery">
             <div class="sv-track-head">
                 <span class="sv-track-num">02 //</span>
                 <span class="sv-track-title" data-i18n="services.tracks.delivery.heading">AI-native Delivery</span>
                 <span class="sv-track-line"></span>
             </div>
             <div class="sv-grid">
+                <div class="sv-card">
+                    <h3 data-i18n="services.tracks.delivery.items.websites.title">Full Websites &amp; Integrations</h3>
+                    <p data-i18n="services.tracks.delivery.items.websites.desc"></p>
+                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.websites.pills"></div>
+                </div>
                 <div class="sv-card">
                     <h3 data-i18n="services.tracks.delivery.items.bcard.title">Business Cards</h3>
                     <p data-i18n="services.tracks.delivery.items.bcard.desc"></p>
@@ -491,11 +538,6 @@
                     <p data-i18n="services.tracks.delivery.items.automation.desc"></p>
                     <div class="sv-pills" data-i18n="services.tracks.delivery.items.automation.pills"></div>
                 </div>
-                <div class="sv-card">
-                    <h3 data-i18n="services.tracks.delivery.items.fullstack.title">End-to-End Builds</h3>
-                    <p data-i18n="services.tracks.delivery.items.fullstack.desc"></p>
-                    <div class="sv-pills" data-i18n="services.tracks.delivery.items.fullstack.pills"></div>
-                </div>
             </div>
         </section>
 
@@ -507,7 +549,6 @@
             </div>
             <p class="sv-sites-note" data-i18n="services.sites.note"></p>
 
-            <!-- TODO: replace placeholder hrefs with live site URLs + add real thumbnails -->
             <div class="sv-sites-grid">
                 <div class="sv-site-card">
                     <div class="sv-site-thumb" style="background-image:url(artifacts/thumb-alisachenko.png)"></div>
@@ -520,7 +561,18 @@
                 </div>
 
                 <div class="sv-site-card">
-                    <div class="sv-site-thumb"></div>
+                    <div class="sv-site-thumb" style="background-image:url(artifacts/thumb-shapeb.png)"></div>
+                    <div class="sv-site-body">
+                        <h3 data-i18n="services.sites.items.shape.title"></h3>
+                        <p data-i18n="services.sites.items.shape.desc"></p>
+                        <a class="sv-site-link" href="https://shapebarbershop.com"
+                            target="_blank" rel="noopener noreferrer"
+                            data-i18n="services.sites.open">open site</a>
+                    </div>
+                </div>
+
+                <div class="sv-site-card">
+                    <div class="sv-site-thumb" style="background-image:url(artifacts/thumb-kate.png)"></div>
                     <div class="sv-site-body">
                         <h3 data-i18n="services.sites.items.kate.title"></h3>
                         <p data-i18n="services.sites.items.kate.desc"></p>
@@ -531,7 +583,7 @@
                 </div>
 
                 <div class="sv-site-card">
-                    <div class="sv-site-thumb"></div>
+                    <div class="sv-site-thumb" style="background-image:url(artifacts/thumb-tesik.png)"></div>
                     <div class="sv-site-body">
                         <h3 data-i18n="services.sites.items.tesik.title"></h3>
                         <p data-i18n="services.sites.items.tesik.desc"></p>
@@ -561,19 +613,21 @@
 
     <script src="lang.js"></script>
     <script>
-        /* Split pill text ("BRD / SRS / FRD / Stories") into individual chip spans */
+        /* Split pill text into chip spans. Each / or + makes a new chip on the
+           SAME line; a | forces a new centered line (used where one word alone
+           looks better on top and the rest below, e.g. "Stories | BRD / SRS /
+           FRD" = Stories on its own row, then BRD SRS FRD under it). */
         (function () {
             document.querySelectorAll('.sv-pills').forEach(function (wrapper) {
                 var text = wrapper.textContent.trim();
                 if (!text) return;
-                var parts = text.split(/\s*[\/+]\s*/);
-                if (parts.length > 1) {
-                    wrapper.innerHTML = parts.map(function (p) {
+                var lines = text.split('|').map(function (line) {
+                    var parts = line.trim().split(/\s*[\/+]\s*/).filter(function (p) { return p; });
+                    return '<div class="sv-pill-line">' + parts.map(function (p) {
                         return '<span class="sv-pill">' + p.trim() + '</span>';
-                    }).join('');
-                } else {
-                    wrapper.innerHTML = '<span class="sv-pill">' + text + '</span>';
-                }
+                    }).join('') + '</div>';
+                });
+                wrapper.innerHTML = lines.join('');
             });
         })();
     </script>

@@ -274,6 +274,9 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            /* pull the type/tool pills up a touch so they sit centred between
+               the preview image and the title, not hugging the title below */
+            margin-top: -5px;
         }
 
         .pf-pill {
@@ -451,8 +454,14 @@
             padding: 1.6rem 2rem 2rem;
         }
 
+        /* pull the type/tool pills up a touch in the lightbox too, so they sit
+           centred between the image and the title (not crowding the title) */
+        .lb-info .pf-tags {
+            margin-top: -7px;
+        }
+
         .lb-info h2 {
-            margin-bottom: 0.8rem;
+            margin: 0.85rem 0 0.8rem;
         }
 
         .lb-desc {

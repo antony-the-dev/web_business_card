@@ -482,6 +482,12 @@ body.intro-lock {
     pointer-events: auto;
 }
 
+@property --cv-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
 .cv-btn {
     display: inline-flex;
     align-items: center;
@@ -490,12 +496,20 @@ body.intro-lock {
     padding: 0.72rem 1.6rem;
     border: 1.5px solid transparent;
     border-radius: 999px;
-    /* rounded pill WITH a gradient border: theme fill clipped to padding-box,
-       orange gradient (solid left -> fading right) clipped to border-box —
-       this technique, unlike border-image, respects border-radius */
+    /* rounded pill: theme fill clipped to padding-box, an orange conic
+       gradient clipped to the border-box. The conic spins via the registered
+       --cv-angle custom property, so the whole ring slowly rotates — a bright
+       orange "runner" gliding around the pill with a dim trail behind it. */
     background:
         linear-gradient(var(--bg), var(--bg)) padding-box,
-        linear-gradient(90deg, var(--accent) 0%, var(--accent) 55%, rgba(255, 87, 34, 0.18) 100%) border-box;
+        conic-gradient(from var(--cv-angle),
+            var(--accent) 0deg,
+            var(--accent) 50deg,
+            rgba(255, 87, 34, 0.7) 110deg,
+            rgba(255, 87, 34, 0.45) 180deg,
+            rgba(255, 87, 34, 0.45) 300deg,
+            rgba(255, 87, 34, 0.7) 340deg,
+            var(--accent) 360deg) border-box;
     font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 600;
@@ -507,6 +521,13 @@ body.intro-lock {
     color: var(--ink);
     cursor: pointer;
     transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    animation: cv-rotate 7s linear infinite;
+}
+
+@keyframes cv-rotate {
+    to {
+        --cv-angle: 360deg;
+    }
 }
 
 .cv-ic {
@@ -519,20 +540,32 @@ body.intro-lock {
 @media (hover: hover) {
     .cv-btn:hover {
         color: #fff;
-        border-color: transparent;
         background:
             linear-gradient(var(--ink), var(--ink)) padding-box,
-            linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, rgba(255, 87, 34, 0.25) 100%) border-box;
+            conic-gradient(from var(--cv-angle),
+                var(--accent) 0deg,
+                var(--accent) 50deg,
+                rgba(255, 87, 34, 0.7) 110deg,
+                rgba(255, 87, 34, 0.45) 180deg,
+                rgba(255, 87, 34, 0.45) 300deg,
+                rgba(255, 87, 34, 0.7) 340deg,
+                var(--accent) 360deg) border-box;
         box-shadow: 0 6px 18px -8px rgba(10, 37, 64, 0.5);
     }
 }
 
 .cv-btn:active {
     color: #fff;
-    border-color: transparent;
     background:
         linear-gradient(var(--ink), var(--ink)) padding-box,
-        linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, rgba(255, 87, 34, 0.25) 100%) border-box;
+        conic-gradient(from var(--cv-angle),
+            var(--accent) 0deg,
+            var(--accent) 50deg,
+            rgba(255, 87, 34, 0.7) 110deg,
+            rgba(255, 87, 34, 0.45) 180deg,
+            rgba(255, 87, 34, 0.45) 300deg,
+            rgba(255, 87, 34, 0.7) 340deg,
+            var(--accent) 360deg) border-box;
 }
 
 /* dark theme: the hover fill flips to the light ink, so the label must go
@@ -540,6 +573,13 @@ body.intro-lock {
 html.dark .cv-btn:hover,
 html.dark .cv-btn:active {
     color: #0a2540;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cv-btn {
+        animation: none;
+        --cv-angle: 0deg;
+    }
 }
 
 /* ===== LANGUAGE SWITCH ===== */
@@ -704,8 +744,6 @@ html.dark .theme-ic-moon {
     align-items: flex-start;
     margin-right: 0;
 }
-
-/* .pages-sep removed — divider line was unnecessary */
 
 .contact-links {
     display: flex;
@@ -1941,31 +1979,43 @@ a:focus-visible {
     opacity: 0.85;
     transition: opacity 0.25s ease, filter 0.25s ease;
     animation: neon-relay-second 6s ease-in-out infinite;
+    animation-play-state: paused; /* start only when the hero-pages nav is visible */
+}
+
+/* the relay starts once the nav has been revealed (its .reveal-blur wrapper
+   gains .shown after the intro hands off) — otherwise the 6s cycle is already
+   mid-flight (in Portfolio's window) by the time the words appear */
+.reveal-blur.shown a.contact-portfolio .pf-word::after {
+    animation-play-state: running;
 }
 
 /* ── RELAY KEYFRAMES ──
-   Two beams coordinated as one continuous sweep:
-   Services (teal) sweeps L→R under first word, exits right;
-   Portfolio (orange) enters from left under second word, sweeps L→R.
-   Short gap between = the "crossing" through the space. */
+   Two beams coordinated as ONE continuous sweep:
+   Services (teal) sweeps L→R under its word, fades exactly in the GAP
+   between the words (never runs into Portfolio's space); Portfolio
+   (orange) appears at the SAME spot in the gap and continues L→R under
+   its word. The overlap reads as a single line crossing both words. */
 
-/* Services (first): sweeps 0–40%, exits right, invisible rest */
+/* Services (first): enters from left edge, sweeps across, fades gently past
+   the last letter into the gap — never rushes or vanishes early */
 @keyframes neon-relay-first {
-    0%   { background-position: 110% 0; opacity: 0; }
-    6%   { background-position: 90% 0;  opacity: 0.85; }
-    38%  { background-position: -100% 0; opacity: 0.85; }
-    46%  { background-position: -160% 0; opacity: 0; }
-    100% { background-position: -160% 0; opacity: 0; }
+    0%   { background-position: 130% 0; opacity: 0; }
+    8%   { background-position: 100% 0; opacity: 0.85; }
+    40%  { background-position: 0% 0;   opacity: 0.85; }
+    48%  { background-position: -35% 0; opacity: 0; }
+    100% { background-position: -35% 0; opacity: 0; }
 }
 
-/* Portfolio (second): invisible first half, enters from left 52–92% */
+/* Portfolio (second): fades in AT the handoff spot in the gap (no abrupt
+   pop-in), sweeps across, fades gently past its last letter */
 @keyframes neon-relay-second {
-    0%   { background-position: 160% 0; opacity: 0; }
-    50%  { background-position: 160% 0; opacity: 0; }
-    56%  { background-position: 100% 0; opacity: 0.85; }
-    88%  { background-position: -100% 0; opacity: 0.85; }
-    95%  { background-position: -120% 0; opacity: 0; }
-    100% { background-position: -120% 0; opacity: 0; }
+    0%   { background-position: 105% 0; opacity: 0; }
+    46%  { background-position: 105% 0; opacity: 0; }
+    50%  { background-position: 105% 0; opacity: 0.85; }
+    54%  { background-position: 100% 0; opacity: 0.85; }
+    92%  { background-position: 0% 0;   opacity: 0.85; }
+    98%  { background-position: -25% 0; opacity: 0; }
+    100% { background-position: -25% 0; opacity: 0; }
 }
 
 @media (hover: hover) {
@@ -2051,6 +2101,11 @@ a:focus-visible {
     opacity: 0.85;
     transition: opacity 0.25s ease, filter 0.25s ease;
     animation: neon-relay-first 6s ease-in-out infinite;
+    animation-play-state: paused; /* start only when the hero-pages nav is visible */
+}
+
+.reveal-blur.shown a.contact-services .sv-word::after {
+    animation-play-state: running;
 }
 
 @media (hover: hover) {
@@ -2082,20 +2137,29 @@ a:focus-visible {
 
 /* bridge beam removed — replaced by relay animation on individual beams */
 
-/* ===== MOBILE: Email · LinkedIn · GitHub → CV → Portfolio · Services =====
-   Desktop: Portfolio·Services + CV in same row, Email·LinkedIn·GitHub
-   top-right. Mobile: credo → contacts → CV → Portfolio Services → cube */
+/* ===== MOBILE: Email · LinkedIn → CV → Portfolio · Services =====
+   Desktop: Portfolio·Services + CV in same row, Email·LinkedIn top-right.
+   Mobile: credo → contacts → CV → Portfolio Services → cube.
+   Both .contact-links rows become 2-column grids with matching column
+   centers, so Email's centre sits exactly over Services' and LinkedIn's
+   over Portfolio's. Width = the natural content width of the wider row
+   (set inline via --pairs-w by script.js) so the words stay compact —
+   NOT width:100%, which spread them apart into an abyss. */
 @media (max-width: 900px) {
-    .contact-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        row-gap: 0.9rem;
+    .hero-contact .contact-links,
+    .hero-pages .contact-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-items: center;
+        column-gap: 1.75rem;
+        width: var(--pairs-w, auto);
+        margin-inline: auto;
     }
 }
 
 @media (max-width: 600px) {
-    .contact-links {
-        gap: 1.25rem;
-        row-gap: 0.9rem;
+    .hero-contact .contact-links,
+    .hero-pages .contact-links {
+        column-gap: 1.25rem;
     }
 }

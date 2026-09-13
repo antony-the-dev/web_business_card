@@ -218,6 +218,44 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
+// ===== MOBILE PAIR ALIGNMENT: Email over Services, LinkedIn over Portfolio =====
+// Both .contact-links rows (contact: Email·LinkedIn, pages: Services·Portfolio)
+// become 2-column grids on mobile (CSS). For the column centres to line up, both
+// grids must share the SAME width — the natural content width of the WIDER row.
+// We measure the two rows' natural widths here and publish the max as --pairs-w,
+// so the words stay compact instead of stretching to width:100%.
+(function () {
+    const rows = Array.from(document.querySelectorAll(".hero-contact .contact-links"));
+    if (rows.length < 2) return;
+    const mq = window.matchMedia("(max-width: 900px)");
+    const root = document.documentElement;
+
+    function gap(row) {
+        const g = parseFloat(getComputedStyle(row).columnGap);
+        return isNaN(g) ? 0 : g;
+    }
+
+    function naturalWidth(row) {
+        let w = 0;
+        const links = row.querySelectorAll("a");
+        links.forEach((a) => { w += a.offsetWidth; });
+        return w + gap(row) * Math.max(0, links.length - 1);
+    }
+
+    function apply() {
+        if (!mq.matches) { root.style.removeProperty("--pairs-w"); return; }
+        const w = Math.max(...rows.map(naturalWidth));
+        if (w > 0) root.style.setProperty("--pairs-w", w + "px");
+    }
+
+    if (mq.addEventListener) mq.addEventListener("change", apply);
+    else if (mq.addListener) mq.addListener(apply);
+    window.addEventListener("resize", apply);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+    apply();
+})();
+
+
 // ===== INTERACTIVE "HOW I WORK" PIPELINE =====
 (function () {
     // phase content comes from lang.js (localized); no data duplicated here
@@ -234,7 +272,46 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     const HOLD_MS = 3000;
     const EXIT_MS = 900;
 
+    // auto-play: the pipeline runs itself when the section becomes visible —
+    // first step opens ~1s after reveal, then it flows to the next phase every
+    // 4s. A manual click/keypress hands control to the user; after ~8s of
+    // inactivity the auto cycle restarts from the first phase.
+    const AUTOPLAY_REVEAL_DELAY = 1000;
+    const AUTOPLAY_STEP_MS = 4000;
+    const AUTOPLAY_IDLE_MS = 8000;
+
     let buildTimer = null, closeTimer = null, clearTimer = null;
+    let autoplayTimer = null, autoplayStepIndex = 0, autoplayActive = false;
+    let idleTimer = null, revealTimer = null;
+    const phaseOrder = steps.map((s) => s.dataset.phase);
+
+    function stopAutoplay() {
+        autoplayActive = false;
+        clearTimeout(autoplayTimer);
+        clearTimeout(idleTimer);
+    }
+
+    function startAutoplay(fromStart) {
+        stopAutoplay();
+        if (reduceMotion) return;
+        autoplayActive = true;
+        if (fromStart) autoplayStepIndex = 0;
+        const tick = () => {
+            if (!autoplayActive) return;
+            selectPhase(phaseOrder[autoplayStepIndex]);
+            autoplayStepIndex = (autoplayStepIndex + 1) % phaseOrder.length;
+            autoplayTimer = setTimeout(tick, AUTOPLAY_STEP_MS);
+        };
+        tick();
+    }
+
+    function manualSelect(key) {
+        stopAutoplay();
+        clearTimeout(revealTimer);
+        selectPhase(key);
+        // after the user leaves it alone for a while, resume the auto cycle
+        idleTimer = setTimeout(() => startAutoplay(true), AUTOPLAY_IDLE_MS);
+    }
 
     function resetSteps() {
         steps.forEach((s) => {
@@ -308,16 +385,39 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
         buildTimer = setTimeout(() => {
             tree.classList.add("show");
-            closeTimer = setTimeout(collapseTree, HOLD_MS);
+            // only auto-collapse after a manual pick (the user hands back
+            // control); during auto-play the next phase replaces the tree on
+            // its own schedule, so no 3s hold-and-collapse gap
+            if (!autoplayActive) closeTimer = setTimeout(collapseTree, HOLD_MS);
         }, Math.max(150, dur));
     }
 
     steps.forEach((s) => {
-        s.addEventListener("click", () => selectPhase(s.dataset.phase));
+        s.addEventListener("click", () => manualSelect(s.dataset.phase));
         s.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectPhase(s.dataset.phase); }
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); manualSelect(s.dataset.phase); }
         });
     });
+
+    // kick off the auto-play once the "How I work" section scrolls into view;
+    // pause it again if the section scrolls away so it never plays off-screen
+    const block = strip.closest(".block") || strip.parentElement;
+    if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (!autoplayActive && !idleTimer) {
+                        clearTimeout(revealTimer);
+                        revealTimer = setTimeout(() => startAutoplay(true), AUTOPLAY_REVEAL_DELAY);
+                    }
+                } else {
+                    clearTimeout(revealTimer);
+                    stopAutoplay();
+                }
+            });
+        }, { threshold: 0.2 });
+        io.observe(block);
+    }
 
     window.addEventListener("resize", () => {
         const tree = detail.querySelector(".proc-tree");
