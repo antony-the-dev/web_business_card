@@ -25,13 +25,23 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Classic business analysis, AI-native execution.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css?v=2026092707">
     <link rel="canonical" href="https://alisachenko.com/" />
+    <!-- structured data: tells search engines who this page is about -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Anton Lisachenko",
+        "jobTitle": "Business Analyst",
+        "url": "https://alisachenko.com/",
+        "image": "https://alisachenko.com/og-image.png",
+        "sameAs": ["https://www.linkedin.com/in/anton-lisachenko"],
+        "knowsAbout": ["Business analysis", "Requirements engineering", "BPMN", "UML", "System architecture", "User stories", "Pre-sale discovery"],
+        "knowsLanguage": ["en", "uk"]
+    }
+    </script>
     <!-- a reload always starts at the top: restoring the old scroll position made
          the page land mid-way, replay the bottom "develop" and then jump -->
     <script>try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) { }</script>
@@ -243,10 +253,10 @@
         </div>
     </section>
 
-    <script src="lang.js"></script>
+    <script src="lang.js?v=2026092707"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="figure.js"></script>
-    <script src="script.js"></script>
+    <script src="figure.js?v=2026092707"></script>
+    <script src="script.js?v=2026092707"></script>
 </body>
 
 </html>

@@ -12,16 +12,10 @@
 //                  zooms out by the same factor so the figure keeps its size
 //   hit            id of the element that takes clicks/drags (default: the canvas) —
 //                  lets an oversized canvas stay pointer-events: none
+//   coreOnly       true = draw only the drop of liquid light (no crystal); a tap
+//                  makes it vanish and gather again (portfolio emblem)
+//   coreScale      size multiplier for the drop (coreOnly pages)
 
-// ===== shared: soft round sprite so points render as circles =====
-function makeCircleTexture() {
-    const s = 64; const c = document.createElement("canvas"); c.width = c.height = s;
-    const ctx = c.getContext("2d");
-    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-    g.addColorStop(0.0, "rgba(255,255,255,1)"); g.addColorStop(0.6, "rgba(255,255,255,0.85)"); g.addColorStop(1.0, "rgba(255,255,255,0)");
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2); ctx.fill();
-    return new THREE.CanvasTexture(c);
-}
 
 
 
@@ -34,8 +28,9 @@ function makeCircleTexture() {
 // the cursor. A click / tap re-assembles it like a transformer: the glass comes
 // off, strut by strut (bottom to top) each piece pops out, swings round and
 // clicks into its slot on the next solid with an orange spark, then the new
-// solid glazes bottom-up: cube -> hex prism -> icosahedron (with a neural net
-// inside) -> octahedron -> cube ... It never switches on its own (user's call).
+// solid glazes bottom-up: cube -> hex prism -> icosahedron -> octahedron -> cube
+// ..., each round a core of liquid light that dissolves and gathers again.
+// It never switches on its own (user's call).
 // All tuning lives in SCENE_CONFIG.
 (function () {
     const OPTS = window.FIGURE_OPTS || {};
@@ -45,6 +40,9 @@ function makeCircleTexture() {
     const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     const FRAME = OPTS.frame || 1;
     const hit = (OPTS.hit && document.getElementById(OPTS.hit)) || canvas;
+    // coreOnly (portfolio): only the drop of liquid light, no crystal — a tap makes
+    // it vanish and gather again; coreScale sizes it up to logo scale
+    const CORE_ONLY = !!OPTS.coreOnly, CORE_SCALE = OPTS.coreScale || 1;
 
     // ===== THEME PALETTES: the figure recolors itself when the theme flips =====
     // ink/cube/orange = the three stops every dot slowly drifts through;
@@ -55,14 +53,19 @@ function makeCircleTexture() {
             cube: [0.08, 0.72, 0.77],      // site teal
             orange: [1.0, 0.34, 0.13],     // spark / twinkle accent (site --accent #ff5722)
             scan: [0.02, 0.42, 0.5],       // deep teal: reads on white
-            glint: [0.02, 0.42, 0.5]       // pane highlight (white would vanish on white)
+            glint: [0.02, 0.42, 0.5],      // pane highlight (white would vanish on white)
+            // the core on white can't glow (additive light vanishes on white): a
+            // solid teal orb with a faint, lighter corona (dark teal rays read as a smudge)
+            coreHot: [0.36, 0.86, 0.9], coreGlow: [0.05, 0.6, 0.68], coreAdd: false, coreHalo: 0.45
         },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
             cube: [0.13, 0.83, 0.93],      // bright cyan
             orange: [1.0, 0.34, 0.13],
             scan: [0.85, 1.0, 1.0],        // near-white cyan glow
-            glint: [1.0, 1.0, 1.0]         // pane highlight
+            glint: [1.0, 1.0, 1.0],        // pane highlight
+            // the core: white-hot centre, neon cyan rim + corona, added as light
+            coreHot: [1.0, 1.0, 1.0], coreGlow: [0.13, 0.83, 0.93], coreAdd: true, coreHalo: 1
         }
     };
     const isDarkTheme = () => document.documentElement.classList.contains("dark");
@@ -101,9 +104,28 @@ function makeCircleTexture() {
         explode: { amp: { desktop: 0.1, mobile: 0.05 }, periodMs: 4800, wave: 2.2 },
         // an analysis scan: a plane of light sweeps bottom-up through the solid now and then
         scan: { everyMs: 7000, sweepMs: 2400, width: 0.22, firstDelayMs: 3500 },
-        // a neural net inside some solids: neurons + synapses, all but invisible at
-        // rest — the scan's light makes the links it crosses fire (keep it subtle)
-        neural: { shapes: ["icosahedron"], neurons: 26, links: 3, base: 0.02, peak: 0.5, width: 0.3 },
+        // the CORE: LIQUID LIGHT at the heart of every solid — organic against the
+        // crystal's geometry. Metaballs (blob 0 in the centre + satellites) are
+        // raymarched inside a proxy sphere (bound): gathered they melt into one
+        // lumpy, living drop; every cycleMs the drop DISSOLVES into droplets that
+        // swirl round the centre (spread), then they flow back and merge again with
+        // liquid necks (smooth-min k). A TAP pours it into the structure: the drops
+        // flow out to the frame (shell) over outMs and dissolve into it, and their
+        // light becomes the ENERGY that lights the glass, struts and dots while the
+        // solid assembles (energy); after it lands the light flows back over inMs and
+        // a new drop condenses in the centre. The glow round the drops (halo) is their
+        // neon light; the drops light the glass from within (glassLight) and flare
+        // as the scan passes. shapes = scale per solid. PERF: the raymarch proxy
+        // hugs the drops (pad = halo room), so the resting drop costs little.
+        // HISTORY: a static glowing sun here read as dull ("просто світиться");
+        // before that a neural brain was rejected twice.
+        core: {
+            pad: 0.26, blobs: 9, k: 0.12, flow: 0.9, halo: 9, shell: 0.95, outMs: 900, inMs: 1900, energy: 0.32, goneMs: 450,
+            gathered: { r0: 0.15, r: [0.075, 0.105], dist: [0.06, 0.1] },
+            scattered: { r0: 0.08, r: [0.045, 0.075], dist: [0.3, 0.52] },
+            cycleMs: 15000, holdMs: 6000, dissolveMs: 3500, driftMs: 2000,
+            flare: 0.45, glassLight: 0.2, shapes: { cube: 1, hexPrism: 1, icosahedron: 1.08, octahedron: 0.85 }
+        },
         // desktop: the solid leans a little toward the cursor (radians at the screen edge)
         parallax: { x: 0.16, y: 0.28, ease: 0.04 },
         // glass light: a glint whenever a pane turns into the light as the solid
@@ -113,10 +135,13 @@ function makeCircleTexture() {
         // grab & spin: the solid can be dragged round (mouse drag / sideways swipe)
         // and coasts on with inertia
         touch: { spin: 0.006, friction: 0.95, maxPitch: 0.5, dragPx: 6 },
-        dot: { size: 0.05, opacity: 0.6 },
+        dot: { size: 0.07, opacity: 0.85 },
         colors: isDarkTheme() ? PALETTES.dark : PALETTES.light,
         cubeDiagonals: true,               // face diagonals on the cube (false = plain grid)
-        twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
+        // rate 0: no random orange flares at rest any more — orange is kept for the
+        // lock-in spark of a rebuild (was rate 2, when every dot also drifted
+        // through ink -> teal -> orange; the nodes are now beads lit by the core)
+        twinkle: { rate: 0, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
         wobble: 0.5,           // camera axis precession: 0 = plain orbit, higher = livelier
         entrance: { from: 1.25, ms: 1200 }, // on load the solid settles in from slightly enlarged
         bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
@@ -139,9 +164,12 @@ function makeCircleTexture() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, hero.clientWidth / hero.clientHeight, 0.1, 1000);
     camera.position.z = 3.0;
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    // MSAA only on 1x screens: at 2x+ the edges are already fine and multisampling
+    // the layered glass more than doubled the frame cost (measured Sep 27 2026)
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: window.devicePixelRatio < 2, alpha: true });
     renderer.setSize(hero.clientWidth, hero.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    // capped at 2: a 3x phone screen would render 2.25x the pixels for no visible gain
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // ----- mobile band stretch: two independent levers. --band-up grows the band
     // UPWARD, --band-down grows it DOWNWARD. Both only add transparent margin: the
@@ -291,7 +319,8 @@ function makeCircleTexture() {
         uGlintColor: { value: new THREE.Color() }, uLight: { value: new THREE.Vector3(-0.5, 0.75, 0.45).normalize() },
         uSpec: { value: C.light.spec }, uShine: { value: C.light.shine }, uDepthFloor: { value: C.light.depthFloor },
         uNear: { value: 1 }, uFar: { value: 5 }, uMouse: { value: new THREE.Vector2(9, 9) }, uAspect: { value: 1 },
-        uHover: { value: 0 }, uHoverR: { value: C.light.hoverR }
+        uHover: { value: 0 }, uHoverR: { value: C.light.hoverR },
+        uCoreLight: { value: 0 }, uCoreColor: { value: new THREE.Color() }, uEnergy: { value: 0 }
     };
     const glassVS = [
         "attribute vec3 aBary;",
@@ -303,9 +332,10 @@ function makeCircleTexture() {
         "uniform vec3 uDir;",
         "uniform vec2 uMouse;",
         "varying vec3 vBary, vN, vV;",
-        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore;",
         "void main() {",
         "    float w = 0.5 + 0.5 * sin(uOmega * uTime - uKappa * dot(aCenter, uDir));",
+        "    vCore = exp(-dot(aCenter, aCenter) * 0.8);   // lit from within: panes nearest the core glow most",
         "    vec3 p = position + aNormalF * uAmp * w;",
         "    vGlint = aGlint;",
         "    vec4 mv = modelViewMatrix * vec4(p, 1.0);",
@@ -324,9 +354,10 @@ function makeCircleTexture() {
     ].join("\n");
     const glassFS = [
         "uniform vec3 uColor, uScanColor, uGlintColor, uLight;",
-        "uniform float uOpacity, uSpec, uShine, uDepthFloor, uHover;",
+        "uniform vec3 uCoreColor;",
+        "uniform float uOpacity, uSpec, uShine, uDepthFloor, uHover, uCoreLight, uEnergy;",
         "varying vec3 vBary, vN, vV;",
-        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore;",
         "void main() {",
         "    float e = min(min(vBary.x, vBary.y), vBary.z);   // 0 on the pane's rim",
         "    float rim = 1.0 - smoothstep(0.0, 0.2, e);        // inner glow hugging the rim",
@@ -336,6 +367,11 @@ function makeCircleTexture() {
         "            + spec * (0.35 + rim) + hov * (0.2 + rim);",
         "    vec3 col = mix(uColor, uScanColor, clamp(vScan + vGlint + 0.6 * hov, 0.0, 1.0));   // scan / docking flash / torch",
         "    col = mix(col, uGlintColor, clamp(spec, 0.0, 0.8));",
+        "    float cl = uCoreLight * vCore;",
+        "    a += cl * (0.3 + rim);",
+        "    col = mix(col, uCoreColor, clamp(cl * 1.6, 0.0, 0.6));",
+        "    a += uEnergy * (0.1 + 0.55 * rim);   // the core's light poured into the structure",
+        "    col = mix(col, uScanColor, clamp(uEnergy * 1.4, 0.0, 0.6));",
         "    a *= mix(uDepthFloor, 1.0, vDepth);   // far side dimmer: depth",
         "    gl_FragColor = vec4(col, a * uOpacity * vGlaze);",
         "}"
@@ -594,7 +630,7 @@ function makeCircleTexture() {
     scene.add(figure);
     const mat = new THREE.ShaderMaterial({
         uniforms: {
-            map: { value: makeCircleTexture() },
+            uHot: { value: new THREE.Color() },
             uSize: { value: C.dot.size * renderer.getPixelRatio() },
             uScale: { value: heroScaleH() / FRAME * 0.5 },
             uOpacity: { value: 0 }
@@ -613,13 +649,17 @@ function makeCircleTexture() {
             "    gl_Position = projectionMatrix * mvPosition;",
             "}"
         ].join("\n"),
+        // nodes are BEADS OF LIGHT in the core's language: a hot centre inside a soft
+        // halo (the old flat disc let the struts show through it)
         fragmentShader: [
-            "uniform sampler2D map;",
+            "uniform vec3 uHot;",
             "uniform float uOpacity;",
             "varying vec3 vColor;",
             "void main() {",
-            "    vec4 tex = texture2D(map, gl_PointCoord);",
-            "    gl_FragColor = vec4(vColor, uOpacity) * tex;",
+            "    float r = length(gl_PointCoord - 0.5) * 2.0;",
+            "    if (r > 1.0) discard;",
+            "    float core = 1.0 - smoothstep(0.16, 0.4, r), halo = exp(-r * r * 4.5) * (1.0 - r);",
+            "    gl_FragColor = vec4(mix(vColor, uHot, core * 0.7), uOpacity * min(1.0, core * 1.4 + 0.6 * halo));",
             "}"
         ].join("\n"),
         transparent: true, depthWrite: false, vertexColors: true
@@ -642,8 +682,9 @@ function makeCircleTexture() {
         geo.setAttribute("position", pos); geo.setAttribute("color", col); geo.setAttribute("aSize", asz);
         lineGeo = new THREE.BufferGeometry();
         lineGeo.setAttribute("position", pos); lineGeo.setAttribute("color", lcol);
-        figure.add(new THREE.LineSegments(lineGeo, lineMat));
-        figure.add(new THREE.Points(geo, mat));
+        const wire = new THREE.LineSegments(lineGeo, lineMat), nodes = new THREE.Points(geo, mat);
+        wire.renderOrder = 1; nodes.renderOrder = 2;
+        figure.add(wire); figure.add(nodes);
         flash = new Float32Array(V); pop = new Float32Array(V); phase = new Float32Array(V);
         for (let i = 0; i < V; i++) phase[i] = Math.random() * Math.PI * 2;
         delayMs = new Float32Array(S); locked = new Uint8Array(S);
@@ -667,61 +708,186 @@ function makeCircleTexture() {
         shared.uScanColor.value.setRGB(sc[0], sc[1], sc[2]);
         const gc = C.colors.glint;
         shared.uGlintColor.value.setRGB(gc[0], gc[1], gc[2]);
+        const ik = C.colors.ink;
+        mat.uniforms.uHot.value.setRGB(ik[0], ik[1], ik[2]);   // bead centres: off-white / navy
+        const ch = C.colors.coreHot, cg = C.colors.coreGlow;
+        core.uni.uHot.value.setRGB(ch[0], ch[1], ch[2]);   // only ever called after the core is built
+        core.uni.uGlow.value.setRGB(cg[0], cg[1], cg[2]);
+        shared.uCoreColor.value.setRGB(cg[0], cg[1], cg[2]);
+        core.uni.uHaloK.value = C.colors.coreHalo * (CORE_ONLY ? 0.55 : 1);   // naked on a page: softer glow
+        core.mesh.material.blending = C.colors.coreAdd ? THREE.AdditiveBlending : THREE.NormalBlending;
+        core.mesh.material.needsUpdate = true;
         solids.forEach((sd) => sd.ghost.material.color.setRGB(cc[0], cc[1], cc[2]));
     }
 
-    // ----- the neural net: neurons on an inner shell and in the core, each wired to
-    // its nearest neighbours. Lives inside the solids in C.neural.shapes; the scan
-    // plane lights up the synapses it crosses (same local-y test as the glass) -----
-    const neural = (function () {
-        const NC = C.neural, R = HALF * 1.45, pts = [];
-        for (let tries = 0; pts.length < NC.neurons && tries < 4000; tries++) {
-            let v;
-            if (pts.length < NC.neurons * 0.6) {   // shell neurons, just inside the glass
-                v = norm([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]).map((x) => x * R * 0.78);
-            } else {                                 // core neurons
-                do { v = [Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1]; } while (v[0] * v[0] + v[1] * v[1] + v[2] * v[2] > 1);
-                v = v.map((x) => x * R * 0.5);
-            }
-            if (pts.every((q) => Math.hypot(q[0] - v[0], q[1] - v[1], q[2] - v[2]) > R * 0.28)) pts.push(v);
+    // ----- the core: liquid light. Metaballs raymarched inside a proxy sphere (in the
+    // core's own object space, so the drops turn with the solid); the CPU moves the
+    // blobs (step), the shader melts them together with a smooth minimum. Drawn
+    // BEFORE the glass so the panes tint it: it reads as inside -----
+    const core = (function () {
+        const CC = C.core, NB = CC.blobs;
+        // simplex noise 3D — Ian McEwan / Ashima Arts (MIT)
+        const NOISE = [
+            "vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }",
+            "vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }",
+            "vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }",
+            "vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }",
+            "float snoise(vec3 v) {",
+            "    const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);",
+            "    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);",
+            "    vec3 i = floor(v + dot(v, C.yyy));",
+            "    vec3 x0 = v - i + dot(i, C.xxx);",
+            "    vec3 g = step(x0.yzx, x0.xyz);",
+            "    vec3 l = 1.0 - g;",
+            "    vec3 i1 = min(g.xyz, l.zxy);",
+            "    vec3 i2 = max(g.xyz, l.zxy);",
+            "    vec3 x1 = x0 - i1 + C.xxx;",
+            "    vec3 x2 = x0 - i2 + C.yyy;",
+            "    vec3 x3 = x0 - D.yyy;",
+            "    i = mod289(i);",
+            "    vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));",
+            "    vec3 ns = 0.142857142857 * D.wyz - D.xzx;",
+            "    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);",
+            "    vec4 x_ = floor(j * ns.z);",
+            "    vec4 y_ = floor(j - 7.0 * x_);",
+            "    vec4 x = x_ * ns.x + ns.yyyy;",
+            "    vec4 y = y_ * ns.x + ns.yyyy;",
+            "    vec4 h = 1.0 - abs(x) - abs(y);",
+            "    vec4 b0 = vec4(x.xy, y.xy);",
+            "    vec4 b1 = vec4(x.zw, y.zw);",
+            "    vec4 s0 = floor(b0) * 2.0 + 1.0;",
+            "    vec4 s1 = floor(b1) * 2.0 + 1.0;",
+            "    vec4 sh = -step(h, vec4(0.0));",
+            "    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;",
+            "    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;",
+            "    vec3 p0 = vec3(a0.xy, h.x);",
+            "    vec3 p1 = vec3(a0.zw, h.y);",
+            "    vec3 p2 = vec3(a1.xy, h.z);",
+            "    vec3 p3 = vec3(a1.zw, h.w);",
+            "    vec4 norm = taylorInvSqrt(vec4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));",
+            "    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;",
+            "    vec4 m = max(0.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);",
+            "    m = m * m;",
+            "    return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));",
+            "}"
+        ].join("\n");
+        const blobs = [];
+        for (let i = 0; i < NB; i++) blobs.push(new THREE.Vector4());
+        const uni = {
+            uHot: { value: new THREE.Color() }, uGlow: { value: new THREE.Color() },
+            uFade: { value: 0 }, uBoost: { value: 1 }, uT: { value: 0 }, uHaloK: { value: 1 },
+            uBlobs: { value: blobs }, uCam: { value: new THREE.Vector3(0, 0, 5) },
+            uBound: { value: 0.5 }, uK: { value: CC.k }, uHalo: { value: CC.halo * (CORE_ONLY ? 1.4 : 1) },
+            uPix: { value: 0.003 }, uLight: { value: new THREE.Vector3(0, 1, 0) }
+        };
+        const VS = [
+            "uniform float uBound;",
+            "varying vec3 vPos;",
+            "void main() {",
+            "    vPos = position * uBound;   // a unit sphere sized per frame to hug the drops",
+            "    gl_Position = projectionMatrix * modelViewMatrix * vec4(vPos, 1.0);",
+            "}"
+        ].join("\n");
+        const FS = [
+            "uniform vec3 uHot, uGlow, uCam, uLight;",
+            "uniform vec4 uBlobs[" + NB + "];",
+            "uniform float uFade, uBoost, uT, uHaloK, uBound, uK, uHalo, uPix;",
+            "varying vec3 vPos;",
+            NOISE,
+            "float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }",
+            "float map(vec3 p) {",
+            "    float d = length(p - uBlobs[0].xyz) - uBlobs[0].w;",
+            "    for (int i = 1; i < " + NB + "; i++) d = smin(d, length(p - uBlobs[i].xyz) - uBlobs[i].w, uK);",
+            // a slow ripple over the surface: the drop never sits perfectly round
+            "    return d + 0.01 * sin(p.x * 11.0 + uT * 1.7) * sin(p.y * 9.0 - uT * 1.3) * sin(p.z * 10.0 + uT);",
+            "}",
+            // tetrahedral normal: 4 samples of the field instead of 6
+            "vec3 nrm(vec3 p) {",
+            "    const vec2 k = vec2(1.0, -1.0);",
+            "    return normalize(k.xyy * map(p + k.xyy * 0.002) + k.yyx * map(p + k.yyx * 0.002) + k.yxy * map(p + k.yxy * 0.002) + k.xxx * map(p + k.xxx * 0.002));",
+            "}",
+            "void main() {",
+            "    vec3 rd = normalize(vPos - uCam);",
+            // march only the chord of the proxy sphere the ray actually crosses
+            "    float tc = -dot(uCam, rd), dc = length(uCam + rd * tc);",
+            "    float t = dot(vPos - uCam, rd), tEnd = tc + sqrt(max(uBound * uBound - dc * dc, 0.0));",
+            "    float mind = 9.0, tMin = t, hit = -1.0, eps = max(0.5 * uPix, 0.0012);",
+            "    for (int i = 0; i < 40; i++) {",
+            "        float d = map(uCam + rd * t);",
+            "        if (d < mind) { mind = d; tMin = t; }",
+            "        if (d < eps) { hit = t; break; }",
+            "        t += max(d * 0.9, 0.003);",
+            "        if (t > tEnd) break;",
+            "    }",
+            // the neon glow round the drops, from the ray's closest approach; faded
+            // before the proxy's edge so its outline never shows
+            "    float edge = 1.0 - smoothstep(uBound - 0.14, uBound - 0.01, dc);",
+            "    float g = exp(-max(mind, 0.0) * uHalo) * edge;",
+            "    vec3 col = mix(uGlow, uHot, g * g * 0.5);",
+            "    float a = uHaloK * 0.7 * g;",
+            // coverage: 1 on a hit, fading over ~1.5 px past the silhouette — smooth
+            // edges without MSAA (the drop is drawn by the shader, MSAA never saw it)
+            "    float cov = hit > 0.0 ? 1.0 : 1.0 - smoothstep(0.0, 1.5 * uPix, mind);",
+            "    if (cov > 0.0) {",
+            "        vec3 p = uCam + rd * (hit > 0.0 ? hit : tMin), n = nrm(p);",
+            "        float facing = max(dot(n, -rd), 0.0), rim = pow(1.0 - facing, 2.4);",
+            // light moving inside the liquid: slow caustic-like shimmer
+            "        float c = 0.5 + 0.5 * snoise(p * 4.5 + vec3(0.0, -uT * 0.35, uT * 0.2));",
+            "        vec3 sc = mix(uGlow, uHot, smoothstep(0.1, 0.9, facing) * (0.55 + 0.45 * c));",
+            "        sc = sc * (0.8 + 0.3 * c) + uGlow * rim * 1.4;   // neon rim",
+            // a glossy liquid surface: one sharp glint + a soft sheen from a light
+            // fixed to the camera (upper left), so it reads as an object, not a blur
+            "        float rl = max(dot(reflect(rd, n), uLight), 0.0);",
+            "        sc += vec3(1.0) * (1.1 * pow(rl, 60.0) + 0.14 * pow(rl, 6.0));",
+            "        col = mix(col, sc, cov); a = mix(a, 1.0, cov);",
+            "    }",
+            // dither: breaks the 8-bit banding rings of the glow on the flat navy
+            "    float dith = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;",
+            "    gl_FragColor = vec4(col * uBoost + dith, uFade * a + dith);",
+            "}"
+        ].join("\n");
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 20),
+            new THREE.ShaderMaterial({ uniforms: uni, vertexShader: VS, fragmentShader: FS, transparent: true, depthWrite: false }));
+        mesh.renderOrder = -1;   // before the glass: the panes tint it
+        mesh.frustumCulled = false;   // resized in the shader every frame
+        mesh.visible = false;
+        if (CORE_ONLY) { mesh.layers.set(1); camera.layers.set(1); }   // the crystal is never drawn
+
+        // blob choreography: each satellite swirls round its own axis; spread (0..1)
+        // moves them between the gathered drop and the scattered droplets
+        const G = CC.gathered, Sc = CC.scattered, rnd = (a) => a[0] + Math.random() * (a[1] - a[0]);
+        const sat = [];
+        for (let i = 1; i < NB; i++) {
+            const y = 1 - 2 * (i - 0.5) / (NB - 1), rr = Math.sqrt(1 - y * y), ph = i * 2.399963;   // fibonacci sphere
+            const ax = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+            sat.push({
+                dir: new THREE.Vector3(Math.cos(ph) * rr, y, Math.sin(ph) * rr), ax: ax,
+                w: (0.25 + Math.random() * 0.3) * (Math.random() < 0.5 ? -1 : 1),
+                rg: rnd(G.r), rs: rnd(Sc.r), dg: rnd(G.dist), ds: rnd(Sc.dist), ph: Math.random() * 6.28
+            });
         }
-        const seen = new Set(), segs = [];
-        pts.forEach((a, i) => {
-            pts.map((b, j) => [j, Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])])
-                .filter(([j]) => j !== i).sort((x, y) => x[1] - y[1]).slice(0, NC.links)
-                .forEach(([j]) => {
-                    const k = i < j ? i + "-" + j : j + "-" + i;
-                    if (!seen.has(k)) { seen.add(k); segs.push(...a, ...pts[j]); }
-                });
-        });
-        const uni = { uNeural: { value: 0 }, uBase: { value: NC.base }, uPeak: { value: NC.peak }, uNW: { value: NC.width }, uPx: { value: renderer.getPixelRatio() }, uScanY: shared.uScanY, uScanColor: shared.uScanColor };
-        const vs = (point) => [
-            "uniform float uScanY, uNW, uPx;",
-            "varying float vGlow;",
-            "void main() {",
-            "    float s = (position.y - uScanY) / uNW;",
-            "    vGlow = exp(-s * s);",
-            point ? "    gl_PointSize = (2.0 + 4.0 * vGlow) * uPx;" : "",
-            "    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
-            "}"
-        ].join("\n");
-        const fs = (point) => [
-            "uniform vec3 uScanColor;",
-            "uniform float uNeural, uBase, uPeak;",
-            "varying float vGlow;",
-            "void main() {",
-            point ? "    if (length(gl_PointCoord - 0.5) > 0.5) discard;" : "",
-            "    gl_FragColor = vec4(uScanColor, uNeural * (uBase * " + (point ? "3.0" : "1.0") + " + uPeak * vGlow));",
-            "}"
-        ].join("\n");
-        const lg = new THREE.BufferGeometry();
-        lg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(segs), 3));
-        const pg = new THREE.BufferGeometry();
-        pg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(pts.flat()), 3));
-        const lines = new THREE.LineSegments(lg, new THREE.ShaderMaterial({ uniforms: uni, vertexShader: vs(false), fragmentShader: fs(false), transparent: true, depthWrite: false }));
-        const dots = new THREE.Points(pg, new THREE.ShaderMaterial({ uniforms: uni, vertexShader: vs(true), fragmentShader: fs(true), transparent: true, depthWrite: false }));
-        lines.visible = dots.visible = false;
-        return { lines: lines, dots: dots, uni: uni, k: 0 };
+        const sstep = (a, b, x) => { const u = clamp01((x - a) / (b - a)); return u * u * (3 - 2 * u); };
+        // spread: 0 gathered .. 1 scattered droplets; e: 0 at rest .. 1 poured out
+        // into the frame (the centre drains first, the droplets fly to the shell and
+        // melt into it). Returns the proxy radius that encloses every drop + its glow
+        function step(dt, spread, e, T) {
+            const s = spread;
+            let ext = 0;
+            const r0 = (G.r0 + (Sc.r0 - G.r0) * s) * (1 - sstep(0.05, 0.6, e));
+            blobs[0].set(0.02 * Math.sin(T * 0.7), 0.02 * Math.sin(T * 0.9 + 1), 0.02 * Math.sin(T * 0.8 + 2), r0);
+            if (r0 > 0.001) ext = 0.035 + r0;
+            sat.forEach((b, i) => {
+                b.dir.applyAxisAngle(b.ax, b.w * dt / 1000);
+                const wob = 1 + 0.25 * Math.sin(T * 1.3 + b.ph);   // lumps breathe in and out of the drop
+                let dist = (b.dg * wob) + (b.ds - b.dg * wob) * s;
+                dist += (CC.shell - dist) * e;
+                const r = (b.rg + (b.rs - b.rg) * s) * (1 + 0.35 * Math.sin(Math.PI * e)) * (1 - sstep(0.6, 1, e));
+                blobs[i + 1].set(b.dir.x * dist, b.dir.y * dist, b.dir.z * dist, r);
+                if (r > 0.001) ext = Math.max(ext, dist + r);
+            });
+            return ext + CC.pad;
+        }
+        return { mesh: mesh, uni: uni, step: step, k: 0, flare: 0, scale: 1, t: 0, clock: 0, out: 0, energy: 0 };
     })();
 
     let cur = 0, next = 0, building = false, pending = false, bt = 0;
@@ -734,7 +900,7 @@ function makeCircleTexture() {
         buildSolids(C.cube[vp].grid);
         if (S !== prevS || !geo) allocate();
         solids.forEach((sd) => { figure.add(sd.glass); figure.add(sd.ghost); });
-        figure.add(neural.lines); figure.add(neural.dots);
+        figure.add(core.mesh);
         allocateFlight(Math.max(...solids.map((sd) => sd.T)));
         cur %= solids.length; next = cur; building = pending = false; landT = 0;
         const sd = solids[cur];
@@ -784,13 +950,18 @@ function makeCircleTexture() {
     const endDrag = () => { dragging = false; hit.style.cursor = "grab"; };
     hit.addEventListener("pointerup", endDrag);
     hit.addEventListener("pointercancel", endDrag);
-    hit.addEventListener("click", () => {
-        if (dragMoved) { dragMoved = false; return; } // that was a spin, not a tap
-        // tap = re-assemble into the next solid (the breathing settles, the glass
-        // comes off and the blueprint is drawn first — see the pending phase)
+    // tap / Enter / Space = re-assemble into the next solid (the breathing settles
+    // first — see the pending phase)
+    let poof = -1;   // coreOnly: ms into the vanish-and-return of the drop (-1 = idle)
+    function requestRebuild() {
+        if (CORE_ONLY) { if (poof < 0 && core.out === 0 && !contracting) poof = 0; return; }
         if (building || pending || contracting || landT > 0) return;
         next = (cur + 1) % solids.length;
         pending = true; fxT = 0;
+    }
+    hit.addEventListener("click", () => {
+        if (dragMoved) { dragMoved = false; return; } // that was a spin, not a tap
+        requestRebuild();
     });
 
     const onMq = () => { vp = mq.matches ? "mobile" : "desktop"; boot(); applyHeroPan(); mat.uniforms.uScale.value = heroScaleH() / FRAME * 0.5; };
@@ -810,6 +981,28 @@ function makeCircleTexture() {
         mouseOn = true;
     }, { passive: true });
     window.addEventListener("mouseout", (e) => { if (!e.relatedTarget) mouseOn = false; }); // pointer left the window
+
+    // keyboard: the figure is a focusable button — Enter / Space rebuild it, and a
+    // keyboard focus lights the torch on the solid itself as the focus indicator
+    // (a browser outline round a full-bleed canvas would frame the whole hero)
+    let kbFocus = false;
+    hit.tabIndex = 0;
+    hit.setAttribute("role", "button");
+    hit.setAttribute("aria-label", CORE_ONLY
+        ? (document.documentElement.lang === "uk" ? "Розчинити краплю світла" : "Dissolve the drop of light")
+        : (document.documentElement.lang === "uk" ? "Перебудувати 3D-фігуру" : "Rebuild the 3D figure"));
+    hit.style.outline = "none";
+    hit.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();   // Space would otherwise scroll the page
+        requestRebuild();
+    });
+    hit.addEventListener("focus", () => {
+        if (!hit.matches(":focus-visible")) return;   // mouse/touch focus: no torch jump
+        kbFocus = true;
+        mouseNdc.set(vp === "desktop" ? 2 * C.panFrac : 0, 0);   // the solid's centre on screen
+    });
+    hit.addEventListener("blur", () => { kbFocus = false; });
 
     // no work while the hero is off screen (the lower section, a background tab)
     let onScreen = true;
@@ -876,14 +1069,26 @@ function makeCircleTexture() {
     let breath = 1;        // 0..1: exploded-view breathing strength (settles to 0 for a rebuild)
     let scanClock = -C.scan.firstDelayMs;
 
+    const perf = { ema: 16, n: 0 };
+    const coreTmp = { s: new THREE.Vector3(), p: new THREE.Vector3(), q: new THREE.Quaternion(), light: new THREE.Vector3(-0.45, 0.65, 0.6).normalize() };
     function animate() {
         requestAnimationFrame(animate);
         const now = performance.now();
-        if (!onScreen) { last = now; return; }
+        if (!onScreen) { last = now; perf.n = 0; return; }
         const cube = C.cube[vp];
         // clamped frame time: a backgrounded tab resumes where it left off
         const dt = Math.min(50, now - last); last = now;
         clock += dt / 1000;
+        // adaptive quality: if frames stay slow (< ~25 fps, well below a 30 fps
+        // power-saving cap) for ~2 s, render at a lower pixel ratio
+        perf.ema += (dt - perf.ema) * 0.05;
+        if (++perf.n > 120 && perf.ema > 40 && renderer.getPixelRatio() > 1) {
+            const pr = Math.max(1, renderer.getPixelRatio() - 0.5);
+            renderer.setPixelRatio(pr);
+            renderer.setSize(hero.clientWidth, hero.clientHeight);
+            mat.uniforms.uSize.value = C.dot.size * pr;
+            perf.n = 0; perf.ema = 16;
+        }
 
         const bootFade = Math.min(1, (now - heroStart) / C.bootFadeMs);
 
@@ -981,11 +1186,38 @@ function makeCircleTexture() {
         }
         shared.uScanY.value = scanY;
 
-        // neural net: fades in while a neural solid is at rest, out for a rebuild
-        const wantNet = C.neural.shapes.indexOf(C.shapes[cur]) >= 0 && !building && !pending && landT <= 0;
-        neural.k += ((wantNet ? 1 : 0) - neural.k) * (wantNet ? 0.03 : 0.2);
-        neural.lines.visible = neural.dots.visible = neural.k > 0.01;
-        neural.uni.uNeural.value = neural.k * bootFade;
+        // core: always there once the solid has landed — the liquid dissolves and
+        // gathers on its own cycle; a tap pours it out into the frame as energy,
+        // and after the landing it flows back and condenses in the centre
+        const CR = C.core;
+        if (poof >= 0 && (poof += dt) > CR.outMs + CR.goneMs) poof = -1;
+        const rebuilding = CORE_ONLY ? poof >= 0 : (building || pending);
+        core.k += ((contracting ? 0 : 1) - core.k) * 0.03;
+        core.flare += ((rebuilding ? 1 : 0) - core.flare) * (rebuilding ? 0.05 : 0.02);
+        if (rebuilding) { core.out = Math.min(1, core.out + dt / CR.outMs); core.clock = 0; }
+        else core.out = Math.max(0, core.out - dt / CR.inMs);
+        const pour = easeInOut(core.out);
+        core.energy = clamp01((pour - 0.45) / 0.55);
+        shared.uEnergy.value = CR.energy * core.energy * bootFade;
+        const coreTarget = CR.shapes[C.shapes[building ? next : cur]] || 1;
+        core.scale += (coreTarget - core.scale) * 0.04;
+        core.mesh.scale.setScalar(core.scale * CORE_SCALE);
+        let spread = 0;
+        if (!REDUCED) {
+            core.t += dt / 1000 * CR.flow;
+            core.clock = (core.clock + dt) % CR.cycleMs;
+            const c0 = CR.holdMs, c1 = c0 + CR.dissolveMs, c2 = c1 + CR.driftMs;
+            spread = core.clock < c0 ? 0 : core.clock < c1 ? easeInOut((core.clock - c0) / CR.dissolveMs)
+                : core.clock < c2 ? 1 : 1 - easeInOut(Math.min(1, (core.clock - c2) / (CR.cycleMs - c2)));
+        }
+        core.uni.uBound.value = core.step(REDUCED ? 0 : dt, spread, pour, core.t);
+        const scanHit = Math.exp(-(scanY / 0.4) * (scanY / 0.4));
+        core.uni.uT.value = core.t;
+        core.uni.uFade.value = core.k * bootFade;
+        core.uni.uBoost.value = 1 + CR.flare * core.flare + 0.35 * scanHit;
+        // fully poured out = nothing left to draw: skip the raymarch entirely
+        core.mesh.visible = core.k * bootFade > 0.01 && pour < 0.985;
+        shared.uCoreLight.value = CR.glassLight * core.k * bootFade * (1 + 0.4 * scanHit) * (1 - 0.35 * spread) * (1 - pour);
 
         t += 0.01;
         angle += cube.rot;
@@ -1030,36 +1262,24 @@ function makeCircleTexture() {
         const INK = C.colors.ink, CUB = C.colors.cube, ORANGE = C.colors.orange, SC = C.colors.scan;
         const V = S * 2, sw = C.scan.width;
         // cursor torch strength (eases in/out as the pointer enters/leaves)
-        shared.uHover.value += (((mouseOn && vp === "desktop") ? C.light.hover : 0) - shared.uHover.value) * 0.08;
+        shared.uHover.value += ((((mouseOn && vp === "desktop") || kbFocus) ? C.light.hover : 0) - shared.uHover.value) * 0.08;
         const torch = shared.uHover.value > 0.01, aspect = hero.clientWidth / hero.clientHeight, hr = C.light.hoverR;
         shared.uAspect.value = aspect;
         for (let i = 0; i < V; i++) {
             const j = i * 3;
             // scan light on this vertex (0 far from the plane, 1 on it)
             const sy = (P[j + 1] - scanY) / sw;
-            let lit = Math.exp(-sy * sy);
+            let lit = Math.max(Math.exp(-sy * sy), 0.55 * core.energy);
             if (torch) {
                 tv.set(P[j], P[j + 1], P[j + 2]).applyMatrix4(figure.matrixWorld).project(camera);
                 const dx = (tv.x - mouseNdc.x) * aspect, dy = tv.y - mouseNdc.y;
                 lit = Math.max(lit, shared.uHover.value * 1.4 * Math.exp(-(dx * dx + dy * dy) / hr));
             }
-            // color: each dot drifts SLOWLY through the palette cycle
-            // ink -> teal -> orange -> teal -> ink (blinkAmp = how far along the
-            // palette the drift reaches: 0.5 stops at teal, 1.0 reaches orange)
+            // colour: teal beads lit by the core — the nearer the centre, the hotter —
+            // with a slow individual shimmer instead of the old hue drift
             phase[i] += C.twinkle.blinkSpeed;
-            const drift = C.twinkle.blinkAmp * (0.5 + 0.5 * Math.sin(phase[i]));
-            let r, g, bl;
-            if (drift < 0.5) {
-                const d2 = drift * 2; // 0..1: ink -> teal
-                r = INK[0] + (CUB[0] - INK[0]) * d2;
-                g = INK[1] + (CUB[1] - INK[1]) * d2;
-                bl = INK[2] + (CUB[2] - INK[2]) * d2;
-            } else {
-                const d2 = (drift - 0.5) * 2; // 0..1: teal -> orange
-                r = CUB[0] + (ORANGE[0] - CUB[0]) * d2;
-                g = CUB[1] + (ORANGE[1] - CUB[1]) * d2;
-                bl = CUB[2] + (ORANGE[2] - CUB[2]) * d2;
-            }
+            const inner = Math.exp(-(P[j] * P[j] + P[j + 1] * P[j + 1] + P[j + 2] * P[j + 2]) * 0.45) * 0.6 + 0.12 * Math.sin(phase[i]);
+            let r = CUB[0] + (INK[0] - CUB[0]) * inner, g = CUB[1] + (INK[1] - CUB[1]) * inner, bl = CUB[2] + (INK[2] - CUB[2]) * inner;
             r += (SC[0] - r) * lit; g += (SC[1] - g) * lit; bl += (SC[2] - bl) * lit;
             // orange flare on top (slow fade) + a quick size pop when a strut locks
             if (flash[i] > 0) { flash[i] -= C.twinkle.decay; if (flash[i] < 0) flash[i] = 0; }
@@ -1088,6 +1308,16 @@ function makeCircleTexture() {
         // the glass depth fade spans the solid's extent as seen from here
         const camD = camera.position.length(), rad = 1.95 * figure.scale.x;
         shared.uNear.value = camD - rad; shared.uFar.value = camD + rad;
+        if (core.mesh.visible) {
+            core.mesh.updateWorldMatrix(true, false);
+            core.mesh.worldToLocal(core.uni.uCam.value.copy(camera.position));
+            // one screen pixel in the core's object units (edge smoothing + hit epsilon)
+            const ws = core.mesh.getWorldScale(coreTmp.s).x, dist = camera.position.distanceTo(core.mesh.getWorldPosition(coreTmp.p));
+            core.uni.uPix.value = 2 * dist / (camera.projectionMatrix.elements[5] * renderer.domElement.height) / ws;
+            // the glint's light rides with the camera (upper left, in front), in object space
+            core.uni.uLight.value.copy(coreTmp.light).applyQuaternion(camera.quaternion)
+                .applyQuaternion(core.mesh.getWorldQuaternion(coreTmp.q).invert());
+        }
         renderer.render(scene, camera);
     }
     const tv = new THREE.Vector3();

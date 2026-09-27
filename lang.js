@@ -34,6 +34,21 @@
                 }
             },
             footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Business Analyst", statusMeta: "UA / EU / US" },
+            privacy: {
+                title: "Privacy Policy — Anton Lisachenko",
+                back: "Back to home",
+                heading: "Privacy Policy",
+                updated: "Last updated: September 2026",
+                overview: { h: "Overview", p: "This is a static personal site. It does not collect, store, sell or share personal data: there are no accounts, no forms, no cookies and no tracking scripts." },
+                storage: { h: "Stored in your browser", p: "Your theme (dark or light) and language (EN or UA) are remembered in your browser's local storage, so the site opens with your settings. They never leave your device, and you can clear them at any time in your browser settings." },
+                hosting: { h: "Hosting & technical logs", p: "The site is hosted on GitHub Pages. GitHub may keep standard server access logs (such as IP address, browser type and referring page) as part of running its infrastructure, under", link: "GitHub's Privacy Statement" },
+                resources: { h: "Third-party resources", p: "The 3D figure is drawn with the Three.js library, loaded from the cdnjs network run by Cloudflare. When your browser downloads it, Cloudflare receives the usual technical request data (such as IP address and browser type), under", link: "Cloudflare's Privacy Policy", p2: "Fonts are served from this site itself — no requests go to Google." },
+                cookies: { h: "Cookies", p: "The site sets no cookies. DNS for the domain is managed by Cloudflare in DNS-only mode — site traffic is not proxied, cached or tracked by Cloudflare." },
+                links: { h: "Third-party links", p: "The Email and LinkedIn links take you to third-party services with their own privacy policies. Following them is up to you." },
+                analytics: { h: "Analytics", p: "No analytics or usage-tracking tools are in use. If that ever changes, this page will say what is collected and why before it starts." },
+                changes: { h: "Changes to this policy", p: "This policy may be updated as the site changes; the date at the top shows the current version." },
+                contact: { h: "Contact", p: "Questions about this policy? Write to" }
+            },
             notFound: {
                 title: "Page not found — Anton Lisachenko",
                 back: "Back to home",
@@ -49,11 +64,11 @@
                 kicker: "Selected work · Redacted",
                 heading: "Portfolio",
                 more: "tap to inspect",
-                note: "preview intentionally blurred · details available on call",
+                note: "preview blurred · details on a call",
                 sections: { process: "Process & Notation", data: "Architecture & Data", ai: "AI in Practice" },
                 intro: {
-                    p1: "A slice of real delivery work from the last seven years.",
-                    p2: "Every artifact lives under an NDA, so previews stay blurred on purpose — you see the shape of the thinking, not the client's data. The structure, notation and craft are mine; the details stay in the vault."
+                    p1: "Diagrams, documents and tools from real projects.",
+                    p2: "Client work is under NDA, so the previews are blurred."
                 },
                 items: {
                     arch: { type: "Architecture", title: "System Architecture", short: "Multi-tenant records platform: three front doors over one NestJS core, with PostgreSQL, Redis, object storage and OAuth 2.0 / OIDC.", desc: "Layered architecture of a multi-tenant records platform: three front doors (public portal, per-tenant cabinet, restricted admin panel) over a single NestJS core with routing, state-registry sync and OAuth 2.0 / OIDC access control; PostgreSQL with GIN/GiST full-text indexes, Redis for cache and queues, S3-compatible object storage for scanned documents; Docker / Kubernetes with CI/CD." },
@@ -64,11 +79,12 @@
                     bpmn3: { type: "BPMN · Miro", title: "Registry Records — Lifecycle & Publication", short: "Record lifecycle from duplicate check to publication: manual or synced entry, e-signature, Draft → Active, previous version archived.", desc: "BPMN of a registry record lifecycle: a specialist checks whether the record already exists in the register; if not, it is created by hand or synced from the authorised source, then the data and files are updated and published — the verifier's e-signature is applied, the record moves from Draft to Active, the previous record is archived with a technical link to it, and the public fields open." },
                     dwh: { type: "Data Architecture", title: "Medallion Data Pipeline", short: "Bronze → Silver → Gold warehouse: raw ingestion, cleaning and validation, curated marts feeding Superset and Power BI dashboards.", desc: "Data flows in a warehouse built on the medallion architecture: a Bronze layer ingests raw files untouched — idempotent and re-processable — a Silver layer cleans, validates, filters and normalizes them into one structure, and a Gold layer publishes curated marts that feed dashboards in Apache Superset (analysts) and Power BI (leadership); orchestration and scheduled jobs keep the layers consistent." },
                     deploy: { type: "Deployment", title: "Deployment Architecture", short: "One Kubernetes cluster, two ways in — VPN for staff, CDN edge for the public — plus identity-provider and registry integrations.", desc: "Deployment topology of the platform: one Kubernetes cluster runs the admin module, core service and both public apps; internal staff connect over a VPN tunnel, external users arrive through a CDN edge with TLS, caching and anti-DDoS; trusted outside systems are the identity provider (OAuth 2.0 / OIDC with 2FA) and a state registry; data lives in Postgres, Redis and S3-compatible object storage." },
+                    rag: { type: "AI · RAG", title: "User Story Validator", short: "A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.", desc: "An AnythingLLM workspace on a local model. Seven reference documents — story types, INVEST & 3C quality rules, acceptance-criteria patterns, splitting techniques, golden examples, DoR / DoD and reference stories — are embedded once into a local vector store. A draft story is matched against the most relevant rules and examples, and the model returns a verdict per check, untestable or missing acceptance criteria, split suggestions and a rewrite. Nothing leaves the laptop, so it works on NDA material; approved stories feed back in as new golden examples, and the analyst makes the final call." },
                     agent: { type: "AI Agents", title: "Problem Radar", short: "Automated problem discovery: collects complaint-shaped posts, a local LLM tags the themes — the machine counts, a human decides what to build.", desc: "A zero-cost n8n flow that scans Hacker News for complaint-shaped posts, dedupes them by URL and files each into a Complaints board — a local Ollama model tags noise and theme. The one rule holds: the machine collects, counts and suggests; you decide what is worth building." }
                 },
                 cta: {
-                    heading: "Want the full picture?",
-                    text: "Under NDA I can walk through any of these live — process decisions, trade-offs and templates included. Let's talk."
+                    heading: "Want the details?",
+                    text: "I can walk you through any of these on a call — under NDA if needed."
                 }
             },
             services: {
@@ -146,6 +162,21 @@
                 }
             },
             footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Бізнес-аналітик", statusMeta: "Україна / ЄС / США" },
+            privacy: {
+                title: "Політика приватності — Антон Лісаченко",
+                back: "На головну",
+                heading: "Політика приватності",
+                updated: "Оновлено: вересень 2026",
+                overview: { h: "Загалом", p: "Це статичний персональний сайт. Він не збирає, не зберігає, не продає і не передає персональні дані: тут немає акаунтів, форм, кукі та скриптів відстеження." },
+                storage: { h: "Що зберігається у твоєму браузері", p: "Тема (темна чи світла) і мова (EN чи UA) запам'ятовуються в локальному сховищі браузера, щоб сайт відкривався з твоїми налаштуваннями. Ці дані не залишають твій пристрій, і їх можна будь-коли очистити в налаштуваннях браузера." },
+                hosting: { h: "Хостинг і технічні журнали", p: "Сайт розміщено на GitHub Pages. GitHub може зберігати стандартні журнали доступу до сервера (як-от IP-адресу, тип браузера та сторінку, з якої перейшли) в межах роботи своєї інфраструктури відповідно до", link: "Політики конфіденційності GitHub" },
+                resources: { h: "Сторонні ресурси", p: "3D-фігура малюється бібліотекою Three.js, яка завантажується з мережі cdnjs від Cloudflare. Коли браузер її завантажує, Cloudflare отримує звичайні технічні дані запиту (як-от IP-адресу та тип браузера) відповідно до", link: "Політики конфіденційності Cloudflare", p2: "Шрифти завантажуються з цього ж сайту — жодних запитів до Google." },
+                cookies: { h: "Кукі", p: "Сайт не встановлює кукі. DNS домену обслуговує Cloudflare у режимі «лише DNS» — трафік сайту не проходить через Cloudflare, не кешується і не відстежується." },
+                links: { h: "Посилання на сторонні сервіси", p: "Посилання на Email і LinkedIn ведуть на сторонні сервіси з власними політиками приватності. Переходити чи ні — вирішуєш ти." },
+                analytics: { h: "Аналітика", p: "Жодних інструментів аналітики чи відстеження не використовується. Якщо це колись зміниться, ця сторінка заздалегідь розповість, що збирається і навіщо." },
+                changes: { h: "Зміни політики", p: "Політика може оновлюватися разом із сайтом; дата вгорі показує актуальну версію." },
+                contact: { h: "Контакти", p: "Питання щодо цієї політики? Пиши на" }
+            },
             notFound: {
                 title: "Сторінку не знайдено — Антон Лісаченко",
                 back: "На головну",
@@ -161,11 +192,11 @@
                 kicker: "Обрані роботи · Під NDA",
                 heading: "Портфоліо",
                 more: "натисни, щоб розглянути",
-                note: "прев'ю свідомо заблюрене · деталі — на дзвінку",
+                note: "прев'ю розмите · деталі — на дзвінку",
                 sections: { process: "Процеси та нотації", data: "Архітектура та дані", ai: "ШІ на практиці" },
                 intro: {
-                    p1: "Зріз реальної роботи за останні сім років.",
-                    p2: "Кожен артефакт під NDA, тому прев'ю свідомо заблюрені — видно форму мислення, а не дані клієнта. Структура, нотація і майстерність — мої; деталі лишаються в сховищі."
+                    p1: "Діаграми, документи та інструменти з реальних проєктів.",
+                    p2: "Клієнтські роботи під NDA, тому прев'ю розмиті."
                 },
                 items: {
                     arch: { type: "Архітектура", title: "Архітектура системи", short: "Мультитенантна платформа: три входи над єдиним ядром NestJS, PostgreSQL, Redis, об'єктне сховище і OAuth 2.0 / OIDC.", desc: "Шарова архітектура мультитенантної платформи керування документами: три входи (публічний портал, кабінет установи, обмежена адмінпанель) над єдиним ядром NestJS із маршрутизацією, синхронізацією з державним реєстром і контролем доступу OAuth 2.0 / OIDC; PostgreSQL із повнотекстовими індексами GIN/GiST, Redis для кешу і черг, S3-сумісне сховище для скан-копій; Docker / Kubernetes з CI/CD." },
@@ -176,11 +207,12 @@
                     bpmn3: { type: "BPMN · Miro", title: "Реєстрові записи — життєвий цикл і публікація", short: "Життєвий цикл запису від перевірки на дубль до публікації: ручне введення або синхронізація, ЕЦП, «Чернетка» → «Активний», попередня версія — в архів.", desc: "BPMN життєвого циклу реєстрового запису: фахівець перевіряє, чи запис уже є в реєстрі; якщо ні — створює його вручну або синхронізує з уповноваженого джерела, оновлює дані та файли й публікує — накладається ЕЦП верифікатора, запис переходить зі статусу «Чернетка» в «Активний», попередній запис стає «Архівним» із технічним зв'язком з новим, а публічні поля відкриваються." },
                     dwh: { type: "Архітектура даних", title: "Медальйонний пайплайн даних", short: "Сховище Bronze → Silver → Gold: сирі дані, очищення й валідація, готові вітрини для дашбордів у Superset і Power BI.", desc: "Потоки даних у сховищі (DWH) за медальйонною архітектурою: рівень Bronze приймає сирі файли без змін — ідемпотентно і з можливістю повторної обробки — рівень Silver очищає, валідує, фільтрує та нормалізує їх до єдиної структури, а рівень Gold формує готові вітрини, що живлять дашборди в Apache Superset (аналітики) і Power BI (керівництво); оркестрація і планові завдання тримають шари узгодженими." },
                     deploy: { type: "Розгортання", title: "Архітектура розгортання", short: "Один Kubernetes-кластер, два шляхи входу — VPN для працівників, CDN для публіки — плюс інтеграції зі службою авторизації та реєстром.", desc: "Топологія розгортання предметної платформи: один Kubernetes-кластер розміщує модуль адміністрування, Core Service та обидва публічні застосунки; внутрішні користувачі заходять через VPN-тунель, зовнішні — через CDN-край (TLS, кешування, захист від DDoS); довірені зовнішні системи — служба авторизації (OAuth 2.0 / OIDC із 2FA) та державний реєстр; дані — у PostgreSQL, Redis та S3-сумісному сховищі." },
+                    rag: { type: "ШІ · RAG", title: "Валідатор user stories", short: "Локальний RAG-асистент, який перевіряє чернетку сторі за моїми правилами BA — тип, INVEST / 3C, критерії приймання, розбиття, DoR — і повертає прогалини та варіант переписаної сторі.", desc: "Робочий простір AnythingLLM на локальній моделі. Сім довідкових документів — види сторі, правила якості INVEST і 3C, шаблони критеріїв приймання, техніки розбиття, золоті приклади, DoR / DoD та еталонні сторі — один раз індексуються в локальне векторне сховище. Чернетка сторі зіставляється з найрелевантнішими правилами й прикладами, а модель повертає вердикт по кожній перевірці, нетестовані або відсутні критерії приймання, пропозиції з розбиття та переписаний варіант. Нічого не виходить за межі ноутбука, тож це працює з матеріалами під NDA; схвалені сторі повертаються в базу як нові золоті приклади, а останнє слово — за аналітиком." },
                     agent: { type: "ШІ-агенти", title: "Problem Radar", short: "Автоматизований пошук проблем: збирає скарги користувачів, локальна LLM тегує теми — машина рахує, людина вирішує, що будувати.", desc: "Безкоштовний n8n-пайплайн, який сканує Hacker News на повідомлення у формі скарг, дедуплікує їх за URL і дописує кожне до дошки Complaints — локальна модель Ollama позначає шум і тему. Одне правило: машина збирає, рахує і підказує; ти вирішуєш, що варте того, щоб будувати." }
                 },
                 cta: {
-                    heading: "Хочеш повну картину?",
-                    text: "Під NDA можу пройтися по будь-якій роботі наживо — з рішеннями по процесу, трейд-оффами та шаблонами. Гайда."
+                    heading: "Потрібні деталі?",
+                    text: "Можу розповісти про будь-яку з цих робіт на дзвінку — за потреби під NDA."
                 }
             },
             services: {

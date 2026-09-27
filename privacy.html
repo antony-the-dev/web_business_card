@@ -9,24 +9,38 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="robots" content="noindex">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#0a2540">
+    <link rel="stylesheet" href="style.css?v=2026092707">
     <link rel="canonical" href="https://alisachenko.com/privacy.html" />
+    <!-- dark is the default theme, light only if the visitor toggled it (same as
+         every other page) -->
+    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
     <style>
-        /* page-scoped — small static legal page, no hero/canvas/dark inversion needed */
+        /* page-scoped — small static legal page */
+        body {
+            background-color: var(--bg);
+        }
+
         .legal-wrap {
             max-width: 720px;
             margin: 0 auto;
-            padding: 4.5rem 2rem 4rem;
+            padding: 3.5rem 2rem 4rem;
+        }
+
+        .legal-toprow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .legal-toprow .lang-switch {
+            margin-right: 0;
         }
 
         .legal-back {
             display: inline-block;
-            margin-bottom: 3rem;
             font-family: var(--font-mono);
             font-size: 0.78rem;
             text-transform: uppercase;
@@ -47,6 +61,7 @@
 
         .legal-wrap p {
             margin-bottom: 0.6rem;
+            color: var(--muted);
         }
 
         .legal-footer {
@@ -58,82 +73,112 @@
             color: var(--muted);
             font-size: 0.85rem;
         }
+
+        @media (max-width: 600px) {
+            .legal-wrap {
+                padding: 2.5rem 1.25rem 3rem;
+            }
+        }
     </style>
 </head>
 
-<body>
+<body data-title-key="privacy.title">
 
     <main class="legal-wrap">
-        <a class="legal-back hex" href="index.html">Back to home</a>
+        <div class="legal-toprow">
+            <a class="legal-back" href="index.html" data-i18n="privacy.back">Back to home</a>
+            <div class="lang-switch" aria-label="Language and theme">
+                <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                    class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
+                    aria-label="Українська">UA</button><span class="lang-sep" aria-hidden="true">·</span>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+                    <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
+                            fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
 
-        <h1 class="hex">Privacy Policy</h1>
-        <p class="legal-updated">Last updated: July 2026</p>
+        <h1 class="hex" data-i18n="privacy.heading">Privacy Policy</h1>
+        <p class="legal-updated" data-i18n="privacy.updated">Last updated: September 2026</p>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Overview</h2>
-            <p>
-                This is a static personal portfolio site. It does not collect, store, sell,
-                or share personal data. There are no accounts, no forms, and no tracking
-                scripts running on this page.
-            </p>
+            <h2 class="hex" data-i18n="privacy.overview.h">Overview</h2>
+            <p data-i18n="privacy.overview.p">This is a static personal site. It does not collect, store, sell or
+                share personal data: there are no accounts, no forms, no cookies and no tracking scripts.</p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Hosting &amp; technical logs</h2>
-            <p>
-                This site is hosted on GitHub Pages. GitHub may collect standard server
-                access logs (such as IP address, browser type, and referring page) as part
-                of operating its infrastructure, governed by
+            <h2 class="hex" data-i18n="privacy.storage.h">Stored in your browser</h2>
+            <p data-i18n="privacy.storage.p">Your theme (dark or light) and language (EN or UA) are remembered in
+                your browser's local storage, so the site opens with your settings. They never leave your device,
+                and you can clear them at any time in your browser settings.</p>
+        </section>
+
+        <section>
+            <span class="deco-line" style="width:60px;"></span>
+            <h2 class="hex" data-i18n="privacy.hosting.h">Hosting &amp; technical logs</h2>
+            <p><span data-i18n="privacy.hosting.p">The site is hosted on GitHub Pages. GitHub may keep standard
+                    server access logs (such as IP address, browser type and referring page) as part of running
+                    its infrastructure, under</span>
                 <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement"
-                    target="_blank" rel="noopener noreferrer">GitHub's own Privacy Statement</a>.
+                    target="_blank" rel="noopener noreferrer" data-i18n="privacy.hosting.link">GitHub's Privacy
+                    Statement</a>.
             </p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Cookies</h2>
-            <p>
-                This site does not set any cookies itself. DNS for this domain is managed
-                through Cloudflare in DNS-only mode — traffic is not proxied, cached, or
-                tracked by Cloudflare.
+            <h2 class="hex" data-i18n="privacy.resources.h">Third-party resources</h2>
+            <p><span data-i18n="privacy.resources.p">The 3D figure is drawn with the Three.js library, loaded from
+                    the cdnjs network run by Cloudflare. When your browser downloads it, Cloudflare receives the
+                    usual technical request data (such as IP address and browser type), under</span>
+                <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer"
+                    data-i18n="privacy.resources.link">Cloudflare's Privacy Policy</a>.
             </p>
+            <p data-i18n="privacy.resources.p2">Fonts are served from this site itself — no requests go to Google.</p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Third-party links</h2>
-            <p>
-                Links to Email and LinkedIn take you to third-party services
-                governed by their own privacy policies. Visiting them is at your discretion.
-            </p>
+            <h2 class="hex" data-i18n="privacy.cookies.h">Cookies</h2>
+            <p data-i18n="privacy.cookies.p">The site sets no cookies. DNS for the domain is managed by Cloudflare in
+                DNS-only mode — site traffic is not proxied, cached or tracked by Cloudflare.</p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Analytics</h2>
-            <p>
-                No analytics or usage-tracking tools are currently in use on this site.
-                If that changes in the future, this page will be updated to disclose what
-                is collected and why.
-            </p>
+            <h2 class="hex" data-i18n="privacy.links.h">Third-party links</h2>
+            <p data-i18n="privacy.links.p">The Email and LinkedIn links take you to third-party services with their
+                own privacy policies. Following them is up to you.</p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Changes to this policy</h2>
-            <p>
-                This policy may be updated occasionally to reflect changes to the site.
-                Check back here for the current version.
-            </p>
+            <h2 class="hex" data-i18n="privacy.analytics.h">Analytics</h2>
+            <p data-i18n="privacy.analytics.p">No analytics or usage-tracking tools are in use. If that ever changes,
+                this page will say what is collected and why before it starts.</p>
         </section>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex">Contact</h2>
-            <p>
-                Questions about this policy? Reach out at
+            <h2 class="hex" data-i18n="privacy.changes.h">Changes to this policy</h2>
+            <p data-i18n="privacy.changes.p">This policy may be updated as the site changes; the date at the top shows
+                the current version.</p>
+        </section>
+
+        <section>
+            <span class="deco-line" style="width:60px;"></span>
+            <h2 class="hex" data-i18n="privacy.contact.h">Contact</h2>
+            <p><span data-i18n="privacy.contact.p">Questions about this policy? Write to</span>
                 <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>.
             </p>
         </section>
@@ -142,6 +187,35 @@
     <footer class="legal-footer">
         <p>Anton Lisachenko &middot; &copy; 2026</p>
     </footer>
+
+    <script src="lang.js?v=2026092707"></script>
+    <script>
+        // ===== THEME TOGGLE (same behavior as index.html, standalone) =====
+        (function () {
+            var btn = document.getElementById("theme-toggle");
+            if (!btn) return;
+            var root = document.documentElement;
+            function syncThemeColor() {
+                var meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
+            }
+            syncThemeColor();
+            btn.addEventListener("click", function () {
+                var dark = !root.classList.contains("dark");
+                root.classList.toggle("dark", dark);
+                try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+                syncThemeColor();
+                // iOS Safari: force compositor repaints so the URL-bar / home
+                // indicator chrome refreshes with the theme
+                function repaint() {
+                    document.body.style.webkitTransform = "translateZ(0)";
+                    requestAnimationFrame(function () { document.body.style.webkitTransform = ""; });
+                }
+                repaint();
+                [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
+            });
+        })();
+    </script>
 </body>
 
 </html>
