@@ -1190,12 +1190,14 @@
         // gathers on its own cycle; a tap pours it out into the frame as energy,
         // and after the landing it flows back and condenses in the centre
         const CR = C.core;
-        if (poof >= 0 && (poof += dt) > CR.outMs + CR.goneMs) poof = -1;
+        // coreOnly (portfolio): a slower, softer fade out and back (user: "повільніше затухання")
+        const outMs = CR.outMs * (CORE_ONLY ? 2.5 : 1), inMs = CR.inMs * (CORE_ONLY ? 1.5 : 1);
+        if (poof >= 0 && (poof += dt) > outMs + CR.goneMs) poof = -1;
         const rebuilding = CORE_ONLY ? poof >= 0 : (building || pending);
         core.k += ((contracting ? 0 : 1) - core.k) * 0.03;
         core.flare += ((rebuilding ? 1 : 0) - core.flare) * (rebuilding ? 0.05 : 0.02);
-        if (rebuilding) { core.out = Math.min(1, core.out + dt / CR.outMs); core.clock = 0; }
-        else core.out = Math.max(0, core.out - dt / CR.inMs);
+        if (rebuilding) { core.out = Math.min(1, core.out + dt / outMs); core.clock = 0; }
+        else core.out = Math.max(0, core.out - dt / inMs);
         const pour = easeInOut(core.out);
         core.energy = clamp01((pour - 0.45) / 0.55);
         shared.uEnergy.value = CR.energy * core.energy * bootFade;

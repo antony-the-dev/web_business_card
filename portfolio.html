@@ -25,7 +25,7 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN, UML, architecture and data artifacts under an NDA stamp.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026092707">
+    <link rel="stylesheet" href="style.css?v=2026092709">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
     <script>document.documentElement.classList.add("js");</script>
@@ -986,7 +986,7 @@
         </figure>
     </div>
 
-    <script src="lang.js?v=2026092707"></script>
+    <script src="lang.js?v=2026092709"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1110,15 +1110,15 @@
                 box: "pf-fig-box", canvas: "pf-fig-canvas", hit: "pf-fig-hit", frame: 1.8,
                 panFrac: 0, panY: { mobile: 0, desktop: 0 }, scale: { desktop: 1.1, mobile: 1.1 },
                 scrollShrink: 0, bandless: true,
-                // only the drop of liquid light as the page's emblem (no crystal);
-                // a tap makes it vanish and gather again
-                coreOnly: true, coreScale: 2.4
+                // only the drop of liquid light as the page's emblem (no crystal — the
+                // user's call); half the first size, a tap fades it out and back slowly
+                coreOnly: true, coreScale: 1.2
             };
             var three = document.createElement("script");
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026092707";
+                fig.src = "figure.js?v=2026092709";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);
