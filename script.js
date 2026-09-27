@@ -1262,7 +1262,7 @@ function makeCircleTexture() {
             if (!live()) return;                            // intro exited -> stop
             const p = Math.min(1, (now - t0) / DUR);
             const pct = Math.max(1, Math.round(p * 100));
-            pctEls.forEach((e) => { if (e) e.textContent = pct + "%"; });
+            pctEls.forEach((e) => { if (e) e.dataset.pct = pct + "%"; });   // drawn via CSS ::before — keeps "1%" out of the page text (SEO / scrapers)
             fill.setAttribute("y", String(100 - pct));      // white fill rises bottom -> top
             const s = Math.min(1, p / 0.8);
             sides.forEach((n) => { n.style.filter = "blur(" + (12 * (1 - s)) + "px)"; n.style.opacity = s; });

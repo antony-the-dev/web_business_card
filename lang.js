@@ -20,11 +20,11 @@
             },
             now: {
                 heading: "Currently working with",
-                items: ["AI agent orchestration & vibe-coding", "Local LLM deployment (Ollama, Apple Silicon)", "Model benchmarking & quantization", "Private RAG & remote access (Open WebUI, Tailscale)", "Google Antigravity & VS Code", "Git & GitHub"]
+                items: ["RAG search across project documentation", "Local LLMs for NDA-safe analysis", "AI validation of specs — gaps, conflicts, testability"]
             },
             domains: {
                 heading: "Domains",
-                items: ["SaaS", "Mobile", "GovTech", "Healthcare", "Real Estate", "Media", "Advertising", "Energy & Utilities", "IoT", "Blockchain & Crypto", "Logistics"]
+                items: ["SaaS", "GovTech", "Healthcare", "Real Estate", "Media", "Advertising", "Energy & Utilities", "Blockchain & Crypto", "Logistics"]
             },
             expertise: {
                 heading: "Expertise",
@@ -34,7 +34,7 @@
                     notations: { title: "Modeling & Architecture", items: ["BPMN", "UML", "System Architecture"] },
                     diagramming: { title: "Design & Visual Tools", items: ["Miro", "Lucidchart", "Figma"] },
                     api: { title: "APIs & Automation", items: ["REST API", "Swagger", "n8n", "AI Agents"] },
-                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL"] },
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
@@ -50,7 +50,7 @@
                     handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
                 }
             },
-            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Available for new projects", statusMeta: "UA / EU / US" },
+            footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Business Analyst", statusMeta: "UA / EU / US" },
             portfolio: {
                 title: "Portfolio — Anton Lisachenko",
                 back: "Back to home",
@@ -141,11 +141,11 @@
             },
             now: {
                 heading: "Зараз працюю з",
-                items: ["Оркестрація ШІ-агентів та вайбкодинг", "Локальний LLM (Ollama, Apple Silicon)", "Бенчмаркінг та квантизація моделей", "Приватний RAG та віддалений доступ (Open WebUI, Tailscale)", "Google Antigravity та VS Code", "Git та GitHub"]
+                items: ["RAG-пошук по проєктній документації", "Локальні LLM для аналізу даних під NDA", "ШІ-валідація специфікацій — прогалини, суперечності, тестованість"]
             },
             domains: {
                 heading: "Домени",
-                items: ["SaaS", "Мобільні додатки", "Державні цифрові сервіси", "Охорона здоров'я", "Нерухомість", "Медіа", "Реклама", "Енергетика та ЖКГ", "IoT", "Блокчейн та крипто", "Логістика"]
+                items: ["SaaS", "Державні цифрові сервіси", "Охорона здоров'я", "Нерухомість", "Медіа", "Реклама", "Енергетика та ЖКГ", "Блокчейн та крипто", "Логістика"]
             },
             expertise: {
                 heading: "Експертиза",
@@ -155,7 +155,7 @@
                     notations: { title: "Modeling & Architecture", items: ["BPMN", "UML", "System Architecture"] },
                     diagramming: { title: "Design & Visual Tools", items: ["Miro", "Lucidchart", "Figma"] },
                     api: { title: "APIs & Automation", items: ["REST API", "Swagger", "n8n", "AI Agents"] },
-                    query: { title: "Query & Technical", items: ["SQL", "JQL", "HTML / CSS"] },
+                    query: { title: "Query & Technical", items: ["SQL", "JQL"] },
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
@@ -171,7 +171,7 @@
                     handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
                 }
             },
-            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Доступний для нових проєктів", statusMeta: "Україна / ЄС / США" },
+            footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Бізнес-аналітик", statusMeta: "Україна / ЄС / США" },
             portfolio: {
                 title: "Портфоліо — Антон Лісаченко",
                 back: "На головну",

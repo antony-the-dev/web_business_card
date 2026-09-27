@@ -50,7 +50,7 @@
     </div>
 
     <!-- ===== INTRO ===== -->
-    <div id="intro">
+    <div id="intro" aria-hidden="true">
         <canvas id="intro-canvas"></canvas>
         <div id="intro-loader">
 
@@ -60,7 +60,7 @@
             <div class="al-row">
                 <div class="al-side">BUSINESS</div>
                 <div class="al-center">
-                    <span class="al-pct" id="al-pct-l">1%</span>
+                    <span class="al-pct" id="al-pct-l" data-pct="1%"></span>
                     <svg class="al-logo" viewBox="0 0 100 100" aria-hidden="true">
                         <defs>
                             <clipPath id="al-hexclip">
@@ -76,7 +76,7 @@
                             font-family="'JetBrains Mono', ui-monospace, monospace" font-weight="700" font-size="38"
                             fill="#0a2540">AL</text>
                     </svg>
-                    <span class="al-pct" id="al-pct-r">1%</span>
+                    <span class="al-pct" id="al-pct-r" data-pct="1%"></span>
                 </div>
                 <div class="al-side">ANALYSIS</div>
             </div>
@@ -173,12 +173,9 @@
                     <span class="deco-line"></span>
                     <h2 class="hex" data-i18n="now.heading">Currently working with</h2>
                     <ul class="now-list">
-                        <li data-i18n="now.items.0">AI agent orchestration &amp; vibe-coding</li>
-                        <li data-i18n="now.items.1">Local LLM deployment (Ollama, Apple Silicon)</li>
-                        <li data-i18n="now.items.2">Model benchmarking &amp; quantization</li>
-                        <li data-i18n="now.items.3">Private RAG &amp; remote access (Open WebUI, Tailscale)</li>
-                        <li data-i18n="now.items.4">Google Antigravity &amp; VS Code</li>
-                        <li data-i18n="now.items.5">Git &amp; GitHub</li>
+                        <li data-i18n="now.items.0">RAG search across project documentation</li>
+                        <li data-i18n="now.items.1">Local LLMs for NDA-safe analysis</li>
+                        <li data-i18n="now.items.2">AI validation of specs — gaps, conflicts, testability</li>
                     </ul>
                 </div>
             </div>
@@ -203,16 +200,14 @@
                 <h2 class="hex" data-i18n="domains.heading">Domains</h2>
                 <div class="domain-tags">
                     <span data-i18n="domains.items.0">SaaS</span>
-                    <span data-i18n="domains.items.1">Mobile</span>
-                    <span data-i18n="domains.items.2">GovTech</span>
-                    <span data-i18n="domains.items.3">Healthcare</span>
-                    <span data-i18n="domains.items.4">Real Estate</span>
-                    <span data-i18n="domains.items.5">Media</span>
-                    <span data-i18n="domains.items.6">Advertising</span>
-                    <span data-i18n="domains.items.7">Energy & Utilities</span>
-                    <span data-i18n="domains.items.8">IoT</span>
-                    <span data-i18n="domains.items.9">Blockchain & Crypto</span>
-                    <span data-i18n="domains.items.10">Logistics</span>
+                    <span data-i18n="domains.items.1">GovTech</span>
+                    <span data-i18n="domains.items.2">Healthcare</span>
+                    <span data-i18n="domains.items.3">Real Estate</span>
+                    <span data-i18n="domains.items.4">Media</span>
+                    <span data-i18n="domains.items.5">Advertising</span>
+                    <span data-i18n="domains.items.6">Energy & Utilities</span>
+                    <span data-i18n="domains.items.7">Blockchain & Crypto</span>
+                    <span data-i18n="domains.items.8">Logistics</span>
                 </div>
             </div>
 
@@ -264,7 +259,6 @@
                         <div class="exp-tags">
                             <span data-i18n="expertise.groups.query.items.0">SQL</span>
                             <span data-i18n="expertise.groups.query.items.1">JQL</span>
-                            <span data-i18n="expertise.groups.query.items.2">HTML / CSS</span>
                         </div>
                     </div>
                     <div class="exp-group">
@@ -279,41 +273,11 @@
                 </div>
             </div>
 
-            <!-- interactive pipeline -->
-            <div class="block reveal-blur" data-scroll>
-                <span class="deco-line"></span>
-                <h2 class="hex" data-i18n="how.heading">How I work</h2>
-                <p class="proc-hint" data-i18n="how.hint">Tap a phase to expand its activities.</p>
-                <ol class="process-strip" aria-label="Delivery pipeline">
-                    <li class="proc-step" data-phase="discovery" tabindex="0" role="button" aria-pressed="false">
-                        <span class="proc-node"></span>
-                        <span class="proc-label" data-i18n="how.steps.discovery">Discovery</span>
-                    </li>
-                    <li class="proc-step" data-phase="elicitation" tabindex="0" role="button" aria-pressed="false">
-                        <span class="proc-node"></span>
-                        <span class="proc-label" data-i18n="how.steps.elicitation">Elicitation</span>
-                    </li>
-                    <li class="proc-step" data-phase="modeling" tabindex="0" role="button" aria-pressed="false">
-                        <span class="proc-node"></span>
-                        <span class="proc-label" data-i18n="how.steps.modeling">Modeling</span>
-                    </li>
-                    <li class="proc-step" data-phase="uat" tabindex="0" role="button" aria-pressed="false">
-                        <span class="proc-node"></span>
-                        <span class="proc-label" data-i18n="how.steps.uat">UAT</span>
-                    </li>
-                    <li class="proc-step" data-phase="handoff" tabindex="0" role="button" aria-pressed="false">
-                        <span class="proc-node"></span>
-                        <span class="proc-label" data-i18n="how.steps.handoff">Handoff</span>
-                    </li>
-                </ol>
-                <div class="proc-detail" aria-live="polite"></div>
-            </div>
-
             <footer class="site-footer">
                 <p class="footer-status">
                     <span class="status-dot" aria-hidden="true"></span><span class="status-label"
-                        data-i18n="footer.status">Available for new projects</span><span class="status-meta"
-                        data-i18n="footer.statusMeta">Ukraine / EU / US &middot; GMT+2</span>
+                        data-i18n="footer.status">Business Analyst</span><span class="status-meta"
+                        data-i18n="footer.statusMeta">UA / EU / US</span>
                 </p>
                 <p class="footer-name">Anton Lisachenko</p>
                 <p class="footer-rights">&copy; 2026 &middot; <span data-i18n="footer.rights">All rights

@@ -228,6 +228,12 @@ body.intro-lock {
     font-variant-numeric: tabular-nums;
 }
 
+/* the percentage is generated content (data-pct, updated by script.js), not
+   DOM text — so crawlers / link previews don't read "1%AL 1%" as page copy */
+.al-pct::before {
+    content: attr(data-pct);
+}
+
 .al-logo {
     width: clamp(96px, 22vw, 140px);
     height: auto;
