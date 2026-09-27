@@ -218,44 +218,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
-// ===== MOBILE PAIR ALIGNMENT: Email over Services, LinkedIn over Portfolio =====
-// Both .contact-links rows (contact: Email·LinkedIn, pages: Services·Portfolio)
-// become 2-column grids on mobile (CSS). For the column centres to line up, both
-// grids must share the SAME width — the natural content width of the WIDER row.
-// We measure the two rows' natural widths here and publish the max as --pairs-w,
-// so the words stay compact instead of stretching to width:100%.
-(function () {
-    const rows = Array.from(document.querySelectorAll(".hero-contact .contact-links"));
-    if (rows.length < 2) return;
-    const mq = window.matchMedia("(max-width: 900px)");
-    const root = document.documentElement;
-
-    function gap(row) {
-        const g = parseFloat(getComputedStyle(row).columnGap);
-        return isNaN(g) ? 0 : g;
-    }
-
-    function naturalWidth(row) {
-        let w = 0;
-        const links = row.querySelectorAll("a");
-        links.forEach((a) => { w += a.offsetWidth; });
-        return w + gap(row) * Math.max(0, links.length - 1);
-    }
-
-    function apply() {
-        if (!mq.matches) { root.style.removeProperty("--pairs-w"); return; }
-        const w = Math.max(...rows.map(naturalWidth));
-        if (w > 0) root.style.setProperty("--pairs-w", w + "px");
-    }
-
-    if (mq.addEventListener) mq.addEventListener("change", apply);
-    else if (mq.addListener) mq.addListener(apply);
-    window.addEventListener("resize", apply);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
-    apply();
-})();
-
-
 // ===== INTERACTIVE "HOW I WORK" PIPELINE =====
 (function () {
     // phase content comes from lang.js (localized); no data duplicated here

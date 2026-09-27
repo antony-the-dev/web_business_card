@@ -1978,7 +1978,7 @@ a:focus-visible {
     filter: blur(0.3px) drop-shadow(0 0 3px rgba(255, 87, 34, 0.4));
     opacity: 0.85;
     transition: opacity 0.25s ease, filter 0.25s ease;
-    animation: neon-relay-second 6s ease-in-out infinite;
+    animation: neon-portfolio-sweep 6s ease-in-out infinite;
     animation-play-state: paused; /* start only when the hero-pages nav is visible */
 }
 
@@ -1989,30 +1989,14 @@ a:focus-visible {
     animation-play-state: running;
 }
 
-/* ── RELAY KEYFRAMES ──
-   Two beams coordinated as ONE continuous sweep:
-   Services (teal) sweeps L→R under its word, fades exactly in the GAP
-   between the words (never runs into Portfolio's space); Portfolio
-   (orange) appears at the SAME spot in the gap and continues L→R under
-   its word. The overlap reads as a single line crossing both words. */
-
-/* Services (first): enters from left edge, sweeps across, fades gently past
-   the last letter into the gap — never rushes or vanishes early */
-@keyframes neon-relay-first {
+/* ── PORTFOLIO BEAM KEYFRAMES ──
+   A single orange beam that sweeps L→R under its word, fades in from the
+   left, glides across and fades gently past the last letter, then loops.
+   (There used to be a Services→Portfolio relay pair; the Services link was
+   removed Sep 2026 when the services page was taken off the public nav.) */
+@keyframes neon-portfolio-sweep {
     0%   { background-position: 130% 0; opacity: 0; }
     8%   { background-position: 100% 0; opacity: 0.85; }
-    40%  { background-position: 0% 0;   opacity: 0.85; }
-    48%  { background-position: -35% 0; opacity: 0; }
-    100% { background-position: -35% 0; opacity: 0; }
-}
-
-/* Portfolio (second): fades in AT the handoff spot in the gap (no abrupt
-   pop-in), sweeps across, fades gently past its last letter */
-@keyframes neon-relay-second {
-    0%   { background-position: 105% 0; opacity: 0; }
-    46%  { background-position: 105% 0; opacity: 0; }
-    50%  { background-position: 105% 0; opacity: 0.85; }
-    54%  { background-position: 100% 0; opacity: 0.85; }
     92%  { background-position: 0% 0;   opacity: 0.85; }
     98%  { background-position: -25% 0; opacity: 0; }
     100% { background-position: -25% 0; opacity: 0; }
@@ -2049,117 +2033,25 @@ a:focus-visible {
     }
 }
 
-/* ===== SERVICES LINK — TEAL NEON BEAM ===== */
-.hero-contact a.contact-services {
-    position: relative;
-}
-
-.hero-contact a.contact-services .sv-word {
-    position: relative;
-    display: inline-block;
-}
-
-/* suppress the shared orange draw-in line — services has its own teal beam */
-.hero-contact a.contact-services::after {
-    display: none;
-}
-
-/* faint base line across the word */
-.hero-contact a.contact-services .sv-word::before {
-    content: "";
-    position: absolute;
-    left: -6px;
-    right: -6px;
-    bottom: -0.55em;
-    height: 1.5px;
-    background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(0, 210, 170, 0.15) 10%,
-            rgba(0, 210, 170, 0.15) 90%,
-            transparent 100%);
-    border-radius: 1px;
-}
-
-/* teal neon beam gliding along the base line */
-.hero-contact a.contact-services .sv-word::after {
-    content: "";
-    position: absolute;
-    left: -6px;
-    right: -6px;
-    bottom: -0.55em;
-    height: 1.5px;
-    background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(0, 210, 170, 0.1) 25%,
-            #00d2aa 48%,
-            #00d2aa 52%,
-            rgba(0, 210, 170, 0.1) 75%,
-            transparent 100%);
-    background-size: 200% 100%;
-    border-radius: 1px;
-    filter: blur(0.3px) drop-shadow(0 0 3px rgba(0, 210, 170, 0.4));
-    opacity: 0.85;
-    transition: opacity 0.25s ease, filter 0.25s ease;
-    animation: neon-relay-first 6s ease-in-out infinite;
-    animation-play-state: paused; /* start only when the hero-pages nav is visible */
-}
-
-.reveal-blur.shown a.contact-services .sv-word::after {
-    animation-play-state: running;
-}
-
-@media (hover: hover) {
-    .hero-contact a.contact-services:hover .sv-word::after {
-        opacity: 1;
-        filter: blur(0.2px) drop-shadow(0 0 5px rgba(0, 210, 170, 0.6));
-    }
-}
-
-@media (hover: none) {
-    .hero-contact a.contact-services {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .hero-contact a.contact-services:active .sv-word::after {
-        opacity: 1;
-        filter: blur(0.2px) drop-shadow(0 0 5px rgba(0, 210, 170, 0.6));
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hero-contact a.contact-services .sv-word::after {
-        animation: none;
-        opacity: 0.85;
-        background-position: 0% 0;
-    }
-}
-
 /* bridge beam removed — replaced by relay animation on individual beams */
 
-/* ===== MOBILE: Email · LinkedIn → CV → Portfolio · Services =====
-   Desktop: Portfolio·Services + CV in same row, Email·LinkedIn top-right.
-   Mobile: credo → contacts → CV → Portfolio Services → cube.
-   Both .contact-links rows become 2-column grids with matching column
-   centers, so Email's centre sits exactly over Services' and LinkedIn's
-   over Portfolio's. Width = the natural content width of the wider row
-   (set inline via --pairs-w by script.js) so the words stay compact —
-   NOT width:100%, which spread them apart into an abyss. */
+/* ===== MOBILE: Email · LinkedIn → CV → Portfolio =====
+   Desktop: Portfolio + CV in same row, Email·LinkedIn top-right.
+   Mobile: credo → contacts → CV → Portfolio → cube.
+   Each .contact-links row is simply centred (flex) — the old 2-column
+   pairing grid (Email over Services, LinkedIn over Portfolio) was removed
+   with the Services link Sep 2026. */
 @media (max-width: 900px) {
-    .hero-contact .contact-links,
-    .hero-pages .contact-links {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        justify-items: center;
-        column-gap: 1.75rem;
-        width: var(--pairs-w, auto);
-        margin-inline: auto;
+    .contact-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 0.9rem;
     }
 }
 
 @media (max-width: 600px) {
-    .hero-contact .contact-links,
-    .hero-pages .contact-links {
-        column-gap: 1.25rem;
+    .contact-links {
+        gap: 1.25rem;
+        row-gap: 0.9rem;
     }
 }
