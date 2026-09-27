@@ -55,8 +55,10 @@
             scan: [0.02, 0.42, 0.5],       // deep teal: reads on white
             glint: [0.02, 0.42, 0.5],      // pane highlight (white would vanish on white)
             // the core on white can't glow (additive light vanishes on white): a
-            // solid teal orb with a faint, lighter corona (dark teal rays read as a smudge)
-            coreHot: [0.36, 0.86, 0.9], coreGlow: [0.05, 0.6, 0.68], coreAdd: false, coreHalo: 0.45
+            // TRANSLUCENT ORANGE drop instead (user's call — the teal one read as a
+            // plain inverted colour); coreAlpha = surface opacity at the centre, the
+            // rim stays dense like the edge of a glass drop
+            coreHot: [1.0, 0.66, 0.46], coreGlow: [1.0, 0.34, 0.13], coreAdd: false, coreHalo: 0.45, coreAlpha: 0.5
         },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
@@ -65,7 +67,7 @@
             scan: [0.85, 1.0, 1.0],        // near-white cyan glow
             glint: [1.0, 1.0, 1.0],        // pane highlight
             // the core: white-hot centre, neon cyan rim + corona, added as light
-            coreHot: [1.0, 1.0, 1.0], coreGlow: [0.13, 0.83, 0.93], coreAdd: true, coreHalo: 1
+            coreHot: [1.0, 1.0, 1.0], coreGlow: [0.13, 0.83, 0.93], coreAdd: true, coreHalo: 1, coreAlpha: 1
         }
     };
     const isDarkTheme = () => document.documentElement.classList.contains("dark");
@@ -715,6 +717,7 @@
         core.uni.uGlow.value.setRGB(cg[0], cg[1], cg[2]);
         shared.uCoreColor.value.setRGB(cg[0], cg[1], cg[2]);
         core.uni.uHaloK.value = C.colors.coreHalo * (CORE_ONLY ? 0.55 : 1);   // naked on a page: softer glow
+        core.uni.uSolid.value = C.colors.coreAlpha;
         core.mesh.material.blending = C.colors.coreAdd ? THREE.AdditiveBlending : THREE.NormalBlending;
         core.mesh.material.needsUpdate = true;
         solids.forEach((sd) => sd.ghost.material.color.setRGB(cc[0], cc[1], cc[2]));
@@ -778,7 +781,7 @@
             uFade: { value: 0 }, uBoost: { value: 1 }, uT: { value: 0 }, uHaloK: { value: 1 },
             uBlobs: { value: blobs }, uCam: { value: new THREE.Vector3(0, 0, 5) },
             uBound: { value: 0.5 }, uK: { value: CC.k }, uHalo: { value: CC.halo * (CORE_ONLY ? 1.4 : 1) },
-            uPix: { value: 0.003 }, uLight: { value: new THREE.Vector3(0, 1, 0) }
+            uPix: { value: 0.003 }, uLight: { value: new THREE.Vector3(0, 1, 0) }, uSolid: { value: 1 }
         };
         const VS = [
             "uniform float uBound;",
@@ -791,7 +794,7 @@
         const FS = [
             "uniform vec3 uHot, uGlow, uCam, uLight;",
             "uniform vec4 uBlobs[" + NB + "];",
-            "uniform float uFade, uBoost, uT, uHaloK, uBound, uK, uHalo, uPix;",
+            "uniform float uFade, uBoost, uT, uHaloK, uBound, uK, uHalo, uPix, uSolid;",
             "varying vec3 vPos;",
             NOISE,
             "float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }",
@@ -839,7 +842,7 @@
             // fixed to the camera (upper left), so it reads as an object, not a blur
             "        float rl = max(dot(reflect(rd, n), uLight), 0.0);",
             "        sc += vec3(1.0) * (1.1 * pow(rl, 60.0) + 0.14 * pow(rl, 6.0));",
-            "        col = mix(col, sc, cov); a = mix(a, 1.0, cov);",
+            "        col = mix(col, sc, cov); a = mix(a, mix(uSolid, 1.0, rim), cov);   // light theme: see-through centre, dense rim",
             "    }",
             // dither: breaks the 8-bit banding rings of the glow on the flat navy
             "    float dith = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;",
