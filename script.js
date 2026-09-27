@@ -401,6 +401,9 @@ function makeCircleTexture() {
         // spins, the far side dimmed for depth, and (desktop) a soft torch that
         // follows the cursor over the glass, struts and dots
         light: { spec: 0.55, shine: 28, depthFloor: 0.4, hover: 0.5, hoverR: 0.045 },
+        // grab & spin: the solid can be dragged round (mouse drag / sideways swipe)
+        // and coasts on with inertia
+        touch: { spin: 0.006, friction: 0.95, maxPitch: 0.5, dragPx: 6 },
         dot: { size: 0.05, opacity: 0.6 },
         colors: isDarkTheme() ? PALETTES.dark : PALETTES.light,
         cubeDiagonals: true,               // face diagonals on the cube (false = plain grid)
@@ -1000,8 +1003,31 @@ function makeCircleTexture() {
         locked.fill(0);
         building = true; bt = 0;
     }
-    canvas.style.cursor = "pointer";
+    // grab & spin: a drag turns the solid (yaw; mouse also pitches), a fling keeps
+    // it turning with inertia. Touch keeps vertical swipes for page scrolling
+    // (touch-action: pan-y), so on phones only a sideways swipe spins it.
+    let spinY = 0, spinX = 0, velY = 0, velX = 0, dragging = false, dragMoved = false, pX = 0, pY = 0, dX = 0, dY = 0;
+    canvas.style.cursor = "grab";
+    canvas.style.touchAction = "pan-y";
+    canvas.addEventListener("pointerdown", (e) => {
+        dragging = true; dragMoved = false; dX = pX = e.clientX; dY = pY = e.clientY;
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* capture is a nicety */ }
+        canvas.style.cursor = "grabbing";
+    });
+    canvas.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const mx = e.clientX - pX, my = e.clientY - pY; pX = e.clientX; pY = e.clientY;
+        if (!dragMoved && Math.hypot(e.clientX - dX, e.clientY - dY) > C.touch.dragPx) dragMoved = true;
+        if (!dragMoved) return;
+        velY = mx * C.touch.spin; spinY += velY;
+        velX = e.pointerType === "touch" ? 0 : my * C.touch.spin;
+        spinX = Math.max(-C.touch.maxPitch, Math.min(C.touch.maxPitch, spinX + velX));
+    });
+    const endDrag = () => { dragging = false; canvas.style.cursor = "grab"; };
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
     canvas.addEventListener("click", () => {
+        if (dragMoved) { dragMoved = false; return; } // that was a spin, not a tap
         // tap = re-assemble into the next solid (the breathing settles, the glass
         // comes off and the blueprint is drawn first — see the pending phase)
         if (building || pending || contracting || landT > 0) return;
@@ -1232,7 +1258,14 @@ function makeCircleTexture() {
         const lean = vp === "desktop" && !REDUCED;
         tiltX += ((lean ? aimX : 0) - tiltX) * C.parallax.ease;
         tiltY += ((lean ? aimY : 0) - tiltY) * C.parallax.ease;
-        figure.rotation.set(tiltX, tiltY, 0);
+        // grab & spin: coast on the fling, pitch drifts back to level
+        if (!dragging) {
+            spinY += velY; velY *= C.touch.friction; velX = 0;
+            spinX *= 0.97;
+        } else {
+            velY *= 0.8;   // holding still bleeds the fling out
+        }
+        figure.rotation.set(tiltX + spinX, tiltY + spinY, 0);
 
         lineMat.opacity = cube.lineOpacity * bootFade;
         mat.uniforms.uSize.value = C.dot.size * renderer.getPixelRatio();
