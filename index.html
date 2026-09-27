@@ -34,6 +34,9 @@
     <link rel="canonical" href="https://alisachenko.com/" />
     <!-- hide the intro before first paint on repeat views (kills the flash) -->
     <script>try { if (sessionStorage.getItem("introSeen")) document.documentElement.classList.add("intro-seen"); } catch (e) { }</script>
+    <!-- a reload always starts at the top: restoring the old scroll position made
+         the page land mid-way, replay the bottom "develop" and then jump -->
+    <script>try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) { }</script>
     <!-- apply the theme before first paint: dark is the default, light only if the
          visitor explicitly toggled it (kills any white/light flash) -->
     <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
@@ -158,17 +161,6 @@
                     <p id="typed"></p>
                 </div>
 
-                <div class="block reveal-blur" data-enter="3">
-                    <span class="deco-line"></span>
-                    <h2 class="hex" data-i18n="about.heading">About</h2>
-                    <p>
-                        <span data-i18n="about.p1">Business Analyst with 7 years in IT and a background in
-                            project management.</span><br>
-                        <span data-i18n="about.p2">I take requirements from pre-sale and discovery all the way
-                            through to UAT and a clean handoff.</span>
-                    </p>
-                </div>
-
                 <div class="block reveal-blur" data-enter="4">
                     <span class="deco-line"></span>
                     <h2 class="hex" data-i18n="now.heading">Currently working with</h2>
@@ -290,7 +282,6 @@
 
     <script src="lang.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="face-points.js"></script>
     <script src="script.js"></script>
 </body>
 

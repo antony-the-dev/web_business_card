@@ -1516,6 +1516,26 @@ html.dark #lower.light {
     gap: 2.5rem;
 }
 
+/* #lower is at least one full screen: with "How I work" gone the section got
+   shorter than the viewport, so scrolling to the end left a strip of the navy
+   hero on top. Blocks sit centred in the spare height, footer pinned to the
+   bottom. Taller content (mobile) just grows — the auto margins collapse to 0. */
+#lower {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#lower .lower-grid {
+    flex: 1;
+    width: 100%;
+}
+
+.lower-grid > .block:first-child,
+.lower-grid > .site-footer {
+    margin-top: auto;
+}
+
 /* Domains: block container + inline-block pills (instead of flex),
    so text-wrap: balance can even out the wrapped rows (~5+5) */
 .domain-tags {
