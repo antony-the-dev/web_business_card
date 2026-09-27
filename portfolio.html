@@ -51,6 +51,9 @@
 
         body {
             background-color: var(--bg);
+            /* the header figure's oversized stage may poke past the viewport edge */
+            overflow-x: hidden;
+            overflow-x: clip;
         }
 
         .pf-toprow {
@@ -149,13 +152,18 @@
             background: var(--line);
         }
 
+        /* cards are panes of the same glass as the hero figure: a faint teal
+           tint, an inner rim glow, a torch that follows the cursor and one glint
+           sweeping across on hover */
         .pf-card {
+            position: relative;
             display: grid;
             grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
             border: 1px solid var(--line);
             border-radius: 14px;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.02);
+            background: linear-gradient(160deg, rgba(34, 211, 238, 0.07), rgba(34, 211, 238, 0.015) 45%, rgba(255, 255, 255, 0.02));
+            box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.06), inset 0 0 42px rgba(34, 211, 238, 0.05);
             cursor: pointer;
             outline: none;
             transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
@@ -167,8 +175,96 @@
             .pf-card:hover {
                 transform: translateY(-3px);
                 border-color: rgba(255, 87, 34, 0.45);
-                box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.55);
+                box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.08), inset 0 0 48px rgba(34, 211, 238, 0.08),
+                    0 14px 34px -16px rgba(0, 0, 0, 0.55);
             }
+        }
+
+        /* glass torch: a soft teal light follows the cursor over the pane
+           (--mx / --my are written by the page script) */
+        .pf-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            border-radius: inherit;
+            background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(34, 211, 238, 0.13), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        /* glass glint: one diagonal highlight sweeps the pane on hover */
+        .pf-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            border-radius: inherit;
+            background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.08) 46%,
+                    rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0.08) 54%, transparent 62%) no-repeat;
+            background-size: 250% 100%;
+            background-position: 130% 0;
+            opacity: 0;
+        }
+
+        html:not(.dark) .pf-card::after {
+            background-image: linear-gradient(105deg, transparent 38%, rgba(8, 145, 178, 0.06) 46%,
+                    rgba(8, 145, 178, 0.12) 50%, rgba(8, 145, 178, 0.06) 54%, transparent 62%);
+        }
+
+        @media (hover: hover) {
+            .pf-card:hover::before {
+                opacity: 1;
+            }
+
+            .pf-card:hover::after {
+                opacity: 1;
+                background-position: -30% 0;
+                transition: background-position 1.1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pf-card::after {
+                display: none;
+            }
+        }
+
+        /* ===== HEADER FIGURE (the hero's glass solid, desktop only) ===== */
+        .pf-head-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        /* .pf-fig is the figure's frame and its click/drag area; the canvas stage
+           inside is 1.8x larger and transparent (FIGURE_OPTS.frame) so pieces can
+           fly out of the frame instead of being clipped at its edges. The stage
+           never takes the pointer, so the lang switch above and the cards below
+           stay clickable even when the solid flies over them. */
+        .pf-fig {
+            position: relative;
+            height: 320px;
+            /* pull the box up so the solid sits level with the heading, not the intro */
+            margin-top: -1.5rem;
+        }
+
+        .pf-fig-stage {
+            position: absolute;
+            left: -40%;
+            top: -40%;
+            width: 180%;
+            height: 180%;
+            pointer-events: none;
+        }
+
+        .pf-fig-stage canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
         .pf-card:focus-visible {
@@ -572,6 +668,14 @@
                 padding: 2.5rem 1.25rem 3rem;
             }
 
+            .pf-head-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pf-fig {
+                display: none;
+            }
+
             .pf-toprow {
                 margin-bottom: 2.5rem;
             }
@@ -646,10 +750,17 @@
                 </div>
             </div>
 
-            <p class="pf-kicker"><b>NDA //</b> <span data-i18n="portfolio.kicker">Selected work · Redacted</span></p>
-            <h1 class="hex" data-i18n="portfolio.heading">Portfolio</h1>
-            <p class="pf-intro" data-i18n="portfolio.intro.p1"></p>
-            <p class="pf-intro" data-i18n="portfolio.intro.p2"></p>
+            <div class="pf-head-grid">
+                <div class="pf-head-text">
+                    <p class="pf-kicker"><b>NDA //</b> <span data-i18n="portfolio.kicker">Selected work · Redacted</span></p>
+                    <h1 class="hex" data-i18n="portfolio.heading">Portfolio</h1>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p1"></p>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p2"></p>
+                </div>
+                <div class="pf-fig" id="pf-fig-hit" aria-hidden="true">
+                    <div class="pf-fig-stage" id="pf-fig-box"><canvas id="pf-fig-canvas"></canvas></div>
+                </div>
+            </div>
         </header>
 
         <section class="pf-strip" aria-label="Artifacts">
@@ -874,6 +985,15 @@
             // (animation-delay touches only the entrance, never hover)
             cards.forEach(function (card, i) { card.style.animationDelay = (i % 3) * 0.09 + "s"; });
 
+            // glass torch: park the card's light under the cursor
+            cards.forEach(function (card) {
+                card.addEventListener("pointermove", function (e) {
+                    var r = card.getBoundingClientRect();
+                    card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+                    card.style.setProperty("--my", (e.clientY - r.top) + "px");
+                });
+            });
+
             if ("IntersectionObserver" in window) {
                 var io = new IntersectionObserver(function (entries) {
                     entries.forEach(function (entry) {
@@ -957,6 +1077,8 @@
                 root.classList.toggle("dark", dark);
                 try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
                 syncThemeColor();
+                // the header figure recolours itself on this event
+                window.dispatchEvent(new CustomEvent("themechange", { detail: { dark: dark } }));
                 // iOS Safari: force compositor repaints so the URL-bar / home
                 // indicator chrome refreshes with the theme
                 function repaint() {
@@ -966,6 +1088,26 @@
                 repaint();
                 [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
             });
+        })();
+    </script>
+    <script>
+        // ===== HEADER FIGURE — the hero's glass solid (desktop only: phones skip
+        // the ~600 KB of Three.js; the box is display:none there anyway) =====
+        (function () {
+            if (!window.matchMedia("(min-width: 821px)").matches) return;
+            window.FIGURE_OPTS = {
+                box: "pf-fig-box", canvas: "pf-fig-canvas", hit: "pf-fig-hit", frame: 1.8,
+                panFrac: 0, panY: { mobile: 0, desktop: 0 }, scale: { desktop: 1.1, mobile: 1.1 },
+                scrollShrink: 0, bandless: true, noIntro: true
+            };
+            var three = document.createElement("script");
+            three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+            three.onload = function () {
+                var fig = document.createElement("script");
+                fig.src = "figure.js";
+                document.body.appendChild(fig);
+            };
+            document.body.appendChild(three);
         })();
     </script>
 </body>

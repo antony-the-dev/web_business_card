@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found — Anton Lisachenko</title>
+    <meta name="robots" content="noindex">
+    <!-- GitHub Pages serves this file for ANY missing path (/a/b/c), so every
+         asset below is root-absolute -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#0a2540">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <!-- dark is the default theme, light only if the visitor toggled it -->
+    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
+    <style>
+        body {
+            background-color: var(--bg);
+            overflow-x: hidden;
+        }
+
+        /* the glass figure fills the page behind the text (figure.js) */
+        #fig-box {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        #fig-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* the text layer lets taps fall through to the figure — only links and
+           buttons catch the pointer */
+        .nf-wrap {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            padding: 2.2rem 2.5rem 2.5rem;
+            pointer-events: none;
+        }
+
+        .nf-wrap a,
+        .nf-wrap button {
+            pointer-events: auto;
+        }
+
+        .nf-toprow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nf-toprow .lang-switch {
+            margin-right: 0;
+        }
+
+        .legal-back {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .nf-body {
+            margin: auto 0;
+            max-width: 30rem;
+        }
+
+        .nf-kicker,
+        .nf-hint {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--muted);
+        }
+
+        .nf-kicker {
+            margin-bottom: 0.9rem;
+        }
+
+        .nf-kicker b,
+        .nf-hint b {
+            color: var(--accent-text);
+            font-weight: inherit;
+        }
+
+        .nf-body h1 {
+            margin-bottom: 1rem;
+        }
+
+        .nf-text {
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 1.4rem;
+        }
+
+        .nf-hint {
+            font-size: 0.66rem;
+            letter-spacing: 0.16em;
+            margin-bottom: 2rem;
+        }
+
+        .nf-links {
+            display: flex;
+            gap: 1.8rem;
+        }
+
+        .nf-links a {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        @media (max-width: 900px) {
+
+            /* phone: the figure takes the upper band, the text sits below it */
+            #fig-box {
+                inset: auto;
+                top: 11vh;
+                left: 0;
+                right: 0;
+                height: 44vh;
+            }
+
+            .nf-wrap {
+                padding: 1.4rem 1.25rem 2rem;
+            }
+
+            .nf-body {
+                margin: auto 0 0;
+                padding-top: 52vh;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body data-title-key="notFound.title">
+
+    <div id="fig-box" aria-hidden="true"><canvas id="fig-canvas"></canvas></div>
+
+    <main class="nf-wrap">
+        <div class="nf-toprow">
+            <a class="legal-back" href="/" data-i18n="notFound.back">Back to home</a>
+            <div class="lang-switch" aria-label="Language and theme">
+                <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
+                    class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
+                    aria-label="Українська">UA</button><span class="lang-sep" aria-hidden="true">·</span>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
+                    <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
+                            fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <section class="nf-body">
+            <p class="nf-kicker"><b>404 //</b> <span data-i18n="notFound.kicker">Page not found</span></p>
+            <h1 class="hex" data-i18n="notFound.heading">Nothing here — yet.</h1>
+            <p class="nf-text" data-i18n="notFound.text">The page you're looking for doesn't exist or has moved.</p>
+            <p class="nf-hint"><b>//</b> <span data-i18n="notFound.hint">tap the figure to rebuild it · drag to spin</span></p>
+            <nav class="nf-links" aria-label="Pages">
+                <a href="/" data-i18n="notFound.home">Home</a>
+                <a href="/portfolio.html" data-i18n="nav.portfolio">Portfolio</a>
+            </nav>
+        </section>
+    </main>
+
+    <script>
+        // the home page's figure, full-page here: right of the text on desktop,
+        // no intro wait, none of the home hero's band/scroll behaviour
+        window.FIGURE_OPTS = {
+            box: "fig-box", canvas: "fig-canvas",
+            panFrac: 0.22, panY: { mobile: 0, desktop: 0 },
+            scrollShrink: 0, bandless: true, noIntro: true
+        };
+    </script>
+    <script src="/lang.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="/figure.js"></script>
+    <script>
+        // ===== THEME TOGGLE (same behavior as index.html, standalone) =====
+        (function () {
+            var btn = document.getElementById("theme-toggle");
+            if (!btn) return;
+            var root = document.documentElement;
+            function syncThemeColor() {
+                var meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
+            }
+            syncThemeColor();
+            btn.addEventListener("click", function () {
+                var dark = !root.classList.contains("dark");
+                root.classList.toggle("dark", dark);
+                try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
+                syncThemeColor();
+                // the figure recolours itself on this event
+                window.dispatchEvent(new CustomEvent("themechange", { detail: { dark: dark } }));
+                // iOS Safari: force compositor repaints so the URL-bar / home
+                // indicator chrome refreshes with the theme
+                function repaint() {
+                    document.body.style.webkitTransform = "translateZ(0)";
+                    requestAnimationFrame(function () { document.body.style.webkitTransform = ""; });
+                }
+                repaint();
+                [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
+            });
+        })();
+    </script>
+</body>
+
+</html>

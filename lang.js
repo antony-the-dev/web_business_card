@@ -34,6 +34,15 @@
                 }
             },
             footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Business Analyst", statusMeta: "UA / EU / US" },
+            notFound: {
+                title: "Page not found — Anton Lisachenko",
+                back: "Back to home",
+                kicker: "Page not found",
+                heading: "Nothing here — yet.",
+                text: "The page you're looking for doesn't exist or has moved.",
+                hint: "tap the figure to rebuild it · drag to spin",
+                home: "Home"
+            },
             portfolio: {
                 title: "Portfolio — Anton Lisachenko",
                 back: "Back to home",
@@ -137,6 +146,15 @@
                 }
             },
             footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Бізнес-аналітик", statusMeta: "Україна / ЄС / США" },
+            notFound: {
+                title: "Сторінку не знайдено — Антон Лісаченко",
+                back: "На головну",
+                kicker: "Сторінку не знайдено",
+                heading: "Тут поки нічого немає.",
+                text: "Сторінки, яку ти шукаєш, не існує або її перенесли.",
+                hint: "тапни фігуру, щоб перебудувати · потягни, щоб покрутити",
+                home: "Головна"
+            },
             portfolio: {
                 title: "Портфоліо — Антон Лісаченко",
                 back: "На головну",
