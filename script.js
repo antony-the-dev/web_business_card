@@ -43,8 +43,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     function reveal(el) {
         el.classList.add("shown");
         setTimeout(() => {
-            // never force a deliberately-hidden element back to visible
-            if (el.classList.contains("is-tapped")) return;
             if (parseFloat(getComputedStyle(el).opacity) < 0.5) {
                 el.style.transition = "none";
                 el.style.opacity = "1";
@@ -218,178 +216,6 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
-// ===== INTERACTIVE "HOW I WORK" PIPELINE =====
-(function () {
-    // phase content comes from lang.js (localized); no data duplicated here
-    const PHASES = window.PHASES_I18N || {};
-
-    const strip = document.querySelector(".process-strip");
-    const detail = document.querySelector(".proc-detail");
-    if (!strip || !detail) return;
-
-    const steps = Array.from(strip.querySelectorAll(".proc-step"));
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const RUNNER_MAX = 650;
-    const HOLD_MS = 3000;
-    const EXIT_MS = 900;
-
-    // auto-play: the pipeline runs itself when the section becomes visible —
-    // first step opens ~1s after reveal, then it flows to the next phase every
-    // 4s. A manual click/keypress hands control to the user; after ~8s of
-    // inactivity the auto cycle restarts from the first phase.
-    const AUTOPLAY_REVEAL_DELAY = 1000;
-    const AUTOPLAY_STEP_MS = 4000;
-    const AUTOPLAY_IDLE_MS = 8000;
-
-    let buildTimer = null, closeTimer = null, clearTimer = null;
-    let autoplayTimer = null, autoplayStepIndex = 0, autoplayActive = false;
-    let idleTimer = null, revealTimer = null;
-    const phaseOrder = steps.map((s) => s.dataset.phase);
-
-    function stopAutoplay() {
-        autoplayActive = false;
-        clearTimeout(autoplayTimer);
-        clearTimeout(idleTimer);
-    }
-
-    function startAutoplay(fromStart) {
-        stopAutoplay();
-        if (reduceMotion) return;
-        autoplayActive = true;
-        if (fromStart) autoplayStepIndex = 0;
-        const tick = () => {
-            if (!autoplayActive) return;
-            selectPhase(phaseOrder[autoplayStepIndex]);
-            autoplayStepIndex = (autoplayStepIndex + 1) % phaseOrder.length;
-            autoplayTimer = setTimeout(tick, AUTOPLAY_STEP_MS);
-        };
-        tick();
-    }
-
-    function manualSelect(key) {
-        stopAutoplay();
-        clearTimeout(revealTimer);
-        selectPhase(key);
-        // after the user leaves it alone for a while, resume the auto cycle
-        idleTimer = setTimeout(() => startAutoplay(true), AUTOPLAY_IDLE_MS);
-    }
-
-    function resetSteps() {
-        steps.forEach((s) => {
-            s.classList.remove("active", "filled");
-            s.setAttribute("aria-pressed", "false");
-        });
-    }
-
-    function positionTree(activeStep, tree) {
-        const stripRect = strip.getBoundingClientRect();
-        const nodeRect = activeStep.querySelector(".proc-node").getBoundingClientRect();
-        const nodeCenter = nodeRect.left + nodeRect.width / 2 - stripRect.left;
-        const treeW = tree.offsetWidth;
-        let x = nodeCenter - 6;
-        const rightEdge = stripRect.left + x + treeW;
-        const vw = window.innerWidth;
-        if (rightEdge > vw - 16) x -= (rightEdge - (vw - 16));
-        if (x < 0) x = 0;
-        tree.style.marginLeft = x + "px";
-    }
-
-    function collapseTree() {
-        clearTimeout(closeTimer);
-        const tree = detail.querySelector(".proc-tree");
-        resetSteps();
-        strip.style.setProperty("--run-dur", "0.5s");
-        strip.style.setProperty("--fill", 0);
-        if (!tree) return;
-        tree.classList.remove("show");
-        clearTimeout(clearTimer);
-        clearTimer = setTimeout(() => {
-            if (detail.querySelector(".proc-tree") === tree) detail.innerHTML = "";
-        }, EXIT_MS);
-    }
-
-    function selectPhase(key) {
-        const items = PHASES[key];
-        if (!items) return;
-
-        clearTimeout(buildTimer);
-        clearTimeout(closeTimer);
-        clearTimeout(clearTimer);
-
-        const idx = steps.findIndex((s) => s.dataset.phase === key);
-        const activeStep = steps[idx];
-
-        resetSteps();
-        steps.forEach((s, i) => { if (i <= idx) s.classList.add("filled"); });
-        if (activeStep) {
-            activeStep.classList.add("active");
-            activeStep.setAttribute("aria-pressed", "true");
-        }
-
-        const fill = steps.length > 1 ? idx / (steps.length - 1) : 0;
-        const dur = RUNNER_MAX * fill;
-        strip.style.setProperty("--run-dur", reduceMotion ? "0s" : (dur / 1000).toFixed(3) + "s");
-        strip.style.setProperty("--fill", fill);
-
-        const title = activeStep ? activeStep.querySelector(".proc-label").textContent : key;
-        let html = '<div class="proc-tree"><div class="proc-tree-title">' + title + '</div><ul class="proc-branches">';
-        items.forEach((txt, i) => {
-            html += '<li style="--i:' + i + '"><span class="branch-text">' + txt + '</span></li>';
-        });
-        html += '</ul></div>';
-        detail.innerHTML = html;
-
-        const tree = detail.querySelector(".proc-tree");
-        positionTree(activeStep, tree);
-
-        if (reduceMotion) { tree.classList.add("show"); return; }
-
-        buildTimer = setTimeout(() => {
-            tree.classList.add("show");
-            // only auto-collapse after a manual pick (the user hands back
-            // control); during auto-play the next phase replaces the tree on
-            // its own schedule, so no 3s hold-and-collapse gap
-            if (!autoplayActive) closeTimer = setTimeout(collapseTree, HOLD_MS);
-        }, Math.max(150, dur));
-    }
-
-    steps.forEach((s) => {
-        s.addEventListener("click", () => manualSelect(s.dataset.phase));
-        s.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); manualSelect(s.dataset.phase); }
-        });
-    });
-
-    // kick off the auto-play once the "How I work" section scrolls into view;
-    // pause it again if the section scrolls away so it never plays off-screen
-    const block = strip.closest(".block") || strip.parentElement;
-    if ("IntersectionObserver" in window) {
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    if (!autoplayActive && !idleTimer) {
-                        clearTimeout(revealTimer);
-                        revealTimer = setTimeout(() => startAutoplay(true), AUTOPLAY_REVEAL_DELAY);
-                    }
-                } else {
-                    clearTimeout(revealTimer);
-                    stopAutoplay();
-                }
-            });
-        }, { threshold: 0.2 });
-        io.observe(block);
-    }
-
-    window.addEventListener("resize", () => {
-        const tree = detail.querySelector(".proc-tree");
-        if (!tree) return;
-        const active = steps.find((s) => s.classList.contains("active"));
-        if (active) positionTree(active, tree);
-    });
-})();
-
-
 // ===== BOTTOM SECTION THEME BEHAVIOUR =====
 // Dark theme: the navy section "develops" into the classic white design once it
 // enters the focus band — one-way, stays white after.
@@ -522,13 +348,15 @@ function makeCircleTexture() {
             ink: [0.039, 0.145, 0.251],    // site --ink #0a2540
             cube: [0.08, 0.72, 0.77],      // site teal
             orange: [1.0, 0.34, 0.13],     // spark / twinkle accent (site --accent #ff5722)
-            scan: [0.02, 0.42, 0.5]        // deep teal: reads on white
+            scan: [0.02, 0.42, 0.5],       // deep teal: reads on white
+            glint: [0.02, 0.42, 0.5]       // pane highlight (white would vanish on white)
         },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
             cube: [0.13, 0.83, 0.93],      // bright cyan (matches the intro)
             orange: [1.0, 0.34, 0.13],
-            scan: [0.85, 1.0, 1.0]         // near-white cyan glow
+            scan: [0.85, 1.0, 1.0],        // near-white cyan glow
+            glint: [1.0, 1.0, 1.0]         // pane highlight
         }
     };
     const isDarkTheme = () => document.documentElement.classList.contains("dark");
@@ -552,13 +380,27 @@ function makeCircleTexture() {
         // volume: every lattice cell is a pane of glass — a faint fill plus an inner
         // glow hugging its edges, stronger where the pane turns away from the camera
         glass: { opacity: { desktop: 0.85, mobile: 0.8 }, glazeMs: 1400 },
+        // extras layered on a rebuild — each one can be switched off on its own
+        rebuildFx: {
+            // the glass panes ARE the construction pieces: every pane breaks off as a
+            // shard, tumbles over and docks into the next solid with a flash of light
+            shards: { on: true, ms: 1100, lift: 0.4, tumble: 1.3, glintMs: 550 },
+            blueprint: { on: true, drawMs: 800, opacity: { desktop: 0.4, mobile: 0.35 } }, // the next solid's dashed outline is drawn first; the pieces dock into it
+            settle: { on: true, ms: 800, amp: 0.04 },            // the finished solid settles with one small bounce...
+            verifyScan: true,                                    // ...and one scan pass checks it over
+            push: 0.07                                           // the camera leans in by this fraction mid-rebuild
+        },
         // breathing = an exploded view: faces drift out along their normals in a
         // slow wave rolling across the solid, then settle back (no scaling)
-        explode: { amp: { desktop: 0.1, mobile: 0.07 }, periodMs: 4800, wave: 2.2 },
+        explode: { amp: { desktop: 0.1, mobile: 0.05 }, periodMs: 4800, wave: 2.2 },
         // an analysis scan: a plane of light sweeps bottom-up through the solid now and then
         scan: { everyMs: 7000, sweepMs: 2400, width: 0.22, firstDelayMs: 3500 },
         // desktop: the solid leans a little toward the cursor (radians at the screen edge)
         parallax: { x: 0.16, y: 0.28, ease: 0.04 },
+        // glass light: a glint whenever a pane turns into the light as the solid
+        // spins, the far side dimmed for depth, and (desktop) a soft torch that
+        // follows the cursor over the glass, struts and dots
+        light: { spec: 0.55, shine: 28, depthFloor: 0.4, hover: 0.5, hoverR: 0.045 },
         dot: { size: 0.05, opacity: 0.6 },
         colors: isDarkTheme() ? PALETTES.dark : PALETTES.light,
         cubeDiagonals: true,               // face diagonals on the cube (false = plain grid)
@@ -739,40 +581,56 @@ function makeCircleTexture() {
     const shared = {
         uTime: { value: 0 }, uAmp: { value: 0 }, uOmega: { value: 0 }, uKappa: { value: C.explode.wave },
         uDir: { value: WAVE_DIR }, uScanY: { value: 99 }, uScanW: { value: C.scan.width },
-        uColor: { value: new THREE.Color() }, uScanColor: { value: new THREE.Color() }
+        uColor: { value: new THREE.Color() }, uScanColor: { value: new THREE.Color() },
+        uGlintColor: { value: new THREE.Color() }, uLight: { value: new THREE.Vector3(-0.5, 0.75, 0.45).normalize() },
+        uSpec: { value: C.light.spec }, uShine: { value: C.light.shine }, uDepthFloor: { value: C.light.depthFloor },
+        uNear: { value: 1 }, uFar: { value: 5 }, uMouse: { value: new THREE.Vector2(9, 9) }, uAspect: { value: 1 },
+        uHover: { value: 0 }, uHoverR: { value: C.light.hoverR }
     };
     const glassVS = [
         "attribute vec3 aBary;",
         "attribute vec3 aNormalF;",
         "attribute vec3 aCenter;",
         "attribute float aDelay;",
-        "uniform float uTime, uAmp, uOmega, uKappa, uScanY, uScanW, uGlaze;",
+        "attribute float aGlint;",
+        "uniform float uTime, uAmp, uOmega, uKappa, uScanY, uScanW, uGlaze, uNear, uFar, uAspect, uHoverR;",
         "uniform vec3 uDir;",
-        "varying vec3 vBary;",
-        "varying float vFres, vScan, vGlaze;",
+        "uniform vec2 uMouse;",
+        "varying vec3 vBary, vN, vV;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover;",
         "void main() {",
         "    float w = 0.5 + 0.5 * sin(uOmega * uTime - uKappa * dot(aCenter, uDir));",
         "    vec3 p = position + aNormalF * uAmp * w;",
+        "    vGlint = aGlint;",
         "    vec4 mv = modelViewMatrix * vec4(p, 1.0);",
-        "    vec3 nv = normalize(normalMatrix * aNormalF);",
-        "    vFres = pow(1.0 - abs(dot(nv, normalize(-mv.xyz))), 2.0);",
+        "    vec3 nv = normalize(normalMatrix * aNormalF), vv = normalize(-mv.xyz);",
+        "    vFres = pow(1.0 - abs(dot(nv, vv)), 2.0);",
+        "    vN = nv; vV = vv;",
+        "    vDepth = clamp((uFar + mv.z) / (uFar - uNear), 0.0, 1.0);   // 1 = nearest pane, 0 = far side",
         "    float s = (p.y - uScanY) / uScanW;",
         "    vScan = exp(-s * s);",
         "    vGlaze = smoothstep(aDelay, aDelay + 0.25, uGlaze);",
         "    vBary = aBary;",
         "    gl_Position = projectionMatrix * mv;",
+        "    vec2 dm = (gl_Position.xy / gl_Position.w - uMouse) * vec2(uAspect, 1.0);",
+        "    vHover = exp(-dot(dm, dm) / uHoverR);   // cursor torch",
         "}"
     ].join("\n");
     const glassFS = [
-        "uniform vec3 uColor, uScanColor;",
-        "uniform float uOpacity;",
-        "varying vec3 vBary;",
-        "varying float vFres, vScan, vGlaze;",
+        "uniform vec3 uColor, uScanColor, uGlintColor, uLight;",
+        "uniform float uOpacity, uSpec, uShine, uDepthFloor, uHover;",
+        "varying vec3 vBary, vN, vV;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover;",
         "void main() {",
         "    float e = min(min(vBary.x, vBary.y), vBary.z);   // 0 on the pane's rim",
         "    float rim = 1.0 - smoothstep(0.0, 0.2, e);        // inner glow hugging the rim",
-        "    float a = (0.05 + 0.3 * rim) * (0.3 + 0.7 * vFres) + 0.45 * vScan * (0.25 + rim);",
-        "    vec3 col = mix(uColor, uScanColor, clamp(vScan, 0.0, 1.0));",
+        "    float spec = uSpec * pow(abs(dot(vN, normalize(uLight + vV))), uShine);   // glint as a pane turns into the light",
+        "    float hov = uHover * vHover;",
+        "    float a = (0.05 + 0.3 * rim) * (0.3 + 0.7 * vFres) + 0.45 * vScan * (0.25 + rim) + 0.8 * vGlint * (0.25 + rim)",
+        "            + spec * (0.35 + rim) + hov * (0.2 + rim);",
+        "    vec3 col = mix(uColor, uScanColor, clamp(vScan + vGlint + 0.6 * hov, 0.0, 1.0));   // scan / docking flash / torch",
+        "    col = mix(col, uGlintColor, clamp(spec, 0.0, 0.8));",
+        "    a *= mix(uDepthFloor, 1.0, vDepth);   // far side dimmer: depth",
         "    gl_FragColor = vec4(col, a * uOpacity * vGlaze);",
         "}"
     ].join("\n");
@@ -795,6 +653,7 @@ function makeCircleTexture() {
         g.setAttribute("aNormalF", new THREE.BufferAttribute(Nf, 3));
         g.setAttribute("aCenter", new THREE.BufferAttribute(Cf, 3));
         g.setAttribute("aDelay", new THREE.BufferAttribute(Dl, 1));
+        g.setAttribute("aGlint", new THREE.BufferAttribute(new Float32Array(V), 1));
         const m = new THREE.ShaderMaterial({
             uniforms: Object.assign({ uOpacity: { value: 0 }, uGlaze: { value: 0 } }, shared),
             vertexShader: glassVS, fragmentShader: glassFS,
@@ -805,13 +664,159 @@ function makeCircleTexture() {
         return mesh;
     }
 
+    // the in-flight glass: one dynamic mesh holding every pane of a rebuild (the
+    // union of both solids' panes); positions / normals / glints are written per frame
+    let flight = null;
+    function allocateFlight(T) {
+        if (flight) { figure.remove(flight); flight.geometry.dispose(); flight.material.dispose(); }
+        const V = T * 3, g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(V * 3), 3));
+        g.setAttribute("aBary", new THREE.BufferAttribute(new Float32Array(V * 3), 3));
+        g.setAttribute("aNormalF", new THREE.BufferAttribute(new Float32Array(V * 3), 3));
+        g.setAttribute("aCenter", new THREE.BufferAttribute(new Float32Array(V * 3), 3));
+        g.setAttribute("aDelay", new THREE.BufferAttribute(new Float32Array(V), 1));
+        g.setAttribute("aGlint", new THREE.BufferAttribute(new Float32Array(V), 1));
+        const m = new THREE.ShaderMaterial({
+            uniforms: Object.assign({ uOpacity: { value: 0 }, uGlaze: { value: 1.3 } }, shared),
+            vertexShader: glassVS, fragmentShader: glassFS,
+            transparent: true, depthWrite: false, side: THREE.DoubleSide
+        });
+        flight = new THREE.Mesh(g, m);
+        flight.visible = false;
+        flight.frustumCulled = false;   // rewritten every frame — a cached bounding sphere would go stale
+        figure.add(flight);
+    }
+
+    // The flight plan of every pane, old solid -> new: nearest-centre pairs first
+    // (greedy, like the struts); spare old panes merge into their nearest new pane,
+    // extra new panes split off their nearest old one. Each pair keeps the vertex
+    // order that travels least, so a shard turns into its slot instead of flipping.
+    const PERMS = [[0, 1, 2], [1, 2, 0], [2, 0, 1], [0, 2, 1], [2, 1, 0], [1, 0, 2]];
+    let plan = null;
+    function planShards(A, B) {
+        const Ta = A.T, Tb = B.T, M = Math.max(Ta, Tb);
+        const d2 = (a, i, b, j) => { const x = a.tcn[i * 3] - b.tcn[j * 3], y = a.tcn[i * 3 + 1] - b.tcn[j * 3 + 1], z = a.tcn[i * 3 + 2] - b.tcn[j * 3 + 2]; return x * x + y * y + z * z; };
+        const n = Ta * Tb, cost = new Float32Array(n), idx = new Uint32Array(n);
+        for (let i = 0; i < Ta; i++) for (let j = 0; j < Tb; j++) { cost[i * Tb + j] = d2(A, i, B, j); idx[i * Tb + j] = i * Tb + j; }
+        idx.sort((a, b) => cost[a] - cost[b]);
+        const usedA = new Uint8Array(Ta), usedB = new Uint8Array(Tb), pairs = [];
+        for (let k = 0; k < n && pairs.length < Math.min(Ta, Tb); k++) {
+            const i = (idx[k] / Tb) | 0, j = idx[k] % Tb;
+            if (usedA[i] || usedB[j]) continue;
+            usedA[i] = usedB[j] = 1; pairs.push([i, j, 0]);
+        }
+        const nearest = (a, i, b, T) => { let best = 0, bd = Infinity; for (let j = 0; j < T; j++) { const dd = d2(a, i, b, j); if (dd < bd) { bd = dd; best = j; } } return best; };
+        for (let i = 0; i < Ta; i++) if (!usedA[i]) pairs.push([i, nearest(A, i, B, Tb), 1]);   // merges into a new pane
+        for (let j = 0; j < Tb; j++) if (!usedB[j]) pairs.push([nearest(B, j, A, Ta), j, 2]);   // splits off an old pane
+        plan = {
+            M: M, src: new Float32Array(M * 9), dst: new Float32Array(M * 9),
+            na: new Float32Array(M * 3), nb: new Float32Array(M * 3), axis: new Float32Array(M * 3),
+            spin: new Float32Array(M), delay: new Float32Array(M), locked: new Uint8Array(M), glint: new Float32Array(M)
+        };
+        const bary = flight.geometry.attributes.aBary.array;
+        let lo = Infinity, hi = -Infinity;
+        pairs.forEach(([i, j, mode], s) => {
+            const fx = C.rebuildFx.shards;
+            let perm = PERMS[0];
+            if (mode === 0) {
+                let bestC = Infinity;
+                for (const pm of PERMS) {
+                    let c = 0;
+                    for (let k = 0; k < 3; k++) for (let d = 0; d < 3; d++) { const e = A.tri[i * 9 + k * 3 + d] - B.tri[j * 9 + pm[k] * 3 + d]; c += e * e; }
+                    if (c < bestC) { bestC = c; perm = pm; }
+                }
+            }
+            for (let k = 0; k < 3; k++) for (let d = 0; d < 3; d++) {
+                plan.src[s * 9 + k * 3 + d] = mode === 2 ? A.tcn[i * 3 + d] : A.tri[i * 9 + k * 3 + d];
+                plan.dst[s * 9 + k * 3 + d] = mode === 1 ? B.tcn[j * 3 + d] : B.tri[j * 9 + perm[k] * 3 + d];
+                bary[s * 9 + k * 3 + d] = mode === 1 ? A.tb[i * 9 + k * 3 + d] : B.tb[j * 9 + perm[k] * 3 + d];
+            }
+            plan.na.set(A.tn.subarray(i * 3, i * 3 + 3), s * 3);
+            plan.nb.set(B.tn.subarray(j * 3, j * 3 + 3), s * 3);
+            const ax = norm([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]);
+            plan.axis.set(ax, s * 3);
+            plan.spin[s] = (Math.random() < 0.5 ? -1 : 1) * fx.tumble * (0.5 + 0.5 * Math.random());
+            const h = B.tcn[j * 3 + 1];
+            plan.delay[s] = h; lo = Math.min(lo, h); hi = Math.max(hi, h);
+        });
+        // docking order: bottom-up by landing height, lightly shuffled
+        const span = Math.max(0, C.build.durationMs - C.rebuildFx.shards.ms);
+        for (let s = 0; s < M; s++) plan.delay[s] = ((plan.delay[s] - lo) / ((hi - lo) || 1) * (1 - C.build.jitter) + Math.random() * C.build.jitter) * span;
+        flight.geometry.attributes.aBary.needsUpdate = true;
+        flight.geometry.setDrawRange(0, M * 3);
+    }
+
+    // writes every shard's pose for the current rebuild time: 0-25% break off along
+    // its normal, 25-75% tumble over on an arc round the body, 75-100% dock into
+    // its slot with a small overshoot — a flash of light on docking
+    const sv = new Float32Array(9), sc = [0, 0, 0], sn = [0, 0, 0];
+    function shardsFrame(dt, time) {
+        const fx = C.rebuildFx.shards, L = fx.lift, g = flight.geometry.attributes;
+        const fp = g.position.array, fn = g.aNormalF.array, fgl = g.aGlint.array;
+        for (let s = 0; s < plan.M; s++) {
+            const u = clamp01((time - plan.delay[s]) / fx.ms), o9 = s * 9, o3 = s * 3;
+            let blend, la, lb, arc = 0, ang = 0;
+            if (u < 0.25) { const e = easeInOut(u / 0.25); blend = 0; la = L * e; lb = 0; }
+            else if (u < 0.75) { const e = easeInOut((u - 0.25) / 0.5); blend = e; la = L * (1 - e); lb = L * e; arc = Math.sin(Math.PI * e) * L * 0.6; ang = Math.sin(Math.PI * e) * plan.spin[s]; }
+            else { const e = easeOutBack((u - 0.75) / 0.25); blend = 1; la = 0; lb = L * (1 - e); }
+            sc[0] = sc[1] = sc[2] = 0;
+            for (let k = 0; k < 3; k++) for (let d = 0; d < 3; d++) {
+                const v = plan.src[o9 + k * 3 + d] + (plan.dst[o9 + k * 3 + d] - plan.src[o9 + k * 3 + d]) * blend + plan.na[o3 + d] * la + plan.nb[o3 + d] * lb;
+                sv[k * 3 + d] = v; sc[d] += v / 3;
+            }
+            // swing out round the body, not through it
+            const cr = Math.hypot(sc[0], sc[1], sc[2]) || 1;
+            for (let k = 0; k < 3; k++) for (let d = 0; d < 3; d++) sv[k * 3 + d] += sc[d] / cr * arc;
+            for (let d = 0; d < 3; d++) sc[d] += sc[d] / cr * arc;
+            // tumble about the shard's own centre (Rodrigues)
+            if (ang !== 0) {
+                const ax = plan.axis[o3], ay = plan.axis[o3 + 1], az = plan.axis[o3 + 2], cs = Math.cos(ang), sn1 = Math.sin(ang);
+                for (let k = 0; k < 3; k++) {
+                    const x = sv[k * 3] - sc[0], y = sv[k * 3 + 1] - sc[1], z = sv[k * 3 + 2] - sc[2];
+                    const dot = ax * x + ay * y + az * z;
+                    sv[k * 3] = sc[0] + x * cs + (ay * z - az * y) * sn1 + ax * dot * (1 - cs);
+                    sv[k * 3 + 1] = sc[1] + y * cs + (az * x - ax * z) * sn1 + ay * dot * (1 - cs);
+                    sv[k * 3 + 2] = sc[2] + z * cs + (ax * y - ay * x) * sn1 + az * dot * (1 - cs);
+                }
+            }
+            fp.set(sv, o9);
+            // current face normal (fresnel), facing out of the body
+            const ux = sv[3] - sv[0], uy = sv[4] - sv[1], uz = sv[5] - sv[2], vx = sv[6] - sv[0], vy = sv[7] - sv[1], vz = sv[8] - sv[2];
+            unit(sn, uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx, [plan.nb[o3], plan.nb[o3 + 1], plan.nb[o3 + 2]]);
+            if (sn[0] * sc[0] + sn[1] * sc[1] + sn[2] * sc[2] < 0) { sn[0] = -sn[0]; sn[1] = -sn[1]; sn[2] = -sn[2]; }
+            for (let k = 0; k < 3; k++) fn.set(sn, o9 + k * 3);
+            // docking flash
+            if (u >= 0.85 && !plan.locked[s]) { plan.locked[s] = 1; plan.glint[s] = 1; }
+            if (plan.glint[s] > 0) plan.glint[s] = Math.max(0, plan.glint[s] - dt / fx.glintMs);
+            fgl[s * 3] = fgl[s * 3 + 1] = fgl[s * 3 + 2] = plan.glint[s];
+        }
+        g.position.needsUpdate = g.aNormalF.needsUpdate = g.aGlint.needsUpdate = true;
+    }
+
+    // blueprint: the solid's outline as dashed lines (shared edges once), drawn in
+    // face by face at the start of a rebuild so the struts have something to click into
+    function blueprint(struts) {
+        const seen = new Set(), pts = [];
+        const key = (a) => a.map((v) => Math.round(v * 1000)).join(",");
+        struts.forEach((st) => {
+            const k1 = key(st[0]), k2 = key(st[1]), k = k1 < k2 ? k1 + "|" + k2 : k2 + "|" + k1;
+            if (!seen.has(k)) { seen.add(k); pts.push(...st[0], ...st[1]); }
+        });
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(pts), 3));
+        const lines = new THREE.LineSegments(g, new THREE.LineDashedMaterial({ dashSize: 0.05, gapSize: 0.04, transparent: true, opacity: 0, depthWrite: false }));
+        lines.computeLineDistances();
+        lines.visible = false;
+        return lines;
+    }
+
     // Every solid becomes Float32Arrays of S struts (ends / face normal / face
     // centre), S = the biggest solid's strut count. Smaller solids park their
     // spares as zero-length struts on a real node: the line is invisible, the two
     // dots just thicken that node — in a rebuild they grow out / fold back in.
     let S = 0, solids = [];
     function buildSolids(G) {
-        solids.forEach((sd) => { figure.remove(sd.glass); sd.glass.geometry.dispose(); sd.glass.material.dispose(); });
+        solids.forEach((sd) => [sd.glass, sd.ghost].forEach((o) => { figure.remove(o); o.geometry.dispose(); o.material.dispose(); }));
         const v = new THREE.Vector3();
         const raw = C.shapes.map((name) => {
             const out = SOLIDS[name](G), tilt = TILT[name];
@@ -834,7 +839,13 @@ function makeCircleTexture() {
                 else { a = b = c = out.struts[(Math.random() * out.struts.length) | 0][Math.random() < 0.5 ? 0 : 1]; n = norm(a); }
                 ends.set(a, i * 6); ends.set(b, i * 6 + 3); nrm.set(n, i * 3); ctr.set(c, i * 3);
             }
-            return { ends: ends, nrm: nrm, ctr: ctr, glass: glassMesh(out.tiles) };
+            const T = out.tiles.length, tri = new Float32Array(T * 9), tb = new Float32Array(T * 9), tn = new Float32Array(T * 3), tcn = new Float32Array(T * 3);
+            out.tiles.forEach((tl, t) => {
+                for (let k = 0; k < 3; k++) { tri.set(tl[0][k], t * 9 + k * 3); tb.set(tl[1][k], t * 9 + k * 3); }
+                tn.set(tl[2], t * 3);
+                for (let dd = 0; dd < 3; dd++) tcn[t * 3 + dd] = (tl[0][0][dd] + tl[0][1][dd] + tl[0][2][dd]) / 3;
+            });
+            return { ends: ends, nrm: nrm, ctr: ctr, glass: glassMesh(out.tiles), ghost: blueprint(out.struts), T: T, tri: tri, tb: tb, tn: tn, tcn: tcn };
         });
     }
 
@@ -948,16 +959,23 @@ function makeCircleTexture() {
         const cc = C.colors.cube, sc = C.colors.scan;
         shared.uColor.value.setRGB(cc[0], cc[1], cc[2]);
         shared.uScanColor.value.setRGB(sc[0], sc[1], sc[2]);
+        const gc = C.colors.glint;
+        shared.uGlintColor.value.setRGB(gc[0], gc[1], gc[2]);
+        solids.forEach((sd) => sd.ghost.material.color.setRGB(cc[0], cc[1], cc[2]));
     }
 
     let cur = 0, next = 0, building = false, pending = false, bt = 0;
     let glazeT = -1;       // ms into the current solid's glazing (-1 = not started)
+    let fxT = 0;           // ms since the tap: drives the blueprint drawing
+    let landT = 0;         // ms left of the docking flashes after a rebuild (shards stay on screen)
+    let settleT = -1;      // ms into the post-build settle bounce (-1 = idle)
     function boot() {
         const prevS = S;
         buildSolids(C.cube[vp].grid);
         if (S !== prevS || !geo) allocate();
-        solids.forEach((sd) => figure.add(sd.glass));
-        cur %= solids.length; building = pending = false;
+        solids.forEach((sd) => { figure.add(sd.glass); figure.add(sd.ghost); });
+        allocateFlight(Math.max(...solids.map((sd) => sd.T)));
+        cur %= solids.length; next = cur; building = pending = false; landT = 0;
         const sd = solids[cur];
         pose = { ends: sd.ends.slice(), nrm: sd.nrm.slice(), ctr: sd.ctr.slice() };
         pos.array.set(pose.ends); pos.needsUpdate = true;
@@ -968,8 +986,8 @@ function makeCircleTexture() {
     boot();
 
     function startBuild() {
-        next = (cur + 1) % solids.length;
         target = matchStruts(pose, solids[next]);
+        if (C.rebuildFx.shards.on) planShards(solids[cur], solids[next]);
         // assembly order: bottom-up by landing height (normalized), lightly shuffled
         let lo = Infinity, hi = -Infinity;
         const h = new Float32Array(S), te = target.ends;
@@ -984,8 +1002,11 @@ function makeCircleTexture() {
     }
     canvas.style.cursor = "pointer";
     canvas.addEventListener("click", () => {
-        // tap = re-assemble into the next solid (the breathing settles first)
-        if (!building && !pending && !contracting) pending = true;
+        // tap = re-assemble into the next solid (the breathing settles, the glass
+        // comes off and the blueprint is drawn first — see the pending phase)
+        if (building || pending || contracting || landT > 0) return;
+        next = (cur + 1) % solids.length;
+        pending = true; fxT = 0;
     });
 
     const onMq = () => { vp = mq.matches ? "mobile" : "desktop"; boot(); applyHeroPan(); mat.uniforms.uScale.value = heroScaleH() * 0.5; };
@@ -993,11 +1014,26 @@ function makeCircleTexture() {
 
     // desktop: aim the lean at the cursor (smoothed in the loop)
     let aimX = 0, aimY = 0, tiltX = 0, tiltY = 0;
+    // ...and park the cursor torch at the pointer, in the canvas' clip space
+    let mouseOn = false;
+    const mouseNdc = shared.uMouse.value;
     window.addEventListener("pointermove", (e) => {
         if (vp !== "desktop" || e.pointerType === "touch") return;
         aimY = (e.clientX / window.innerWidth - 0.5) * 2 * C.parallax.y;
         aimX = (e.clientY / window.innerHeight - 0.5) * 2 * C.parallax.x;
+        const r = canvas.getBoundingClientRect();
+        mouseNdc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height * 2 - 1));
+        mouseOn = true;
     }, { passive: true });
+    window.addEventListener("mouseout", (e) => { if (!e.relatedTarget) mouseOn = false; }); // pointer left the window
+
+    // no work while the hero is off screen (the lower section, a background tab)
+    let onScreen = true;
+    if ("IntersectionObserver" in window) {
+        new IntersectionObserver((en) => { onScreen = en[0].isIntersecting; }).observe(hero);
+    }
+    // reduced motion: no breathing, no scan sweeps, no cursor lean — a tap still rebuilds
+    const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // ----- intro hand-off + boot fade -----
     const introWillPlay = (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
@@ -1065,8 +1101,9 @@ function makeCircleTexture() {
 
     function animate() {
         requestAnimationFrame(animate);
-        const cube = C.cube[vp];
         const now = performance.now();
+        if (!onScreen) { last = now; return; }
+        const cube = C.cube[vp];
         // clamped frame time: a backgrounded tab resumes where it left off
         const dt = Math.min(50, now - last); last = now;
         clock += dt / 1000;
@@ -1087,8 +1124,10 @@ function makeCircleTexture() {
         }
 
         // ----- breathing settles before a rebuild and drifts back after it -----
-        const bTarget = (pending || building) ? 0 : 1;
+        const bTarget = (pending || building || landT > 0) ? 0 : 1;
         breath += (bTarget - breath) * (bTarget ? 0.02 : 0.14);
+        const fx = C.rebuildFx;
+        if (pending || building) fxT += dt;
         if (pending && breath < 0.02) { breath = 0; pending = false; startBuild(); }
 
         // ----- rebuild in progress -----
@@ -1104,16 +1143,24 @@ function makeCircleTexture() {
                     pop[i * 2] = pop[i * 2 + 1] = 1;
                 }
             }
+            if (fx.shards.on) shardsFrame(dt, bt);
             if (bt >= C.build.durationMs) {
                 building = false; cur = next;
                 pose = target;
                 settle();
-                glazeT = 0;  // the new frame is up: glaze it bottom-up
+                // shards already sit in place — otherwise the new frame glazes bottom-up
+                glazeT = fx.shards.on ? 1e9 : 0;
+                landT = fx.shards.on ? fx.shards.glintMs : 0; // let the last docking flashes finish
+                settleT = 0; // ...settle it with one small bounce
+                if (fx.verifyScan) scanClock = fx.shards.on ? -300 : -C.glass.glazeMs * 0.75; // ...and scan it over
             }
+        } else if (landT > 0) {
+            landT -= dt;
+            shardsFrame(dt, 1e9);
         }
         if (!building) {
             // rest: every strut rides out with its face on the breathing wave
-            const amp = C.explode.amp[vp] * breath, om = 2 * Math.PI / (C.explode.periodMs / 1000), kp = C.explode.wave;
+            const amp = REDUCED ? 0 : C.explode.amp[vp] * breath, om = 2 * Math.PI / (C.explode.periodMs / 1000), kp = C.explode.wave;
             const pe = pose.ends, pn = pose.nrm, pc = pose.ctr;
             for (let i = 0; i < S; i++) {
                 const j = i * 3, a = i * 6;
@@ -1126,21 +1173,37 @@ function makeCircleTexture() {
         pos.needsUpdate = true;
         shared.uTime.value = clock;
 
-        // ----- glass: the current solid's panes; off while it is being rebuilt -----
-        if (glazeT >= 0 && !building) glazeT += dt;
-        const gOp = C.glass.opacity[vp] * bootFade * (building ? 0 : pending ? breath : 1);
+        // ----- glass: the current solid's panes at rest; during a rebuild the
+        // flying shards (or, with shards off, a fade), plus the next solid's blueprint -----
+        if (glazeT >= 0 && !building && !pending) glazeT += dt;
+        const gBase = C.glass.opacity[vp] * bootFade;
+        const flying = fx.shards.on && (building || landT > 0);
+        flight.visible = flying;
+        flight.material.uniforms.uOpacity.value = gBase;
         solids.forEach((sd, s) => {
-            const on = s === cur && gOp > 0.001 && glazeT >= 0;
-            sd.glass.visible = on;
-            if (on) {
-                sd.glass.material.uniforms.uOpacity.value = gOp;
-                sd.glass.material.uniforms.uGlaze.value = Math.min(1.3, glazeT / C.glass.glazeMs * 1.3);
+            let op = 0;
+            if (s === cur && glazeT >= 0 && !flying) op = building ? 0 : (pending && !fx.shards.on) ? gBase * breath : gBase;
+            sd.glass.visible = op > 0.001;
+            if (sd.glass.visible) {
+                const u = sd.glass.material.uniforms;
+                u.uOpacity.value = op;
+                u.uGlaze.value = Math.min(1.3, glazeT / C.glass.glazeMs * 1.3);
             }
+            let gop = 0;
+            if (fx.blueprint.on && (pending || building) && s === next) {
+                // fades in fast, draws in face by face, fades as the struts fill it
+                const fadeOut = building ? 1 - clamp01((bt - C.build.durationMs * 0.6) / (C.build.durationMs * 0.4)) : 1;
+                gop = fx.blueprint.opacity[vp] * bootFade * Math.min(1, fxT / 250) * fadeOut;
+                const segs = sd.ghost.geometry.attributes.position.count / 2;
+                sd.ghost.geometry.setDrawRange(0, 2 * Math.ceil(segs * Math.min(1, fxT / fx.blueprint.drawMs)));
+            }
+            sd.ghost.visible = gop > 0.001;
+            sd.ghost.material.opacity = gop;
         });
 
         // ----- scan: a plane of light sweeps bottom-up now and then (at rest only) -----
         let scanY = 99;
-        if (!building && !pending && !contracting) {
+        if (!building && !pending && !contracting && !REDUCED) {
             scanClock += dt;
             if (scanClock >= C.scan.everyMs) scanClock = 0;
             if (scanClock >= 0 && scanClock < C.scan.sweepMs) scanY = -2.1 + 4.2 * easeInOut(scanClock / C.scan.sweepMs);
@@ -1156,10 +1219,19 @@ function makeCircleTexture() {
             const e = Math.min(1, window.scrollY / (window.innerHeight * 0.9));
             shr = 1 - C.scrollShrink * easeInOut(e);
         }
-        figure.scale.setScalar(base * shr);
+        // post-build settle: one small bounce, dying out fast
+        let settleK = 0;
+        if (settleT >= 0) {
+            settleT += dt;
+            const sp = settleT / fx.settle.ms;
+            if (sp >= 1) settleT = -1;
+            else if (fx.settle.on) settleK = fx.settle.amp * Math.sin(sp * Math.PI * 3) * Math.exp(-4 * sp);
+        }
+        figure.scale.setScalar(base * shr * (1 + settleK));
         // lean toward the cursor (desktop), eased so it floats rather than snaps
-        tiltX += ((vp === "desktop" ? aimX : 0) - tiltX) * C.parallax.ease;
-        tiltY += ((vp === "desktop" ? aimY : 0) - tiltY) * C.parallax.ease;
+        const lean = vp === "desktop" && !REDUCED;
+        tiltX += ((lean ? aimX : 0) - tiltX) * C.parallax.ease;
+        tiltY += ((lean ? aimY : 0) - tiltY) * C.parallax.ease;
         figure.rotation.set(tiltX, tiltY, 0);
 
         lineMat.opacity = cube.lineOpacity * bootFade;
@@ -1173,10 +1245,20 @@ function makeCircleTexture() {
 
         const INK = C.colors.ink, CUB = C.colors.cube, ORANGE = C.colors.orange, SC = C.colors.scan;
         const V = S * 2, sw = C.scan.width;
+        // cursor torch strength (eases in/out as the pointer enters/leaves)
+        shared.uHover.value += (((mouseOn && vp === "desktop") ? C.light.hover : 0) - shared.uHover.value) * 0.08;
+        const torch = shared.uHover.value > 0.01, aspect = hero.clientWidth / hero.clientHeight, hr = C.light.hoverR;
+        shared.uAspect.value = aspect;
         for (let i = 0; i < V; i++) {
             const j = i * 3;
             // scan light on this vertex (0 far from the plane, 1 on it)
-            const sy = (P[j + 1] - scanY) / sw, lit = Math.exp(-sy * sy);
+            const sy = (P[j + 1] - scanY) / sw;
+            let lit = Math.exp(-sy * sy);
+            if (torch) {
+                tv.set(P[j], P[j + 1], P[j + 2]).applyMatrix4(figure.matrixWorld).project(camera);
+                const dx = (tv.x - mouseNdc.x) * aspect, dy = tv.y - mouseNdc.y;
+                lit = Math.max(lit, shared.uHover.value * 1.4 * Math.exp(-(dx * dx + dy * dy) / hr));
+            }
             // color: each dot drifts SLOWLY through the palette cycle
             // ink -> teal -> orange -> teal -> ink (blinkAmp = how far along the
             // palette the drift reaches: 0.5 stops at teal, 1.0 reaches orange)
@@ -1213,13 +1295,18 @@ function makeCircleTexture() {
         asz.needsUpdate = true;
 
         // camera: orbit + slow axis precession
-        const camR = Math.max(3.0, HALF * cube.scale * 2.4);
+        const push = building ? Math.sin(Math.PI * clamp01(bt / C.build.durationMs)) * C.rebuildFx.push : 0;
+        const camR = Math.max(3.0, HALF * cube.scale * 2.4) * (1 - push);
         camera.position.x = Math.sin(angle) * camR + Math.sin(t * 0.23) * C.wobble;
         camera.position.y = Math.sin(angle * 0.5) * 0.5 + Math.sin(t * 0.31) * C.wobble;
         camera.position.z = Math.cos(angle) * camR;
         camera.lookAt(scene.position);
+        // the glass depth fade spans the solid's extent as seen from here
+        const camD = camera.position.length(), rad = 1.95 * figure.scale.x;
+        shared.uNear.value = camD - rad; shared.uFar.value = camD + rad;
         renderer.render(scene, camera);
     }
+    const tv = new THREE.Vector3();
     animate();
 
     // theme flip: swap the palette (dots, struts and glass recolor on the next frame)

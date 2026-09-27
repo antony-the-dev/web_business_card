@@ -346,69 +346,6 @@ body.intro-lock {
     will-change: transform, opacity;
 }
 
-/* soft light panel: on the dark theme the portrait "develops" on a gently
-   fading light card, then the card recedes and the dark takes over again */
-#face-panel {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0;
-    /* mobile: a real circle (like desktop), not a band-wide oval — square box
-       + inscribed ellipse 50% 50% so the visible shape is round with soft
-       falloff and transparent corners. Center sits at 42% of the band (the
-       head, not the neck). */
-    background: radial-gradient(
-        ellipse 66% 60% at 50% 50%,
-        rgba(246, 250, 254, 0.96) 0%,
-        rgba(242, 247, 252, 0.88) 52%,
-        rgba(242, 247, 252, 0) 80%
-    );
-}
-
-@media (max-width: 900px) {
-    #face-panel {
-        inset: auto;
-        /* STRICTLY square box (same expression for both axes — % alone would
-           resolve against width for one axis and height for the other and
-           stretch the circle into a portrait oval). The inscribed ellipse
-           50% 50% then renders a true circle. */
-        width: min(94vw, 78vh);
-        height: min(94vw, 78vh);
-        left: 50%;
-        top: 42%;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            rgba(246, 250, 254, 0.96) 0%,
-            rgba(242, 247, 252, 0.85) 45%,
-            rgba(242, 247, 252, 0) 100%
-        );
-    }
-}
-
-/* desktop: the figure sits right-of-center (camera view offset panFrac 0.2),
-   so the panel must hug the face instead of spreading across the whole hero.
-   Rounded to a circle sized to contain the face, with a long soft falloff so
-   no visible ring/edge forms. */
-@media (min-width: 901px) {
-    #face-panel {
-        inset: auto;
-        /* ~15% wider than the original circle (46vw/60vh) so the portrait's
-           edges sit on solid white instead of the thinning falloff */
-        width: min(53vw, 69vh);
-        height: min(53vw, 69vh);
-        left: 70%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(
-            ellipse 50% 50% at 50% 50%,
-            rgba(246, 250, 254, 0.96) 0%,
-            rgba(242, 247, 252, 0.85) 45%,
-            rgba(242, 247, 252, 0) 100%
-        );
-    }
-}
 
 #cube-canvas {
     position: relative;
@@ -1063,8 +1000,6 @@ h3 {
 
 #lower h2,
 #lower p,
-#lower .proc-label,
-#lower .proc-tree-title,
 #lower .domain-tags span,
 #lower a {
     transition: color 0.9s ease, background-color 0.9s ease, border-color 0.9s ease;
@@ -1080,219 +1015,6 @@ h3 {
         transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
             background-color 0.4s ease;
     }
-}
-
-/* ===== PROCESS STRIP (How I work pipeline) ===== */
-.proc-hint {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-top: 0;
-}
-
-.process-strip {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    position: relative;
-    margin-top: 1.5rem;
-}
-
-.process-strip::before {
-    content: "";
-    position: absolute;
-    top: 7px;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: var(--teal);
-    opacity: 0.5;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
-}
-
-.reveal-blur.shown .process-strip::before {
-    transform: scaleX(1);
-}
-
-.process-strip::after {
-    content: "";
-    position: absolute;
-    top: 7px;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: var(--accent);
-    transform: scaleX(var(--fill, 0));
-    transform-origin: left center;
-    transition: transform var(--run-dur, 0.5s) ease;
-}
-
-.proc-step {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    outline: none;
-}
-
-.proc-step:focus-visible .proc-node {
-    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.35);
-}
-
-.proc-node {
-    width: 14px;
-    height: 14px;
-    background: var(--teal);
-    border-radius: 50%;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-    transform: scale(0.4);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        background-color 0.25s ease;
-}
-
-.reveal-blur.shown .proc-node {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.reveal-blur.shown .proc-step:nth-child(1) .proc-node {
-    transition-delay: 0.20s;
-}
-
-.reveal-blur.shown .proc-step:nth-child(2) .proc-node {
-    transition-delay: 0.32s;
-}
-
-.reveal-blur.shown .proc-step:nth-child(3) .proc-node {
-    transition-delay: 0.44s;
-}
-
-.reveal-blur.shown .proc-step:nth-child(4) .proc-node {
-    transition-delay: 0.56s;
-}
-
-.reveal-blur.shown .proc-step:nth-child(5) .proc-node {
-    transition-delay: 0.68s;
-}
-
-.proc-label {
-    margin-top: 0.65rem;
-    font-size: 0.82rem;
-    color: var(--muted);
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-}
-
-.proc-step.filled .proc-node {
-    background: var(--accent);
-}
-
-.proc-step.active .proc-node {
-    background: var(--accent);
-    transform: scale(1.25);
-    box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.12);
-}
-
-.proc-step.active .proc-label {
-    color: var(--accent-text);
-}
-
-@media (hover: hover) {
-    .proc-step:hover .proc-node {
-        transform: scale(1.3);
-        background: var(--accent);
-    }
-
-    .proc-step:hover .proc-label {
-        color: var(--accent-text);
-    }
-}
-
-/* ===== PROCESS DETAIL TREE (compact + space reserved so the section never jumps) ===== */
-.proc-detail {
-    margin-top: 1.4rem;
-    min-height: 7.5rem;
-}
-
-.proc-tree {
-    display: inline-block;
-}
-
-.proc-tree-title {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-weight: 600;
-    color: var(--accent-text);
-    margin-bottom: 0.25rem;
-    opacity: 0;
-    transition: opacity 0.4s ease, color 0.6s ease;
-}
-
-.proc-tree.show .proc-tree-title {
-    opacity: 1;
-}
-
-.proc-branches {
-    list-style: none;
-    position: relative;
-    padding-left: 0;
-    margin-top: 0.3rem;
-}
-
-.proc-branches::before {
-    content: "";
-    position: absolute;
-    left: 5px;
-    top: 0.1rem;
-    bottom: 0.7rem;
-    width: 1px;
-    background: var(--teal);
-    opacity: 0.5;
-    transform: scaleY(0);
-    transform-origin: top center;
-    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
-}
-
-.proc-tree.show .proc-branches::before {
-    transform: scaleY(1);
-}
-
-.proc-branches li {
-    position: relative;
-    padding-left: 1.15rem;
-    margin: 0.2rem 0;
-    line-height: 1.3;
-    font-size: 0.88rem;
-    color: var(--muted);
-    white-space: nowrap;
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateX(-6px);
-    transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s ease, color 0.6s ease;
-    transition-delay: calc(var(--i) * 0.13s + 0.12s);
-}
-
-.proc-branches li::before {
-    content: "";
-    position: absolute;
-    left: 5px;
-    top: 0.72em;
-    width: 0.72rem;
-    height: 1px;
-    background: var(--teal);
-    opacity: 0.5;
-}
-
-.proc-tree.show .proc-branches li {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
 }
 
 /* ===== INVERSION: dark while the section is in focus ===== */
@@ -1454,14 +1176,6 @@ html.dark #lower.light {
     color: rgba(255, 255, 255, 0.55);
 }
 
-#lower.dark .proc-label {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-#lower.dark .proc-branches li {
-    color: rgba(255, 255, 255, 0.88);
-}
-
 #lower.dark .deco-line {
     background: rgba(255, 255, 255, 0.35);
 }
@@ -1473,16 +1187,6 @@ html.dark #lower.light {
 
     #lower.dark .block:active .deco-line {
         background: var(--accent);
-    }
-}
-
-#lower.dark .proc-step.active .proc-label {
-    color: var(--accent-text);
-}
-
-@media (hover: hover) {
-    #lower.dark .proc-step:hover .proc-label {
-        color: var(--accent-text);
     }
 }
 
@@ -1516,10 +1220,10 @@ html.dark #lower.light {
     gap: 2.5rem;
 }
 
-/* #lower is at least one full screen: with "How I work" gone the section got
-   shorter than the viewport, so scrolling to the end left a strip of the navy
-   hero on top. Blocks sit centred in the spare height, footer pinned to the
-   bottom. Taller content (mobile) just grows — the auto margins collapse to 0. */
+/* #lower is at least one full screen: once the lower section got shorter than
+   the viewport, scrolling to the end left a strip of the navy hero on top.
+   Blocks sit centred in the spare height, footer pinned to the bottom. Taller
+   content (mobile) just grows — the auto margins collapse to 0. */
 #lower {
     min-height: 100vh;
     display: flex;
@@ -1633,12 +1337,6 @@ a:focus-visible {
     outline-offset: 3px;
 }
 
-.proc-step:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 4px;
-    border-radius: 8px;
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
 
@@ -1671,7 +1369,7 @@ a:focus-visible {
 
     .hero-grid {
         grid-template-columns: 1fr;
-        /* Stack order (per mock): contacts -> DOWNLOAD CV -> hint -> cube.
+        /* Stack order (per mock): contacts -> DOWNLOAD CV -> cube.
            The cube canvas top is pinned by JS to the real bottom of the text
            stack, so adding/removing rows here no longer slides the cube up. */
         grid-template-areas:
@@ -1783,37 +1481,6 @@ a:focus-visible {
         margin: 0 0.45rem 0.45rem 0;
     }
 
-    /* keep the pipeline horizontal but let long labels wrap instead of overflowing */
-    .process-strip {
-        gap: 0.4rem;
-    }
-
-    .proc-label {
-        margin-top: 0.5rem;
-        font-size: 0.62rem;
-        line-height: 1.2;
-        letter-spacing: 0;
-        white-space: normal;
-        text-align: center;
-    }
-
-    .proc-detail {
-        margin-top: 1.1rem;
-        min-height: 7.5rem;
-    }
-
-    /* .proc-branches li is nowrap so the tree keeps clean single-line branches
-       on desktop. On a narrow phone (esp. the longer UA strings) that pushes
-       past the viewport and creates horizontal scroll, so let it wrap here.
-       .proc-detail uses min-height, not height, so the block just grows. */
-    .proc-branches li {
-        white-space: normal;
-    }
-
-    .proc-tree-title {
-        font-size: 0.72rem;
-    }
-
     #id-bar .id-inner {
         padding: 0.8rem 1.25rem;
     }
@@ -1828,13 +1495,6 @@ a:focus-visible {
 }
 
 @media (max-width: 380px) {
-    .process-strip {
-        gap: 0.25rem;
-    }
-
-    .proc-label {
-        font-size: 0.56rem;
-    }
 
     .hero-credo {
         font-size: 0.72rem;
@@ -1858,29 +1518,6 @@ a:focus-visible {
     .deco-line {
         transition: none;
     }
-
-    .proc-node {
-        opacity: 1;
-        transform: none;
-    }
-
-    .process-strip::before {
-        transform: scaleX(1);
-    }
-
-    .process-strip::after {
-        transition: none;
-    }
-
-    .proc-branches li {
-        opacity: 1;
-        filter: none;
-        transform: none;
-    }
-
-    .proc-branches::before {
-        transform: scaleY(1);
-    }
 }
 
 /* ===== Expertise: 2-column grid on desktop ===== */
@@ -1891,11 +1528,6 @@ a:focus-visible {
         grid-template-columns: 1fr 1fr;
         gap: 1.6rem 4rem;
     }
-    /* NOTE: a nested `.process-strip { margin: 1.5rem -2.5rem 0 }` used to sit
-       inside the block above. .process-strip is a SIBLING block, never a
-       descendant of .exp-groups, so the rule could never match — removed as
-       dead code. If the intent was to let the pipeline bleed wider than the
-       text column on desktop, say so and it can be added as a real rule. */
 
     /* subtle vertical divider between the two columns */
     .exp-groups::before {

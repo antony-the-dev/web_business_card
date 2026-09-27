@@ -33,18 +33,6 @@
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
-            how: {
-                heading: "How I work",
-                hint: "Tap a phase to expand its activities.",
-                steps: { discovery: "Discovery", elicitation: "Elicitation", modeling: "Modeling", uat: "UAT", handoff: "Handoff" },
-                phases: {
-                    discovery: ["Define objectives", "Map stakeholders", "Identify constraints", "Assess feasibility"],
-                    elicitation: ["Run workshops", "Interviews & surveys", "Capture requirements", "Resolve conflicts"],
-                    modeling: ["BPMN / UML / Architecture", "Figma prototyping", "Data entity schemas", "BRD / SRS / FRD"],
-                    uat: ["Test scenarios", "Acceptance criteria", "AI-powered verification", "Sign-off"],
-                    handoff: ["Documentation", "Knowledge transfer", "Backlog grooming", "Support transition"]
-                }
-            },
             footer: { rights: "All rights reserved.", privacy: "Privacy Policy", status: "Business Analyst", statusMeta: "UA / EU / US" },
             portfolio: {
                 title: "Portfolio — Anton Lisachenko",
@@ -148,18 +136,6 @@
                     delivery: { title: "Delivery & PM", items: ["Jira", "Confluence", "Notion", "ClickUp"] }
                 }
             },
-            how: {
-                heading: "Як я працюю",
-                hint: "Натисни на етап, щоб розгорнути активності.",
-                steps: { discovery: "Дослідження", elicitation: "Збір вимог", modeling: "Моделювання", uat: "UAT", handoff: "Передача" },
-                phases: {
-                    discovery: ["Визначення цілей", "Мапування зацікавлених сторін", "Виявлення обмежень", "Оцінка здійсненності"],
-                    elicitation: ["Фасилітація воркшопів", "Інтерв'ю та опитування", "Виявлення та збір вимог", "Розв'язання конфліктів"],
-                    modeling: ["BPMN / UML / Архітектура", "Прототипування у Figma", "Схеми сутностей даних", "BRD / SRS / FRD"],
-                    uat: ["Тест-сценарії", "Критерії приймання", "AI-верифікація вимог", "Формальне погодження результатів"],
-                    handoff: ["Документування", "Передача знань", "Упорядкування беклогу", "Передача на підтримку"]
-                }
-            },
             footer: { rights: "Всі права захищені.", privacy: "Політика приватності", status: "Бізнес-аналітик", statusMeta: "Україна / ЄС / США" },
             portfolio: {
                 title: "Портфоліо — Антон Лісаченко",
@@ -246,10 +222,9 @@
     var lang = (localStorage.getItem("site-lang") === "uk") ? "uk" : "en";
     var dict = I18N[lang];
 
-    // exposed for script.js (typewriter) and the inline "How I work" pipeline —
-    // both load after this file, so these are ready by the time they run
+    // exposed for script.js (typewriter) — it loads after this file, so the
+    // phrases are ready by the time it runs
     window.TYPED_PHRASES = dict.typed;
-    window.PHASES_I18N = dict.how.phases;
 
     // DOM is already fully parsed at this point (this script sits right before
     // the content-consuming scripts, all placed at the end of <body>)
