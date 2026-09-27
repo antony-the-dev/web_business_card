@@ -32,8 +32,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="canonical" href="https://alisachenko.com/" />
-    <!-- hide the intro before first paint on repeat views (kills the flash) -->
-    <script>try { if (sessionStorage.getItem("introSeen")) document.documentElement.classList.add("intro-seen"); } catch (e) { }</script>
     <!-- a reload always starts at the top: restoring the old scroll position made
          the page land mid-way, replay the bottom "develop" and then jump -->
     <script>try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) { }</script>
@@ -49,40 +47,6 @@
             <p class="id-name">Anton Lisachenko</p>
             <p class="id-role" data-i18n="role">Business Analyst</p>
             <p class="id-typed"></p>
-        </div>
-    </div>
-
-    <!-- ===== INTRO ===== -->
-    <div id="intro" aria-hidden="true">
-        <canvas id="intro-canvas"></canvas>
-        <div id="intro-loader">
-
-            <div class="al-corner al-tr"><span id="al-tw-tr"></span><span class="al-cur">|</span></div>
-            <div class="al-corner al-bl"><span id="al-tw-bl"></span><span class="al-cur">|</span></div>
-
-            <div class="al-row">
-                <div class="al-side">BUSINESS</div>
-                <div class="al-center">
-                    <span class="al-pct" id="al-pct-l" data-pct="1%"></span>
-                    <svg class="al-logo" viewBox="0 0 100 100" aria-hidden="true">
-                        <defs>
-                            <clipPath id="al-hexclip">
-                                <polygon points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" />
-                            </clipPath>
-                        </defs>
-                        <g clip-path="url(#al-hexclip)">
-                            <rect id="al-fill" x="0" y="100" width="100" height="100" fill="#f2f7fc" />
-                        </g>
-                        <polygon points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" fill="none" stroke="#ff5722"
-                            stroke-width="6" stroke-linejoin="round" />
-                        <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
-                            font-family="'JetBrains Mono', ui-monospace, monospace" font-weight="700" font-size="38"
-                            fill="#0a2540">AL</text>
-                    </svg>
-                    <span class="al-pct" id="al-pct-r" data-pct="1%"></span>
-                </div>
-                <div class="al-side">ANALYSIS</div>
-            </div>
         </div>
     </div>
 

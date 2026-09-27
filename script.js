@@ -52,15 +52,14 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
         }, 900);
     }
 
-    // hero blocks: staggered blur-in, timed to start as the intro hands off
+    // hero blocks: staggered blur-in, starting right after the first paint
     const enterEls = Array.from(document.querySelectorAll("[data-enter]"))
         .sort((a, b) => (+a.dataset.enter) - (+b.dataset.enter));
 
     if (reduceMotion) {
         enterEls.forEach((el) => el.classList.add("shown"));
     } else {
-        const introWillPlay = (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
-        const base = introWillPlay ? 1610 : 300; // start as the intro fades out
+        const base = 300;
         enterEls.forEach((el, i) => setTimeout(() => reveal(el), base + i * 240));
     }
 
@@ -308,153 +307,4 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(pin);
     setTimeout(pin, 800);
     setTimeout(pin, 2600);
-})();
-
-
-// ===== INTRO SEQUENCE (explosion from a point -> cube emerges -> expands) =====
-(function () {
-    const intro = document.getElementById("intro");
-    if (!intro) return;
-    let seen = false;
-    try { seen = sessionStorage.getItem("introSeen") === "1"; } catch (e) { /* private mode */ }
-    // If Three.js failed to load (CDN blocked/slow), drop the intro instead of
-    // returning early — otherwise the fixed blue overlay would trap the page.
-    if (seen || typeof THREE === "undefined") { intro.remove(); document.body.classList.remove("intro-lock"); window.scrollTo(0, 0); return; }
-    document.body.classList.add("intro-lock");
-    const canvas = document.getElementById("intro-canvas");
-    const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.z = 3.0;
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(window.devicePixelRatio);
-    const TEAL = 0x22d3ee; const group = new THREE.Group(); const cubeMats = [];   // bright cyan: reads properly on the dark navy intro
-    // Edge-fade support: each line vertex gets its own colour, blended toward the
-    // backdrop as it approaches the screen border. That dissolves the cube's long
-    // near-face edges instead of letting them run into the screen edges.
-    const BGC = new THREE.Color(0x0a2540), TEALC = new THREE.Color(TEAL), fadeSets = [];
-    function lineMat(opacity) { const m = new THREE.LineBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0 }); m.userData = { base: opacity }; cubeMats.push(m); return m; }
-    function attachFade(obj) {
-        const n = obj.geometry.attributes.position.count;
-        const col = new Float32Array(n * 3);
-        for (let i = 0; i < n; i++) { col[i * 3] = TEALC.r; col[i * 3 + 1] = TEALC.g; col[i * 3 + 2] = TEALC.b; }
-        obj.geometry.setAttribute("color", new THREE.BufferAttribute(col, 3));
-        fadeSets.push(obj); return obj;
-    }
-    function wireCube(size, opacity) { const edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(size, size, size)); return new THREE.LineSegments(edges, lineMat(opacity)); }
-    function faceDiagonals(h, opacity) {
-        const axes = [0, 1, 2]; const pts = [];
-        for (const ax of axes) {
-            for (const sgn of [-1, 1]) {
-                const free = axes.filter((a) => a !== ax);
-                const corner = (s0, s1) => { const v = [0, 0, 0]; v[ax] = sgn * h; v[free[0]] = s0 * h; v[free[1]] = s1 * h; return v; };
-                const A = corner(-1, -1), B = corner(1, 1), C = corner(1, -1), D = corner(-1, 1); pts.push(...A, ...B, ...C, ...D);
-            }
-        }
-        const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3)); return new THREE.LineSegments(g, lineMat(opacity));
-    }
-    const OH = 0.8, IH = 0.4; group.add(attachFade(wireCube(OH * 2, 0.9))); group.add(attachFade(faceDiagonals(OH, 0.4))); group.add(attachFade(wireCube(IH * 2, 0.9)));
-    const signs = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]]; const cpts = [];
-    for (const s of signs) { cpts.push(s[0] * OH, s[1] * OH, s[2] * OH); cpts.push(s[0] * IH, s[1] * IH, s[2] * IH); }
-    const cgeo = new THREE.BufferGeometry(); cgeo.setAttribute("position", new THREE.Float32BufferAttribute(cpts, 3)); group.add(attachFade(new THREE.LineSegments(cgeo, lineMat(0.45))));
-    const NUM_DOTS = 450; const DOT_RADIUS = 2; const DOT_BURST_MS = 800; const DOT_TEAL = [0.13, 0.83, 0.93]; const DOT_ORANGE = [1.0, 0.34, 0.13];
-    const dotTarget = new Float32Array(NUM_DOTS * 3); const dotPos = new Float32Array(NUM_DOTS * 3); const dotColors = new Float32Array(NUM_DOTS * 3); const dotFlash = new Float32Array(NUM_DOTS); const dotPhase = new Float32Array(NUM_DOTS);
-    for (let i = 0; i < NUM_DOTS; i++) {
-        const d = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(); const r = Math.cbrt(Math.random()) * DOT_RADIUS;
-        dotTarget[i * 3] = d.x * r; dotTarget[i * 3 + 1] = d.y * r; dotTarget[i * 3 + 2] = d.z * r; dotColors[i * 3] = DOT_TEAL[0]; dotColors[i * 3 + 1] = DOT_TEAL[1]; dotColors[i * 3 + 2] = DOT_TEAL[2]; dotPhase[i] = Math.random() * Math.PI * 2;
-    }
-    const dotGeo = new THREE.BufferGeometry(); dotGeo.setAttribute("position", new THREE.BufferAttribute(dotPos, 3)); dotGeo.setAttribute("color", new THREE.BufferAttribute(dotColors, 3));
-    // dot size is animated in render(): at t=0 every dot sits on the same point,
-    // so a full-size dot reads as one fat blob — they grow in with the burst
-    const DOT_SCALE = window.innerWidth < 600 ? 0.75 : 1;
-    // makeCircleTexture() lives in figure.js, which index.html loads right before this file
-    const dotMat = new THREE.PointsMaterial({ size: 0.06 * DOT_SCALE, map: makeCircleTexture(), vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
-    group.add(new THREE.Points(dotGeo, dotMat));
-    scene.add(group);
-    const IS_PHONE = window.innerWidth < 600;
-    // Phone values mirror the desktop composition proportionally: on desktop the
-    // cube ends at ~1.09x the visible width, and starts at ~22% of it. A phone's
-    // visible width is ~2.1 units (vs ~7.4), so the same look needs 0.3 -> 1.45,
-    // not 1 -> 5 (which made it 4x wider than the screen = stray edge lines).
-    const S0 = 1.0;                       // start scale (original)
-    const S1 = 5.0;                       // end scale (original)
-    // Screen-space fade band, in NDC (1.0 = screen border). Desktop keeps its
-    // original look, so the fade is parked out of range there.
-    const EDGE0 = IS_PHONE ? 0.55 : 99, EDGE1 = IS_PHONE ? 0.95 : 100;
-    const _v = new THREE.Vector3();
-    camera.updateMatrixWorld(); camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
-    let raf = null; const startTime = performance.now(); const easeInOut = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2); const easeOut = (p) => 1 - Math.pow(1 - p, 3);
-    function render() {
-        raf = requestAnimationFrame(render); const now = performance.now() - startTime; group.rotation.x += 0.0015; group.rotation.y += 0.003;
-        // Expansion range. Desktop keeps the original 1 -> 5 blow-up. On phones that
-        // made the cube ~4x wider than the viewport, so only stray edge lines were
-        // visible running off-screen ("края") — there we grow small -> still on-screen.
-        const p = Math.min(now / 1260, 1);
-        const s = S0 + (S1 - S0) * easeInOut(p); group.scale.set(s, s, s);
-        const be = easeOut(Math.min(now / 560, 1));
-        for (let i = 0; i < NUM_DOTS; i++) { const ix = i * 3; dotPos[ix] = dotTarget[ix] * be; dotPos[ix + 1] = dotTarget[ix + 1] * be; dotPos[ix + 2] = dotTarget[ix + 2] * be; }
-        dotGeo.attributes.position.needsUpdate = true;
-        dotMat.size = 0.06 * DOT_SCALE * (0.18 + 0.82 * be);   // thin at the burst, full once spread
-        const cubeReveal = easeOut(Math.min(Math.max(now - 315, 0) / 455, 1)); for (const m of cubeMats) m.opacity = m.userData.base * cubeReveal;
-        if (Math.random() < 0.38) { const nf = 2 + Math.floor(Math.random() * 5); for (let k = 0; k < nf; k++) dotFlash[Math.floor(Math.random() * NUM_DOTS)] = 1; }
-        for (let i = 0; i < NUM_DOTS; i++) {
-            if (dotFlash[i] > 0) dotFlash[i] -= 0.02; if (dotFlash[i] < 0) dotFlash[i] = 0; const f = dotFlash[i];
-            dotPhase[i] += 0.03 + (Math.random() * 0.02); const blink = Math.sin(dotPhase[i]) * 0.5 + 0.5;
-            dotColors[i * 3] = (DOT_TEAL[0] + (DOT_ORANGE[0] - DOT_TEAL[0]) * f) * blink; dotColors[i * 3 + 1] = (DOT_TEAL[1] + (DOT_ORANGE[1] - DOT_TEAL[1]) * f) * blink; dotColors[i * 3 + 2] = (DOT_TEAL[2] + (DOT_ORANGE[2] - DOT_TEAL[2]) * f) * blink;
-        }
-        dotGeo.attributes.color.needsUpdate = true;
-        // dissolve line vertices that approach (or pass) the screen border
-        if (EDGE0 < 9) {
-            group.updateMatrixWorld();
-            for (const o of fadeSets) {
-                const pos = o.geometry.attributes.position, col = o.geometry.attributes.color;
-                for (let i = 0; i < pos.count; i++) {
-                    _v.set(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(o.matrixWorld).applyMatrix4(camera.matrixWorldInverse);
-                    let t;
-                    if (_v.z > -0.25) { t = 1; }                       // at/behind the camera
-                    else {
-                        _v.applyMatrix4(camera.projectionMatrix);      // -> NDC (1 = screen border)
-                        const e = Math.abs(_v.x) > Math.abs(_v.y) ? Math.abs(_v.x) : Math.abs(_v.y);
-                        t = (e - EDGE0) / (EDGE1 - EDGE0); t = t < 0 ? 0 : t > 1 ? 1 : t;
-                    }
-                    col.setXYZ(i, TEALC.r + (BGC.r - TEALC.r) * t, TEALC.g + (BGC.g - TEALC.g) * t, TEALC.b + (BGC.b - TEALC.b) * t);
-                }
-                col.needsUpdate = true;
-            }
-        }
-        renderer.render(scene, camera);
-    }
-    render();
-    const timers = [];
-    // ===== INTRO LOADER animation (drives the #intro-loader markup in index.html) =====
-    (function () {
-        const fill = document.getElementById("al-fill");
-        if (!fill) return;
-        const pctEls = [document.getElementById("al-pct-l"), document.getElementById("al-pct-r")];
-        const sides = document.querySelectorAll(".al-side");
-        const topEl = document.getElementById("al-top");
-        const DUR = 2450;                                   // finishes just before exitIntro (2800ms)
-        const live = () => document.body.classList.contains("intro-lock");
-        const typeCol = (node, text) => {
-            if (!node) return; let i = 0; const per = (DUR * 0.85) / text.length;
-            (function s() { if (live() && i <= text.length) { node.textContent = text.slice(0, i++); timers.push(setTimeout(s, per)); } })();
-        };
-        typeCol(document.getElementById("al-tw-tr"), "Elicitation\nAlignment");
-        typeCol(document.getElementById("al-tw-bl"), "Risks Analysis\nBusiness Value");
-        const t0 = performance.now();
-        (function tick(now) {
-            if (!live()) return;                            // intro exited -> stop
-            const p = Math.min(1, (now - t0) / DUR);
-            const pct = Math.max(1, Math.round(p * 100));
-            pctEls.forEach((e) => { if (e) e.dataset.pct = pct + "%"; });   // drawn via CSS ::before — keeps "1%" out of the page text (SEO / scrapers)
-            fill.setAttribute("y", String(100 - pct));      // white fill rises bottom -> top
-            const s = Math.min(1, p / 0.8);
-            sides.forEach((n) => { n.style.filter = "blur(" + (12 * (1 - s)) + "px)"; n.style.opacity = s; });
-            const st = Math.min(1, p / 0.6);
-            if (topEl) { topEl.style.filter = "blur(" + (8 * (1 - st)) + "px)"; topEl.style.opacity = st * 0.9; }
-            if (p < 1) requestAnimationFrame(tick);
-        })(t0);
-    })();
-    let exited = false;
-    function exitIntro() { if (exited) return; exited = true; try { sessionStorage.setItem("introSeen", "1"); } catch (e) { } timers.forEach(clearTimeout); document.body.classList.remove("intro-lock"); window.scrollTo(0, 0); // exit: kill the loader text fast (no lingering text strips on iOS), then fade the navy screen WITH the cube still contracting — the handoff to the hero cube
-        const loaderEl = document.getElementById("intro-loader"); if (loaderEl) { loaderEl.style.transition = "opacity 0.18s ease"; loaderEl.style.opacity = "0"; }
-        intro.classList.add("is-exiting"); setTimeout(() => { cancelAnimationFrame(raf); renderer.dispose(); intro.remove(); }, 700); }
-    const auto = setTimeout(exitIntro, 2800);
-    ["wheel", "touchstart", "keydown", "mousedown"].forEach((ev) => window.addEventListener(ev, () => { clearTimeout(auto); exitIntro(); }, { once: true, passive: true }));
 })();

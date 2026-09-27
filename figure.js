@@ -7,7 +7,6 @@
 //   scrollShrink   desktop shrink as the page scrolls (home only)
 //   scale          { desktop, mobile } figure scale override
 //   bandless       true = ignore the home page's mobile band stretch vars
-//   noIntro        true = never wait for the home intro, just the short entrance
 //   frame          the canvas box is this many times the figure's own frame (default 1):
 //                  a bigger transparent canvas gives flying pieces room — the camera
 //                  zooms out by the same factor so the figure keeps its size
@@ -35,8 +34,8 @@ function makeCircleTexture() {
 // the cursor. A click / tap re-assembles it like a transformer: the glass comes
 // off, strut by strut (bottom to top) each piece pops out, swings round and
 // clicks into its slot on the next solid with an orange spark, then the new
-// solid glazes bottom-up: cube -> pyramid -> octahedron -> hex prism ->
-// icosahedron -> cube ... It never switches on its own (user's call).
+// solid glazes bottom-up: cube -> hex prism -> icosahedron (with a neural net
+// inside) -> octahedron -> cube ... It never switches on its own (user's call).
 // All tuning lives in SCENE_CONFIG.
 (function () {
     const OPTS = window.FIGURE_OPTS || {};
@@ -60,7 +59,7 @@ function makeCircleTexture() {
         },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
-            cube: [0.13, 0.83, 0.93],      // bright cyan (matches the intro)
+            cube: [0.13, 0.83, 0.93],      // bright cyan
             orange: [1.0, 0.34, 0.13],
             scan: [0.85, 1.0, 1.0],        // near-white cyan glow
             glint: [1.0, 1.0, 1.0]         // pane highlight
@@ -75,7 +74,7 @@ function makeCircleTexture() {
             mobile: { scale: 1, grid: 3, lineOpacity: 0.25, rot: 0.0025 }
         },
         // the solids a tap steps through, in order (the first one is home)
-        shapes: ["cube", "pyramid", "octahedron", "hexPrism", "icosahedron"],
+        shapes: ["cube", "hexPrism", "icosahedron", "octahedron"],   // no pyramid: after the cube it read as a downgrade
         // one rebuild: every strut pops out, swings round and clicks into the next solid
         build: {
             durationMs: 3000,  // whole rebuild: first strut lift-off to the last click
@@ -102,6 +101,9 @@ function makeCircleTexture() {
         explode: { amp: { desktop: 0.1, mobile: 0.05 }, periodMs: 4800, wave: 2.2 },
         // an analysis scan: a plane of light sweeps bottom-up through the solid now and then
         scan: { everyMs: 7000, sweepMs: 2400, width: 0.22, firstDelayMs: 3500 },
+        // a neural net inside some solids: neurons + synapses, all but invisible at
+        // rest — the scan's light makes the links it crosses fire (keep it subtle)
+        neural: { shapes: ["icosahedron"], neurons: 26, links: 3, base: 0.02, peak: 0.5, width: 0.3 },
         // desktop: the solid leans a little toward the cursor (radians at the screen edge)
         parallax: { x: 0.16, y: 0.28, ease: 0.04 },
         // glass light: a glint whenever a pane turns into the light as the solid
@@ -116,7 +118,7 @@ function makeCircleTexture() {
         cubeDiagonals: true,               // face diagonals on the cube (false = plain grid)
         twinkle: { rate: 2, decay: 0.0020, blinkAmp: 1.3, blinkSpeed: 0.025 },
         wobble: 0.5,           // camera axis precession: 0 = plain orbit, higher = livelier
-        intro: { scale: 10.0, delayMs: 2100, contractMs: 1400 },
+        entrance: { from: 1.25, ms: 1200 }, // on load the solid settles in from slightly enlarged
         bootFadeMs: 500,       // figure fades in on load instead of popping in fully formed
         scrollShrink: "scrollShrink" in OPTS ? OPTS.scrollShrink : 0.2, // desktop only: figure shrinks as the hero scrolls away (0 = off)
         panFrac: "panFrac" in OPTS ? OPTS.panFrac : 0.20,              // shift figure toward screen-right on desktop (0 = centred)
@@ -229,26 +231,12 @@ function makeCircleTexture() {
             for (const [A, B, D] of faces) {
                 quadFace(out, A, B, D, G, G);
                 if (C.cubeDiagonals) {
-                    // same motif as the intro cubes
+                    // corner-to-corner, the site's cube motif
                     const c = lerp3(A, B, D, 0.5, 0.5), n = facing(A, B, D, c);
                     const P = (i, j) => lerp3(A, B, D, i / G, j / G);
                     for (let k = 0; k < G; k++) out.struts.push([P(k, k), P(k + 1, k + 1), n, c], [P(k, G - k), P(k + 1, G - k - 1), n, c]);
                 }
             }
-            return out;
-        },
-        // tetrahedron standing on its base (apex up), centred on its bounding box
-        pyramid() {
-            const out = { struts: [], tiles: [] }, R = HALF * 1.5, F = 3; // corners reach the cube corners' radius
-            const top = [0, R * 2 / 3, 0];
-            const base = [0, 1, 2].map((k) => {
-                const a = Math.PI / 2 + k * 2 * Math.PI / 3;
-                return [Math.cos(a) * R * Math.sqrt(8) / 3, -R * 2 / 3, Math.sin(a) * R * Math.sqrt(8) / 3];
-            });
-            triFace(out, top, base[0], base[1], F);
-            triFace(out, top, base[1], base[2], F);
-            triFace(out, top, base[2], base[0], F);
-            triFace(out, base[0], base[2], base[1], F);
             return out;
         },
         octahedron() {
@@ -270,6 +258,11 @@ function makeCircleTexture() {
                 triFace(out, [0, H, 0], top[k], top[k1], 2);     // caps: 6-slice fan
                 triFace(out, [0, -H, 0], bot[k], bot[k1], 2);
                 quadFace(out, top[k], top[k1], bot[k], 1, 2);    // sides: edges + one mid ring
+                // cross-bracing in every side cell — the cube's diagonal motif, so the
+                // prism reads as the same family instead of an empty box
+                const A = top[k], B = top[k1], D = bot[k], c = lerp3(A, B, D, 0.5, 0.5), n = facing(A, B, D, c);
+                const P = (i, j) => lerp3(A, B, D, i, j / 2);
+                for (let j = 0; j < 2; j++) out.struts.push([P(0, j), P(1, j + 1), n, c], [P(1, j), P(0, j + 1), n, c]);
             }
             return out;
         },
@@ -677,6 +670,60 @@ function makeCircleTexture() {
         solids.forEach((sd) => sd.ghost.material.color.setRGB(cc[0], cc[1], cc[2]));
     }
 
+    // ----- the neural net: neurons on an inner shell and in the core, each wired to
+    // its nearest neighbours. Lives inside the solids in C.neural.shapes; the scan
+    // plane lights up the synapses it crosses (same local-y test as the glass) -----
+    const neural = (function () {
+        const NC = C.neural, R = HALF * 1.45, pts = [];
+        for (let tries = 0; pts.length < NC.neurons && tries < 4000; tries++) {
+            let v;
+            if (pts.length < NC.neurons * 0.6) {   // shell neurons, just inside the glass
+                v = norm([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]).map((x) => x * R * 0.78);
+            } else {                                 // core neurons
+                do { v = [Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1]; } while (v[0] * v[0] + v[1] * v[1] + v[2] * v[2] > 1);
+                v = v.map((x) => x * R * 0.5);
+            }
+            if (pts.every((q) => Math.hypot(q[0] - v[0], q[1] - v[1], q[2] - v[2]) > R * 0.28)) pts.push(v);
+        }
+        const seen = new Set(), segs = [];
+        pts.forEach((a, i) => {
+            pts.map((b, j) => [j, Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2])])
+                .filter(([j]) => j !== i).sort((x, y) => x[1] - y[1]).slice(0, NC.links)
+                .forEach(([j]) => {
+                    const k = i < j ? i + "-" + j : j + "-" + i;
+                    if (!seen.has(k)) { seen.add(k); segs.push(...a, ...pts[j]); }
+                });
+        });
+        const uni = { uNeural: { value: 0 }, uBase: { value: NC.base }, uPeak: { value: NC.peak }, uNW: { value: NC.width }, uPx: { value: renderer.getPixelRatio() }, uScanY: shared.uScanY, uScanColor: shared.uScanColor };
+        const vs = (point) => [
+            "uniform float uScanY, uNW, uPx;",
+            "varying float vGlow;",
+            "void main() {",
+            "    float s = (position.y - uScanY) / uNW;",
+            "    vGlow = exp(-s * s);",
+            point ? "    gl_PointSize = (2.0 + 4.0 * vGlow) * uPx;" : "",
+            "    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+            "}"
+        ].join("\n");
+        const fs = (point) => [
+            "uniform vec3 uScanColor;",
+            "uniform float uNeural, uBase, uPeak;",
+            "varying float vGlow;",
+            "void main() {",
+            point ? "    if (length(gl_PointCoord - 0.5) > 0.5) discard;" : "",
+            "    gl_FragColor = vec4(uScanColor, uNeural * (uBase * " + (point ? "3.0" : "1.0") + " + uPeak * vGlow));",
+            "}"
+        ].join("\n");
+        const lg = new THREE.BufferGeometry();
+        lg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(segs), 3));
+        const pg = new THREE.BufferGeometry();
+        pg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(pts.flat()), 3));
+        const lines = new THREE.LineSegments(lg, new THREE.ShaderMaterial({ uniforms: uni, vertexShader: vs(false), fragmentShader: fs(false), transparent: true, depthWrite: false }));
+        const dots = new THREE.Points(pg, new THREE.ShaderMaterial({ uniforms: uni, vertexShader: vs(true), fragmentShader: fs(true), transparent: true, depthWrite: false }));
+        lines.visible = dots.visible = false;
+        return { lines: lines, dots: dots, uni: uni, k: 0 };
+    })();
+
     let cur = 0, next = 0, building = false, pending = false, bt = 0;
     let glazeT = -1;       // ms into the current solid's glazing (-1 = not started)
     let fxT = 0;           // ms since the tap: drives the blueprint drawing
@@ -687,6 +734,7 @@ function makeCircleTexture() {
         buildSolids(C.cube[vp].grid);
         if (S !== prevS || !geo) allocate();
         solids.forEach((sd) => { figure.add(sd.glass); figure.add(sd.ghost); });
+        figure.add(neural.lines); figure.add(neural.dots);
         allocateFlight(Math.max(...solids.map((sd) => sd.T)));
         cur %= solids.length; next = cur; building = pending = false; landT = 0;
         const sd = solids[cur];
@@ -771,16 +819,9 @@ function makeCircleTexture() {
     // reduced motion: no breathing, no scan sweeps, no cursor lean — a tap still rebuilds
     const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ----- intro hand-off + boot fade -----
-    const introWillPlay = !OPTS.noIntro && (function () { try { return sessionStorage.getItem("introSeen") !== "1"; } catch (e) { return true; } })();
-    // The zoom-in used to run only after the intro. On repeat views the cube just
-    // popped in fully formed, which read as "broken/cheap" — so it now always plays,
-    // just without the intro's wait. Repeat views start only slightly enlarged:
-    // the old 2.8x start overflowed the screen on every reload and read as a glitch.
+    // ----- entrance + boot fade: the solid fades in and settles from slightly
+    // enlarged (the old navy intro screen was removed Sep 27 2026) -----
     let contracting = true;
-    const contractDelay = introWillPlay ? C.intro.delayMs : 0;
-    const contractFrom = introWillPlay ? C.intro.scale : 1.25;
-    const contractDur = introWillPlay ? C.intro.contractMs : 1200;
     const heroStart = performance.now();
 
     const easeOut = (p) => 1 - Math.pow(1 - p, 3);
@@ -844,19 +885,13 @@ function makeCircleTexture() {
         const dt = Math.min(50, now - last); last = now;
         clock += dt / 1000;
 
-        // on intro loads the overlay + contraction own the entrance, so skip the fade
-        const bootFade = introWillPlay ? 1 : Math.min(1, (now - heroStart) / C.bootFadeMs);
+        const bootFade = Math.min(1, (now - heroStart) / C.bootFadeMs);
 
         let base = cube.scale;
         if (contracting) {
-            const el = now - heroStart - contractDelay;
-            if (el >= 0) {
-                const p = Math.min(el / contractDur, 1);
-                base = contractFrom + (cube.scale - contractFrom) * easeOut(p);
-                if (p >= 1) { contracting = false; glazeT = 0; } // landed: glaze the solid
-            } else {
-                base = contractFrom;
-            }
+            const p = Math.min((now - heroStart) / C.entrance.ms, 1);
+            base = C.entrance.from + (cube.scale - C.entrance.from) * easeOut(p);
+            if (p >= 1) { contracting = false; glazeT = 0; } // landed: glaze the solid
         }
 
         // ----- breathing settles before a rebuild and drifts back after it -----
@@ -945,6 +980,12 @@ function makeCircleTexture() {
             if (scanClock >= 0 && scanClock < C.scan.sweepMs) scanY = -2.1 + 4.2 * easeInOut(scanClock / C.scan.sweepMs);
         }
         shared.uScanY.value = scanY;
+
+        // neural net: fades in while a neural solid is at rest, out for a rebuild
+        const wantNet = C.neural.shapes.indexOf(C.shapes[cur]) >= 0 && !building && !pending && landT <= 0;
+        neural.k += ((wantNet ? 1 : 0) - neural.k) * (wantNet ? 0.03 : 0.2);
+        neural.lines.visible = neural.dots.visible = neural.k > 0.01;
+        neural.uni.uNeural.value = neural.k * bootFade;
 
         t += 0.01;
         angle += cube.rot;

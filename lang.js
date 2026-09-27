@@ -105,7 +105,7 @@
                     note: "The public half of the portfolio — no NDA here. Pick one and open it.",
                     open: "open site",
                     items: {
-                        pub: { title: "This very site", desc: "A business card site with a dark theme, a 3D intro, bilingual switching and the contact rail you just used." },
+                        pub: { title: "This very site", desc: "A business card site with a dark theme, a 3D glass figure, bilingual switching and the contact rail you just used." },
                         kate: { title: "Kateryna Onokalo — Fine Art", desc: "An artist's portfolio and online store — gallery with four painting series, shopping cart and custom order flow." },
                         tesik: { title: "Tesik Craft — Handmade Toys", desc: "A craft workshop storefront — cotton-wool Christmas ornaments and textile teddies, catalog with cart and a production showcase." },
                         shape: { title: "Shape Barbershop", desc: "A barbershop site with a dark, gritty look — services, price list, team and a booking that starts a WhatsApp chat." }
@@ -217,7 +217,7 @@
                     note: "Публічна половина портфоліо — тут без NDA. Обери і відкрий.",
                     open: "відкрити сайт",
                     items: {
-                        pub: { title: "Цей самий сайт", desc: "Сайт-візитка з темною темою, 3D-інтро, перемиканням мови та рейлом контактів, яким ти щойно користувався (-лася)." },
+                        pub: { title: "Цей самий сайт", desc: "Сайт-візитка з темною темою, 3D-фігурою зі скла, перемиканням мови та рейлом контактів, яким ти щойно користувався (-лася)." },
                         kate: { title: "Катерина Онокало — живопис", desc: "Портфоліо та онлайн-магазин художниці — галерея з чотирма серіями, кошик і замовлення на індивідуальне полотно." },
                         tesik: { title: "Tesik Craft — іграшки ручної роботи", desc: "Вітрина ремісничої майстерні — ватні ялинкові іграшки та текстильні тедді, каталог з кошиком і розділ «як це робиться»." },
                         shape: { title: "Shape Barbershop", desc: "Сайт барбершопу з темним характерним стилем — послуги, прайс, команда і запис, що відкриває чат у WhatsApp." }
