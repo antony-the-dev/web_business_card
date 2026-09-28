@@ -141,6 +141,13 @@
             // held near long enough (holdMs), the tip PINCHES OFF as a tiny droplet
             // hovering `gap` further out; it flows back when the cursor leaves
             reach: { len: 0.36, ease: 0.05, holdMs: 1100, gap: 0.1 },
+            // SLOSH on scroll: the liquid has INERTIA — while the page scrolls it lags
+            // behind the moving crystal and stretches (up to `max` core units, saturating
+            // at `speed` px/s), and when the scroll stops it swings past and wobbles out
+            // on an underdamped spring (stiffness `k`, damping `damp`); it brightens a
+            // little with the motion. Capped so it only ever stretches with necks, never
+            // tears apart (the cursor scatter taught us: no jumpy reactions)
+            slosh: { max: 0.2, speed: 1500, k: 110, damp: 7 },
             gathered: { r0: 0.15, r: [0.075, 0.105], dist: [0.06, 0.1] },
             scattered: { r0: 0.085, r: [0.045, 0.08], dist: [0.26, 0.5] },
             // the last `spray.n` satellites are tiny droplets flung further out
@@ -916,7 +923,9 @@
         // along rdir into a tongue (their gaps stay under the smooth-min k, so it
         // stays one body with a neck instead of splitting into droplets)
         let hold = 0, jig = 0, pinched = false;
-        function step(dt, spread, e, T, rk, rdir) {
+        // sl / sax: the scroll slosh — offset (core units) along the screen-vertical
+        // axis in object space; the lumps trail further than the heart, so it stretches
+        function step(dt, spread, e, T, rk, rdir, sl, sax) {
             const s = spread, kk = rk * (1 - s) * (1 - e);
             // cursor held near: after holdMs the tongue's tip pinches off
             hold = kk > 0.8 ? hold + dt : Math.max(0, hold - dt * 2);
@@ -926,7 +935,8 @@
             const wig = 1 + CC.jiggle * jig * Math.sin(T * 26);   // the drop jiggles after a tear-off / merge
             let ext = 0;
             const r0 = (G.r0 + (Sc.r0 - G.r0) * s) * (1 - sstep(0.05, 0.6, e)) * wig;
-            blobs[0].set(0.02 * Math.sin(T * 0.7) + rdir.x * 0.03 * kk, 0.02 * Math.sin(T * 0.9 + 1) + rdir.y * 0.03 * kk, 0.02 * Math.sin(T * 0.8 + 2) + rdir.z * 0.03 * kk, r0);
+            const so = sl * (1 - e), h0 = so * 0.35;   // no slosh while it pours into the frame
+            blobs[0].set(0.02 * Math.sin(T * 0.7) + rdir.x * 0.03 * kk + sax.x * h0, 0.02 * Math.sin(T * 0.9 + 1) + rdir.y * 0.03 * kk + sax.y * h0, 0.02 * Math.sin(T * 0.8 + 2) + rdir.z * 0.03 * kk + sax.z * h0, r0);
             if (r0 > 0.001) ext = 0.035 + r0;
             sat.forEach((b, i) => {
                 // this droplet's own window of the dissolve: they tear off one by one
@@ -949,13 +959,18 @@
                     r += (rt - r) * kk;
                     dist = Math.sqrt(x * x + y * y + z * z);
                 }
+                if (so !== 0) {
+                    x += sax.x * so; y += sax.y * so; z += sax.z * so;
+                    dist = Math.sqrt(x * x + y * y + z * z);
+                }
                 blobs[i + 1].set(x, y, z, r);
                 if (r > 0.001) ext = Math.max(ext, dist + r);
             });
             return ext + CC.pad;
         }
         return { mesh: mesh, uni: uni, step: step, k: 0, flare: 0, scale: 1, t: 0, clock: 0, out: 0, energy: 0, waveR: 0, sp: 0, haloBase: 1, frozen: false,
-            reachK: 0, reachDir: new THREE.Vector3(1, 0, 0) };
+            reachK: 0, reachDir: new THREE.Vector3(1, 0, 0),
+            sl: 0, slv: 0, slAxis: new THREE.Vector3(0, 1, 0), prevScroll: 0, scrollOk: false };
     })();
 
     let cur = 0, next = 0, building = false, pending = false, bt = 0;
@@ -1151,7 +1166,7 @@
     function animate() {
         requestAnimationFrame(animate);
         const now = performance.now();
-        if (!onScreen) { last = now; perf.n = 0; return; }
+        if (!onScreen) { last = now; perf.n = 0; core.scrollOk = false; return; }
         const cube = C.cube[vp];
         // clamped frame time: a backgrounded tab resumes where it left off
         const dt = Math.min(50, now - last); last = now;
@@ -1309,12 +1324,23 @@
         }
         // smoothed, so a jump of the cycle (a tap calling the droplets home) still flows
         core.sp += (spread - core.sp) * Math.min(1, dt / 220);
-        core.uni.uBound.value = core.step(REDUCED ? 0 : dt, core.sp, pour, core.t, core.reachK, core.reachDir);
+        // slosh: scrolling down moves the crystal up the screen, so the liquid lags
+        // DOWN behind it; the spring swings it back past rest when the scroll stops
+        let slTarget = 0;
+        if (!REDUCED) {
+            const sy = window.scrollY;
+            if (core.scrollOk && dt > 0) slTarget = -CR.slosh.max * Math.tanh((sy - core.prevScroll) / dt * 1000 / CR.slosh.speed);
+            core.prevScroll = sy; core.scrollOk = true;
+        }
+        const hs = Math.min(dt, 32) / 1000;
+        core.slv += (CR.slosh.k * (slTarget - core.sl) - CR.slosh.damp * core.slv) * hs;
+        core.sl += core.slv * hs;
+        core.uni.uBound.value = core.step(REDUCED ? 0 : dt, core.sp, pour, core.t, core.reachK, core.reachDir, core.sl, core.slAxis);
         core.uni.uHaloK.value = core.haloBase * (1 - 0.45 * core.sp);   // droplets apart: less fog round them, crisper drops
         const scanHit = scanK * Math.exp(-(scanY / 0.4) * (scanY / 0.4));   // the drop flares as it fires a pulse
         core.uni.uT.value = core.t;
         core.uni.uFade.value = core.k * bootFade;
-        core.uni.uBoost.value = 1 + CR.flare * core.flare + 0.35 * scanHit;
+        core.uni.uBoost.value = 1 + CR.flare * core.flare + 0.35 * scanHit + 0.25 * Math.min(1, Math.abs(core.sl) / CR.slosh.max);   // brightens with the motion
         // fully poured out = nothing left to draw: skip the raymarch entirely
         core.mesh.visible = core.k * bootFade > 0.01 && pour < 0.985;
         shared.uCoreLight.value = CR.glassLight * core.k * bootFade * (1 + 0.4 * scanHit) * (1 - 0.35 * core.sp) * (1 - pour);
@@ -1423,6 +1449,8 @@
             // the glint's light rides with the camera (upper left, in front), in object space
             core.uni.uLight.value.copy(coreTmp.light).applyQuaternion(camera.quaternion)
                 .applyQuaternion(core.mesh.getWorldQuaternion(coreTmp.q).invert());
+            // screen-up in object space: the axis the liquid sloshes along when scrolling
+            core.slAxis.set(0, 1, 0).applyQuaternion(camera.quaternion).applyQuaternion(coreTmp.q);
             // desktop: where the pointer's ray crosses the plane through the core,
             // in core units — the drop reaches that way when the cursor is near
             let rkT = 0;
