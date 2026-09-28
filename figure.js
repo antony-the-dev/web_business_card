@@ -58,7 +58,8 @@
             // TRANSLUCENT ORANGE drop instead (user's call — the teal one read as a
             // plain inverted colour); coreAlpha = surface opacity at the centre, the
             // rim stays dense like the edge of a glass drop
-            coreHot: [1.0, 0.66, 0.46], coreGlow: [1.0, 0.34, 0.13], coreAdd: false, coreHalo: 0.45, coreAlpha: 0.5
+            coreHot: [1.0, 0.66, 0.46], coreGlow: [1.0, 0.34, 0.13], coreAdd: false, coreHalo: 0.45, coreAlpha: 0.5,
+            coreIrid: [[1.0, 0.3, 0.55], [1.0, 0.78, 0.25]], coreIridK: 0.55   // thin-film rim: pink <-> gold
         },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
@@ -67,7 +68,10 @@
             scan: [0.85, 1.0, 1.0],        // near-white cyan glow
             glint: [1.0, 1.0, 1.0],        // pane highlight
             // the core: white-hot centre, neon cyan rim + corona, added as light
-            coreHot: [1.0, 1.0, 1.0], coreGlow: [0.13, 0.83, 0.93], coreAdd: true, coreHalo: 1, coreAlpha: 1
+            coreHot: [1.0, 1.0, 1.0], coreGlow: [0.13, 0.83, 0.93], coreAdd: true, coreHalo: 1, coreAlpha: 1,
+            // IRIDESCENCE: a thin-film shimmer on the drop's grazing edge, like a soap
+            // bubble or oil — violet-blue <-> mint, drifting with the plasma
+            coreIrid: [[0.52, 0.45, 1.0], [0.35, 1.0, 0.8]], coreIridK: 0.7
         }
     };
     const isDarkTheme = () => document.documentElement.classList.contains("dark");
@@ -98,14 +102,19 @@
             shards: { on: true, ms: 1100, lift: 0.4, tumble: 1.3, glintMs: 550 },
             blueprint: { on: true, drawMs: 800, opacity: { desktop: 0.4, mobile: 0.35 } }, // the next solid's dashed outline is drawn first; the pieces dock into it
             settle: { on: true, ms: 800, amp: 0.04 },            // the finished solid settles with one small bounce...
-            verifyScan: true,                                    // ...and one scan pass checks it over
+            verifyScan: true,                                    // ...and when the drop has condensed again it sends one pulse through it
             push: 0.07                                           // the camera leans in by this fraction mid-rebuild
         },
         // breathing = an exploded view: faces drift out along their normals in a
         // slow wave rolling across the solid, then settle back (no scaling)
         explode: { amp: { desktop: 0.1, mobile: 0.05 }, periodMs: 4800, wave: 2.2 },
-        // an analysis scan: a plane of light sweeps bottom-up through the solid now and then
-        scan: { everyMs: 7000, sweepMs: 2400, width: 0.22, firstDelayMs: 3500 },
+        // a PULSE of light from the core (replaced the old bottom-up scan plane, so
+        // everything alive in the figure now comes from the drop): whenever the drop
+        // has gathered itself again — end of its dissolve cycle, after a rebuild —
+        // a sphere of light rolls out from the centre through the glass, struts and
+        // beads, easing out and fading as it travels. ms = time to `reach` (scene
+        // units), width = thickness of the shell. The drop flares as it fires.
+        scan: { ms: 1900, width: 0.26, reach: 2.4, firstDelayMs: 3500 },
         // the CORE: LIQUID LIGHT at the heart of every solid — organic against the
         // crystal's geometry. Metaballs (blob 0 in the centre + satellites) are
         // raymarched inside a proxy sphere (bound): gathered they melt into one
@@ -122,9 +131,24 @@
         // HISTORY: a static glowing sun here read as dull ("просто світиться");
         // before that a neural brain was rejected twice.
         core: {
-            pad: 0.26, blobs: 9, k: 0.12, flow: 0.9, halo: 9, shell: 0.95, outMs: 900, inMs: 1900, energy: 0.32, goneMs: 450,
+            pad: 0.26, blobs: 11, k: 0.12, flow: 0.9, halo: 10, shell: 0.95, outMs: 900, inMs: 1900, energy: 0.32, goneMs: 450,
+            // the energy runs as a WAVE: its front leaves the centre as the drops pour
+            // out and reaches waveReach; on the way back it shrinks to the centre, so
+            // the far corners go dark first and the light returns into the drop
+            waveReach: 2.3, waveW: 0.35,
+            // desktop: the drop REACHES toward the cursor — two lumps leave their orbit
+            // and stretch into a liquid tongue (only while gathered, not during a pour)
+            // held near long enough (holdMs), the tip PINCHES OFF as a tiny droplet
+            // hovering `gap` further out; it flows back when the cursor leaves
+            reach: { len: 0.36, ease: 0.05, holdMs: 1100, gap: 0.1 },
             gathered: { r0: 0.15, r: [0.075, 0.105], dist: [0.06, 0.1] },
-            scattered: { r0: 0.08, r: [0.045, 0.075], dist: [0.3, 0.52] },
+            scattered: { r0: 0.085, r: [0.045, 0.08], dist: [0.26, 0.5] },
+            // the last `spray.n` satellites are tiny droplets flung further out
+            spray: { n: 3, r: [0.022, 0.036], dist: [0.5, 0.64] },
+            // a BREAKUP, not an explosion: each droplet tears off in its own window
+            // of the dissolve (stagger = how spread out those windows are), and every
+            // tear-off / merge makes the main drop JIGGLE (amplitude) like liquid
+            stagger: 0.5, jiggle: 0.07,
             cycleMs: 15000, holdMs: 6000, dissolveMs: 3500, driftMs: 2000,
             flare: 0.45, glassLight: 0.2, shapes: { cube: 1, hexPrism: 1, icosahedron: 1.08, octahedron: 0.85 }
         },
@@ -322,7 +346,8 @@
         uSpec: { value: C.light.spec }, uShine: { value: C.light.shine }, uDepthFloor: { value: C.light.depthFloor },
         uNear: { value: 1 }, uFar: { value: 5 }, uMouse: { value: new THREE.Vector2(9, 9) }, uAspect: { value: 1 },
         uHover: { value: 0 }, uHoverR: { value: C.light.hoverR },
-        uCoreLight: { value: 0 }, uCoreColor: { value: new THREE.Color() }, uEnergy: { value: 0 }
+        uCoreLight: { value: 0 }, uCoreColor: { value: new THREE.Color() }, uEnergy: { value: 0 },
+        uWaveR: { value: 0 }, uWaveW: { value: C.core.waveW }, uScanK: { value: 1 }
     };
     const glassVS = [
         "attribute vec3 aBary;",
@@ -330,11 +355,11 @@
         "attribute vec3 aCenter;",
         "attribute float aDelay;",
         "attribute float aGlint;",
-        "uniform float uTime, uAmp, uOmega, uKappa, uScanY, uScanW, uGlaze, uNear, uFar, uAspect, uHoverR;",
+        "uniform float uTime, uAmp, uOmega, uKappa, uScanY, uScanW, uScanK, uGlaze, uNear, uFar, uAspect, uHoverR, uEnergy, uWaveR, uWaveW;",
         "uniform vec3 uDir;",
         "uniform vec2 uMouse;",
         "varying vec3 vBary, vN, vV;",
-        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore, vEnergy;",
         "void main() {",
         "    float w = 0.5 + 0.5 * sin(uOmega * uTime - uKappa * dot(aCenter, uDir));",
         "    vCore = exp(-dot(aCenter, aCenter) * 0.8);   // lit from within: panes nearest the core glow most",
@@ -345,8 +370,10 @@
         "    vFres = pow(1.0 - abs(dot(nv, vv)), 2.0);",
         "    vN = nv; vV = vv;",
         "    vDepth = clamp((uFar + mv.z) / (uFar - uNear), 0.0, 1.0);   // 1 = nearest pane, 0 = far side",
-        "    float s = (p.y - uScanY) / uScanW;",
-        "    vScan = exp(-s * s);",
+        "    float rr = length(p), s = (rr - uScanY) / uScanW;",
+        "    vScan = uScanK * exp(-s * s);   // the core's pulse: a sphere of light rolling outward",
+        "    float fr = uWaveR - rr;",
+        "    vEnergy = uEnergy * (0.8 * smoothstep(-uWaveW, 0.0, fr) + 1.4 * exp(-fr * fr / (uWaveW * uWaveW)));   // lit behind the wave front, brightest on it",
         "    vGlaze = smoothstep(aDelay, aDelay + 0.25, uGlaze);",
         "    vBary = aBary;",
         "    gl_Position = projectionMatrix * mv;",
@@ -357,9 +384,9 @@
     const glassFS = [
         "uniform vec3 uColor, uScanColor, uGlintColor, uLight;",
         "uniform vec3 uCoreColor;",
-        "uniform float uOpacity, uSpec, uShine, uDepthFloor, uHover, uCoreLight, uEnergy;",
+        "uniform float uOpacity, uSpec, uShine, uDepthFloor, uHover, uCoreLight;",
         "varying vec3 vBary, vN, vV;",
-        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore;",
+        "varying float vFres, vScan, vGlaze, vGlint, vDepth, vHover, vCore, vEnergy;",
         "void main() {",
         "    float e = min(min(vBary.x, vBary.y), vBary.z);   // 0 on the pane's rim",
         "    float rim = 1.0 - smoothstep(0.0, 0.2, e);        // inner glow hugging the rim",
@@ -372,8 +399,8 @@
         "    float cl = uCoreLight * vCore;",
         "    a += cl * (0.3 + rim);",
         "    col = mix(col, uCoreColor, clamp(cl * 1.6, 0.0, 0.6));",
-        "    a += uEnergy * (0.1 + 0.55 * rim);   // the core's light poured into the structure",
-        "    col = mix(col, uScanColor, clamp(uEnergy * 1.4, 0.0, 0.6));",
+        "    a += vEnergy * (0.1 + 0.55 * rim);   // the core's light poured into the structure",
+        "    col = mix(col, uScanColor, clamp(vEnergy * 1.4, 0.0, 0.6));",
         "    a *= mix(uDepthFloor, 1.0, vDepth);   // far side dimmer: depth",
         "    gl_FragColor = vec4(col, a * uOpacity * vGlaze);",
         "}"
@@ -716,8 +743,12 @@
         core.uni.uHot.value.setRGB(ch[0], ch[1], ch[2]);   // only ever called after the core is built
         core.uni.uGlow.value.setRGB(cg[0], cg[1], cg[2]);
         shared.uCoreColor.value.setRGB(cg[0], cg[1], cg[2]);
-        core.uni.uHaloK.value = C.colors.coreHalo * (CORE_ONLY ? 0.55 : 1);   // naked on a page: softer glow
+        core.haloBase = C.colors.coreHalo * (CORE_ONLY ? 0.55 : 1);   // naked on a page: softer glow
+        core.uni.uHaloK.value = core.haloBase;
         core.uni.uSolid.value = C.colors.coreAlpha;
+        const ia = C.colors.coreIrid[0], ib = C.colors.coreIrid[1];
+        core.uni.uIridA.value.setRGB(ia[0], ia[1], ia[2]); core.uni.uIridB.value.setRGB(ib[0], ib[1], ib[2]);
+        core.uni.uIrid.value = C.colors.coreIridK;
         core.mesh.material.blending = C.colors.coreAdd ? THREE.AdditiveBlending : THREE.NormalBlending;
         core.mesh.material.needsUpdate = true;
         solids.forEach((sd) => sd.ghost.material.color.setRGB(cc[0], cc[1], cc[2]));
@@ -781,7 +812,8 @@
             uFade: { value: 0 }, uBoost: { value: 1 }, uT: { value: 0 }, uHaloK: { value: 1 },
             uBlobs: { value: blobs }, uCam: { value: new THREE.Vector3(0, 0, 5) },
             uBound: { value: 0.5 }, uK: { value: CC.k }, uHalo: { value: CC.halo * (CORE_ONLY ? 1.4 : 1) },
-            uPix: { value: 0.003 }, uLight: { value: new THREE.Vector3(0, 1, 0) }, uSolid: { value: 1 }
+            uPix: { value: 0.003 }, uLight: { value: new THREE.Vector3(0, 1, 0) }, uSolid: { value: 1 },
+            uIridA: { value: new THREE.Color() }, uIridB: { value: new THREE.Color() }, uIrid: { value: 0 }
         };
         const VS = [
             "uniform float uBound;",
@@ -792,9 +824,9 @@
             "}"
         ].join("\n");
         const FS = [
-            "uniform vec3 uHot, uGlow, uCam, uLight;",
+            "uniform vec3 uHot, uGlow, uCam, uLight, uIridA, uIridB;",
             "uniform vec4 uBlobs[" + NB + "];",
-            "uniform float uFade, uBoost, uT, uHaloK, uBound, uK, uHalo, uPix, uSolid;",
+            "uniform float uFade, uBoost, uT, uHaloK, uBound, uK, uHalo, uPix, uSolid, uIrid;",
             "varying vec3 vPos;",
             NOISE,
             "float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }",
@@ -838,6 +870,10 @@
             "        float c = 0.5 + 0.5 * snoise(p * 4.5 + vec3(0.0, -uT * 0.35, uT * 0.2));",
             "        vec3 sc = mix(uGlow, uHot, smoothstep(0.1, 0.9, facing) * (0.55 + 0.45 * c));",
             "        sc = sc * (0.8 + 0.3 * c) + uGlow * rim * 1.4;   // neon rim",
+            // thin-film iridescence on the grazing edge: the tint drifts with the angle,
+            // the inner shimmer and time, so the rim slowly changes colour as it moves
+            "        vec3 ir = mix(uIridA, uIridB, 0.5 + 0.5 * sin(facing * 9.0 + c * 5.0 + uT * 0.8));",
+            "        sc = mix(sc, ir * (0.95 + 0.35 * c), pow(1.0 - facing, 1.5) * uIrid);   // a wider band than the neon rim",
             // a glossy liquid surface: one sharp glint + a soft sheen from a light
             // fixed to the camera (upper left), so it reads as an object, not a blur
             "        float rl = max(dot(reflect(rd, n), uLight), 0.0);",
@@ -863,34 +899,63 @@
         for (let i = 1; i < NB; i++) {
             const y = 1 - 2 * (i - 0.5) / (NB - 1), rr = Math.sqrt(1 - y * y), ph = i * 2.399963;   // fibonacci sphere
             const ax = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+            const spray = i > NB - 1 - CC.spray.n;   // the last few: tiny droplets flung further
             sat.push({
                 dir: new THREE.Vector3(Math.cos(ph) * rr, y, Math.sin(ph) * rr), ax: ax,
                 w: (0.25 + Math.random() * 0.3) * (Math.random() < 0.5 ? -1 : 1),
-                rg: rnd(G.r), rs: rnd(Sc.r), dg: rnd(G.dist), ds: rnd(Sc.dist), ph: Math.random() * 6.28
+                rg: rnd(G.r), rs: spray ? rnd(CC.spray.r) : rnd(Sc.r), dg: rnd(G.dist), ds: spray ? rnd(CC.spray.dist) : rnd(Sc.dist),
+                ph: Math.random() * 6.28, del: Math.random() * CC.stagger, was: 0
             });
         }
         const sstep = (a, b, x) => { const u = clamp01((x - a) / (b - a)); return u * u * (3 - 2 * u); };
         // spread: 0 gathered .. 1 scattered droplets; e: 0 at rest .. 1 poured out
         // into the frame (the centre drains first, the droplets fly to the shell and
         // melt into it). Returns the proxy radius that encloses every drop + its glow
-        function step(dt, spread, e, T) {
-            const s = spread;
+        // rk / rdir: how strongly and where (unit vector, object space) the drop
+        // reaches toward the cursor — lumps 0 and 1 leave their orbits and line up
+        // along rdir into a tongue (their gaps stay under the smooth-min k, so it
+        // stays one body with a neck instead of splitting into droplets)
+        let hold = 0, jig = 0, pinched = false;
+        function step(dt, spread, e, T, rk, rdir) {
+            const s = spread, kk = rk * (1 - s) * (1 - e);
+            // cursor held near: after holdMs the tongue's tip pinches off
+            hold = kk > 0.8 ? hold + dt : Math.max(0, hold - dt * 2);
+            const pinch = sstep(CC.reach.holdMs, CC.reach.holdMs + 500, hold);
+            if (pinched !== pinch > 0.5) { pinched = pinch > 0.5; jig = Math.min(1.5, jig + 0.5); }
+            jig *= Math.exp(-dt / 450);
+            const wig = 1 + CC.jiggle * jig * Math.sin(T * 26);   // the drop jiggles after a tear-off / merge
             let ext = 0;
-            const r0 = (G.r0 + (Sc.r0 - G.r0) * s) * (1 - sstep(0.05, 0.6, e));
-            blobs[0].set(0.02 * Math.sin(T * 0.7), 0.02 * Math.sin(T * 0.9 + 1), 0.02 * Math.sin(T * 0.8 + 2), r0);
+            const r0 = (G.r0 + (Sc.r0 - G.r0) * s) * (1 - sstep(0.05, 0.6, e)) * wig;
+            blobs[0].set(0.02 * Math.sin(T * 0.7) + rdir.x * 0.03 * kk, 0.02 * Math.sin(T * 0.9 + 1) + rdir.y * 0.03 * kk, 0.02 * Math.sin(T * 0.8 + 2) + rdir.z * 0.03 * kk, r0);
             if (r0 > 0.001) ext = 0.035 + r0;
             sat.forEach((b, i) => {
+                // this droplet's own window of the dissolve: they tear off one by one
+                const si = sstep(b.del, b.del + 1 - CC.stagger, s);
+                if ((b.was > 0.25) !== (si > 0.25)) jig = Math.min(1.5, jig + 0.35);   // tore off / merged back
+                b.was = si;
                 b.dir.applyAxisAngle(b.ax, b.w * dt / 1000);
                 const wob = 1 + 0.25 * Math.sin(T * 1.3 + b.ph);   // lumps breathe in and out of the drop
-                let dist = (b.dg * wob) + (b.ds - b.dg * wob) * s;
-                dist += (CC.shell - dist) * e;
-                const r = (b.rg + (b.rs - b.rg) * s) * (1 + 0.35 * Math.sin(Math.PI * e)) * (1 - sstep(0.6, 1, e));
-                blobs[i + 1].set(b.dir.x * dist, b.dir.y * dist, b.dir.z * dist, r);
+                // the pour is staggered too: droplets leave for the frame one after another
+                const ei = sstep(b.del * 0.5, b.del * 0.5 + 0.75, e);
+                let dist = (b.dg * wob) + (b.ds - b.dg * wob) * si;
+                dist += (CC.shell - dist) * ei;
+                let r = (b.rg + (b.rs - b.rg) * si) * (1 + 0.35 * Math.sin(Math.PI * ei)) * (1 - sstep(0.6, 1, ei));
+                let x = b.dir.x * dist, y = b.dir.y * dist, z = b.dir.z * dist;
+                if (i < 2 && kk > 0.001) {
+                    // the tongue: thick root, thinner tip — the tip tears off when pinched
+                    const L = i === 0 ? 0.2 - 0.03 * pinch : CC.reach.len + CC.reach.gap * pinch;
+                    const rt = i === 0 ? 0.095 : 0.07 - 0.02 * pinch;
+                    x += (rdir.x * L - x) * kk; y += (rdir.y * L - y) * kk; z += (rdir.z * L - z) * kk;
+                    r += (rt - r) * kk;
+                    dist = Math.sqrt(x * x + y * y + z * z);
+                }
+                blobs[i + 1].set(x, y, z, r);
                 if (r > 0.001) ext = Math.max(ext, dist + r);
             });
             return ext + CC.pad;
         }
-        return { mesh: mesh, uni: uni, step: step, k: 0, flare: 0, scale: 1, t: 0, clock: 0, out: 0, energy: 0 };
+        return { mesh: mesh, uni: uni, step: step, k: 0, flare: 0, scale: 1, t: 0, clock: 0, out: 0, energy: 0, waveR: 0, sp: 0, haloBase: 1, frozen: false,
+            reachK: 0, reachDir: new THREE.Vector3(1, 0, 0) };
     })();
 
     let cur = 0, next = 0, building = false, pending = false, bt = 0;
@@ -957,7 +1022,12 @@
     // first — see the pending phase)
     let poof = -1;   // coreOnly: ms into the vanish-and-return of the drop (-1 = idle)
     function requestRebuild() {
-        if (CORE_ONLY) { if (poof < 0 && core.out === 0 && !contracting) poof = 0; return; }
+        if (CORE_ONLY) {
+            if (poof >= 0 || core.out > 0 || contracting) return;
+            // droplets already apart: a tap calls them home (they rush back and merge)
+            if (core.sp > 0.3) { core.clock = 0; firePulse(); return; }
+            poof = 0; return;
+        }
         if (building || pending || contracting || landT > 0) return;
         next = (cur + 1) % solids.length;
         pending = true; fxT = 0;
@@ -1070,10 +1140,14 @@
     let t = 0, angle = 0, last = performance.now();
     let clock = 0;         // seconds, drives the breathing wave (CPU + shader share it)
     let breath = 1;        // 0..1: exploded-view breathing strength (settles to 0 for a rebuild)
-    let scanClock = -C.scan.firstDelayMs;
+    // the core's pulse: ms into the current one (-1 = idle); the first fires
+    // firstDelayMs after the entrance lands
+    let pulseT = -1, pulseWait = C.scan.firstDelayMs;
+    const firePulse = () => { if (!REDUCED) pulseT = 0; };
 
     const perf = { ema: 16, n: 0 };
-    const coreTmp = { s: new THREE.Vector3(), p: new THREE.Vector3(), q: new THREE.Quaternion(), light: new THREE.Vector3(-0.45, 0.65, 0.6).normalize() };
+    const coreTmp = { s: new THREE.Vector3(), p: new THREE.Vector3(), q: new THREE.Quaternion(), light: new THREE.Vector3(-0.45, 0.65, 0.6).normalize(),
+        ray: new THREE.Vector3(), f: new THREE.Vector3(), hit: new THREE.Vector3() };
     function animate() {
         requestAnimationFrame(animate);
         const now = performance.now();
@@ -1131,7 +1205,6 @@
                 glazeT = fx.shards.on ? 1e9 : 0;
                 landT = fx.shards.on ? fx.shards.glintMs : 0; // let the last docking flashes finish
                 settleT = 0; // ...settle it with one small bounce
-                if (fx.verifyScan) scanClock = fx.shards.on ? -300 : -C.glass.glazeMs * 0.75; // ...and scan it over
             }
         } else if (landT > 0) {
             landT -= dt;
@@ -1180,49 +1253,71 @@
             sd.ghost.material.opacity = gop;
         });
 
-        // ----- scan: a plane of light sweeps bottom-up now and then (at rest only) -----
-        let scanY = 99;
-        if (!building && !pending && !contracting && !REDUCED) {
-            scanClock += dt;
-            if (scanClock >= C.scan.everyMs) scanClock = 0;
-            if (scanClock >= 0 && scanClock < C.scan.sweepMs) scanY = -2.1 + 4.2 * easeInOut(scanClock / C.scan.sweepMs);
+        // ----- pulse: a sphere of light rolls out from the core (at rest only) -----
+        if (pulseWait > 0 && !contracting && (pulseWait -= dt) <= 0) firePulse();
+        if (building || pending) pulseT = -1;
+        let scanY = 99, scanK = 0;
+        if (pulseT >= 0) {
+            pulseT += dt;
+            const u = pulseT / C.scan.ms;
+            if (u >= 1) pulseT = -1;
+            else { scanY = C.scan.reach * (1 - (1 - u) * (1 - u)); scanK = 1 - u * u; }   // eases out, fades as it travels
         }
         shared.uScanY.value = scanY;
+        shared.uScanK.value = scanK;
 
         // core: always there once the solid has landed — the liquid dissolves and
         // gathers on its own cycle; a tap pours it out into the frame as energy,
         // and after the landing it flows back and condenses in the centre
         const CR = C.core;
-        // coreOnly (portfolio): a slower, softer fade out and back (user: "повільніше затухання")
-        const outMs = CR.outMs * (CORE_ONLY ? 2.5 : 1), inMs = CR.inMs * (CORE_ONLY ? 1.5 : 1);
-        if (poof >= 0 && (poof += dt) > outMs + CR.goneMs) poof = -1;
+        // coreOnly (portfolio): its own softer pace for the tap (first ×2.5 / ×1.5 —
+        // "повільніше затухання" — then 1.5x quicker again on the user's retest)
+        const outMs = CR.outMs * (CORE_ONLY ? 1.67 : 1), inMs = CR.inMs, goneMs = CR.goneMs * (CORE_ONLY ? 0.67 : 1);
+        if (poof >= 0 && (poof += dt) > outMs + goneMs) poof = -1;
         const rebuilding = CORE_ONLY ? poof >= 0 : (building || pending);
         core.k += ((contracting ? 0 : 1) - core.k) * 0.03;
         core.flare += ((rebuilding ? 1 : 0) - core.flare) * (rebuilding ? 0.05 : 0.02);
-        if (rebuilding) { core.out = Math.min(1, core.out + dt / outMs); core.clock = 0; }
-        else core.out = Math.max(0, core.out - dt / inMs);
+        const wasOut = core.out;
+        // a tap while the droplets are apart must not yank them home first: the cycle
+        // FREEZES during the pour (they fly out from wherever they are) and resets
+        // to "gathered" only once they have melted away, so the drop condenses whole
+        if (rebuilding) { core.out = Math.min(1, core.out + dt / outMs); core.frozen = true; }
+        else {
+            if (core.frozen) { core.clock = 0; core.sp = 0; core.frozen = false; }   // poured out: next it condenses whole
+            core.out = Math.max(0, core.out - dt / inMs);
+        }
+        if (wasOut > 0 && core.out === 0 && C.rebuildFx.verifyScan) firePulse();   // the drop is back: one pulse checks the new solid over
         const pour = easeInOut(core.out);
-        core.energy = clamp01((pour - 0.45) / 0.55);
+        // energy as a wave: the front leaves the centre as the drops pour out, and
+        // shrinks back into it as they condense
+        core.energy = clamp01(pour / 0.1);
+        core.waveR = CR.waveReach * clamp01((pour - 0.25) / 0.75);
         shared.uEnergy.value = CR.energy * core.energy * bootFade;
+        shared.uWaveR.value = core.waveR;
         const coreTarget = CR.shapes[C.shapes[building ? next : cur]] || 1;
         core.scale += (coreTarget - core.scale) * 0.04;
         core.mesh.scale.setScalar(core.scale * CORE_SCALE);
         let spread = 0;
         if (!REDUCED) {
             core.t += dt / 1000 * CR.flow;
-            core.clock = (core.clock + dt) % CR.cycleMs;
+            const prevClock = core.clock;
+            if (!core.frozen) core.clock = (core.clock + dt * (CORE_ONLY ? 1.5 : 1)) % CR.cycleMs;   // the portfolio drop lives 1.5x faster
+            if (core.clock < prevClock && !rebuilding && core.out === 0) firePulse();   // gathered itself again
             const c0 = CR.holdMs, c1 = c0 + CR.dissolveMs, c2 = c1 + CR.driftMs;
             spread = core.clock < c0 ? 0 : core.clock < c1 ? easeInOut((core.clock - c0) / CR.dissolveMs)
                 : core.clock < c2 ? 1 : 1 - easeInOut(Math.min(1, (core.clock - c2) / (CR.cycleMs - c2)));
         }
-        core.uni.uBound.value = core.step(REDUCED ? 0 : dt, spread, pour, core.t);
-        const scanHit = Math.exp(-(scanY / 0.4) * (scanY / 0.4));
+        // smoothed, so a jump of the cycle (a tap calling the droplets home) still flows
+        core.sp += (spread - core.sp) * Math.min(1, dt / 220);
+        core.uni.uBound.value = core.step(REDUCED ? 0 : dt, core.sp, pour, core.t, core.reachK, core.reachDir);
+        core.uni.uHaloK.value = core.haloBase * (1 - 0.45 * core.sp);   // droplets apart: less fog round them, crisper drops
+        const scanHit = scanK * Math.exp(-(scanY / 0.4) * (scanY / 0.4));   // the drop flares as it fires a pulse
         core.uni.uT.value = core.t;
         core.uni.uFade.value = core.k * bootFade;
         core.uni.uBoost.value = 1 + CR.flare * core.flare + 0.35 * scanHit;
         // fully poured out = nothing left to draw: skip the raymarch entirely
         core.mesh.visible = core.k * bootFade > 0.01 && pour < 0.985;
-        shared.uCoreLight.value = CR.glassLight * core.k * bootFade * (1 + 0.4 * scanHit) * (1 - 0.35 * spread) * (1 - pour);
+        shared.uCoreLight.value = CR.glassLight * core.k * bootFade * (1 + 0.4 * scanHit) * (1 - 0.35 * core.sp) * (1 - pour);
 
         t += 0.01;
         angle += cube.rot;
@@ -1272,9 +1367,15 @@
         shared.uAspect.value = aspect;
         for (let i = 0; i < V; i++) {
             const j = i * 3;
-            // scan light on this vertex (0 far from the plane, 1 on it)
-            const sy = (P[j + 1] - scanY) / sw;
-            let lit = Math.max(Math.exp(-sy * sy), 0.55 * core.energy);
+            // the core's pulse on this vertex (0 far from the sphere of light, 1 on it)
+            // + the energy wave (lit behind its front, brightest on it)
+            const rr = Math.sqrt(P[j] * P[j] + P[j + 1] * P[j + 1] + P[j + 2] * P[j + 2]);
+            const sy = (rr - scanY) / sw;
+            let lit = scanK * Math.exp(-sy * sy);
+            if (core.energy > 0) {
+                const fr = (core.waveR - rr) / C.core.waveW, u = clamp01(fr + 1);
+                lit = Math.max(lit, Math.min(1, 0.55 * core.energy * (0.8 * u * u * (3 - 2 * u) + 1.4 * Math.exp(-fr * fr))));
+            }
             if (torch) {
                 tv.set(P[j], P[j + 1], P[j + 2]).applyMatrix4(figure.matrixWorld).project(camera);
                 const dx = (tv.x - mouseNdc.x) * aspect, dy = tv.y - mouseNdc.y;
@@ -1322,6 +1423,19 @@
             // the glint's light rides with the camera (upper left, in front), in object space
             core.uni.uLight.value.copy(coreTmp.light).applyQuaternion(camera.quaternion)
                 .applyQuaternion(core.mesh.getWorldQuaternion(coreTmp.q).invert());
+            // desktop: where the pointer's ray crosses the plane through the core,
+            // in core units — the drop reaches that way when the cursor is near
+            let rkT = 0;
+            if (mouseOn && vp === "desktop" && !dragging && !REDUCED) {
+                const ray = coreTmp.ray.set(mouseNdc.x, mouseNdc.y, 0.5).unproject(camera).sub(camera.position).normalize();
+                const fwd = camera.getWorldDirection(coreTmp.f), cen = core.mesh.getWorldPosition(coreTmp.p);
+                const tt = coreTmp.hit.copy(cen).sub(camera.position).dot(fwd) / Math.max(1e-4, ray.dot(fwd));
+                const loc = core.mesh.worldToLocal(coreTmp.hit.copy(camera.position).addScaledVector(ray, tt));
+                const d = loc.length();
+                rkT = clamp01((d - 0.12) / 0.28) * (1 - clamp01((d - 1.1) / 1.1));
+                if (d > 1e-3) core.reachDir.lerp(loc.divideScalar(d), 0.15).normalize();
+            }
+            core.reachK += (rkT - core.reachK) * C.core.reach.ease;
         }
         renderer.render(scene, camera);
     }
