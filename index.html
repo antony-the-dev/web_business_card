@@ -97,7 +97,11 @@
             <!-- under-credo: Portfolio (own block, shares hero-contact styling) -->
             <nav class="hero-contact hero-pages reveal-blur" data-enter="5" aria-label="Portfolio">
                 <div class="contact-links">
-                    <a class="contact-portfolio" href="portfolio.html"
+                    <!-- PORTFOLIO PAUSED (Sep 29 2026) while some BPMN diagrams are redrawn
+                         in BPMN 2.0: the link stays on show (beam and all) but is inert — no
+                         href, no pointer, no focus. To restore: put back
+                         href="portfolio.html", drop aria-disabled and the inline style -->
+                    <a class="contact-portfolio" aria-disabled="true" style="pointer-events: none; cursor: default;"
                         data-rail-en="see my work" data-rail-uk="мої кейси"><span class="pf-word"
                             data-i18n="nav.portfolio">Portfolio</span></a>
                 </div>
