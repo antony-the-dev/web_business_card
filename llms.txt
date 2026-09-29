@@ -31,6 +31,6 @@ SaaS, GovTech, Healthcare, Real Estate, Media, Advertising, Energy & Utilities, 
 - Certificate Issuance from Registry Records — BPMN 2.0
 - Access Request & Approval — BPMN 2.0
 - Annual Reporting Flow — BPMN 2.0
-- System Architecture — layered architecture of a multi-tenant records platform
-- Medallion Data Pipeline — Bronze → Silver → Gold data warehouse feeding Apache Superset and Power BI
-- User Story Validator — BPMN 2.0 of a local RAG assistant that checks user stories against a BA rulebook
+- System Architecture — UML component diagram of a multi-tenant records platform
+- Medallion Data Pipeline — data flow diagram (Gane–Sarson): Bronze → Silver → Gold feeding Apache Superset and Power BI
+- User Story Validator — UML use case diagram, BPMN 2.0 process and a user story specification (Gherkin acceptance criteria) of a local RAG assistant that checks user stories against a BA rulebook
