@@ -19,13 +19,13 @@
     <meta property="og:description"
         content="Business analysis artifacts from real projects: process models, sequence diagrams, architecture, a data pipeline and an AI workflow.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png">
+    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093001">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN, UML, architecture and data artifacts under an NDA stamp.">
+    <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN 2.0, UML, architecture and data diagrams from real projects.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026092903">
+    <link rel="stylesheet" href="style.css?v=2026093001">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
     <script>document.documentElement.classList.add("js");</script>
@@ -749,6 +749,61 @@
             }
         }
 
+        /* phones: the document is small, so the flip arrows and the counter
+           leave it and sit in a slim toolbar right under it ("‹ 02 / 07 ›") —
+           nothing covers the diagram; a sideways swipe still flips */
+        @media (max-width: 600px) {
+            #pf-lightbox {
+                padding: 1rem;
+            }
+
+            .lb-media {
+                overflow: visible;
+            }
+
+            .lb-doc {
+                border-radius: 15px 15px 0 0;
+            }
+
+            .lb-nav {
+                top: auto;
+                bottom: -50px;
+                margin-top: 0;
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+
+            .lb-prev {
+                left: 1.25rem;
+            }
+
+            .lb-next {
+                right: 1.25rem;
+            }
+
+            .lb-count {
+                top: auto;
+                left: 50%;
+                bottom: -41px;
+                transform: translateX(-50%);
+                background: none;
+            }
+
+            .lb-info {
+                padding: 4.4rem 1.25rem 1.6rem;
+            }
+
+            /* a compact close button tucked into the corner, off the diagram */
+            .lb-close {
+                top: 6px;
+                right: 6px;
+                width: 32px;
+                height: 32px;
+                font-size: 1.05rem;
+            }
+        }
+
         /* ===== REDUCED MOTION ===== */
         @media (prefers-reduced-motion: reduce) {
 
@@ -986,7 +1041,7 @@
         </figure>
     </div>
 
-    <script src="lang.js?v=2026092903"></script>
+    <script src="lang.js?v=2026093001"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1164,7 +1219,7 @@
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026092903";
+                fig.src = "figure.js?v=2026093001";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);
