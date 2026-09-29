@@ -982,7 +982,7 @@
                 <span class="pf-section-line"></span>
             </div>
 
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
                 <figure class="pf-media">
                     <img src="artifacts/bpmn-user-story-validation.png" alt="" loading="lazy">
                 </figure>
@@ -1081,6 +1081,7 @@
             var lbType = lb.querySelector(".lb-type");
             var lbTool = lb.querySelector(".lb-tool");
             var lbCount = lb.querySelector(".lb-count");
+            var lbNote = lb.querySelector(".lb-note");
             var closeBtn = lb.querySelector(".lb-close");
             var lastFocus = null;
             var hideTimer = null;
@@ -1109,6 +1110,8 @@
                 lbTitle.textContent = card.querySelector("h2").textContent;
                 // lightbox gets the full write-up; the card only shows the one-liner
                 lbDesc.textContent = (card.querySelector(".pf-full") || card.querySelector(".pf-desc")).textContent;
+                // "NDA // preview blurred" only under client work — own, sharp work (data-open) has none
+                lbNote.hidden = card.hasAttribute("data-open");
                 // the light table labels the document like a file in a set: 04 / 10
                 var pad = function (x) { return (x < 10 ? "0" : "") + x; };
                 lbCount.textContent = "// " + pad(i + 1) + " / " + pad(cards.length);
