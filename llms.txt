@@ -1,0 +1,36 @@
+# Anton Lisachenko (Антон Лісаченко)
+
+> Business Analyst with 7 years in IT and a background in project management. Classic business analysis, AI-native execution: requirements from pre-sale and discovery through to UAT and a clean handoff. Works in English and Ukrainian.
+
+- Site: https://alisachenko.com/
+- LinkedIn: https://www.linkedin.com/in/anton-lisachenko
+- Email: antonlisachenko@gmail.com
+
+## Pages
+
+- [Home](https://alisachenko.com/): profile, domains and expertise
+- [Portfolio](https://alisachenko.com/portfolio.html): business analysis artifacts from real projects (client work is under NDA, so previews are partly blurred)
+- [CV (PDF)](https://alisachenko.com/CV_BA_Anton-Lisachenko.pdf)
+
+## Expertise
+
+- Requirements and documentation: BRD, PRD, SRS, user stories
+- Modeling and architecture: BPMN 2.0, UML, system architecture
+- APIs and automation: REST API, Swagger, n8n, AI agents
+- Query and technical: SQL, JQL
+- Delivery: Jira, Confluence, Notion, ClickUp
+- Currently working with: RAG search across project documentation, local LLMs for NDA-safe analysis, AI validation of specs
+
+## Domains
+
+SaaS, GovTech, Healthcare, Real Estate, Media, Advertising, Energy & Utilities, Blockchain & Crypto, Logistics
+
+## Portfolio
+
+- Nomenclature Approval Flow — UML sequence diagram
+- Certificate Issuance from Registry Records — BPMN 2.0
+- Access Request & Approval — BPMN 2.0
+- Annual Reporting Flow — BPMN 2.0
+- System Architecture — layered architecture of a multi-tenant records platform
+- Medallion Data Pipeline — Bronze → Silver → Gold data warehouse feeding Apache Superset and Power BI
+- User Story Validator — BPMN 2.0 of a local RAG assistant that checks user stories against a BA rulebook

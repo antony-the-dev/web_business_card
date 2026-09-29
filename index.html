@@ -15,6 +15,7 @@
     <meta property="og:url" content="https://alisachenko.com/">
     <meta property="og:site_name" content="Anton Lisachenko">
     <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="uk_UA">
     <meta property="og:title" content="Anton Lisachenko — Business Analyst">
     <meta property="og:description"
         content="Classic business analysis. AI-native execution. Requirements from pre-sale and discovery through to UAT and a clean handoff.">
@@ -26,20 +27,91 @@
     <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Classic business analysis, AI-native execution.">
     <meta name="theme-color" content="#0a2540">
     <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Three.js comes from cdnjs: open the connection early -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="style.css?v=2026093001">
     <link rel="canonical" href="https://alisachenko.com/" />
-    <!-- structured data: tells search engines who this page is about -->
+    <!-- structured data: the site, this profile page and the person it is about
+         (alternateName = the Cyrillic spelling, so UA searches map to the same person) -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Anton Lisachenko",
-        "jobTitle": "Business Analyst",
-        "url": "https://alisachenko.com/",
-        "image": "https://alisachenko.com/og-image.png",
-        "sameAs": ["https://www.linkedin.com/in/anton-lisachenko"],
-        "knowsAbout": ["Business analysis", "Requirements engineering", "BPMN", "UML", "System architecture", "User stories", "Pre-sale discovery"],
-        "knowsLanguage": ["en", "uk"]
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://alisachenko.com/#website",
+          "url": "https://alisachenko.com/",
+          "name": "Anton Lisachenko",
+          "alternateName": "Антон Лісаченко",
+          "inLanguage": [
+            "en",
+            "uk"
+          ],
+          "publisher": {
+            "@id": "https://alisachenko.com/#person"
+          }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "https://alisachenko.com/#page",
+          "url": "https://alisachenko.com/",
+          "name": "Anton Lisachenko — Business Analyst",
+          "isPartOf": {
+            "@id": "https://alisachenko.com/#website"
+          },
+          "mainEntity": {
+            "@id": "https://alisachenko.com/#person"
+          },
+          "inLanguage": [
+            "en",
+            "uk"
+          ]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://alisachenko.com/#person",
+          "name": "Anton Lisachenko",
+          "alternateName": "Антон Лісаченко",
+          "jobTitle": "Business Analyst",
+          "description": "Business Analyst with 7 years in IT and a background in project management: requirements from pre-sale and discovery through to UAT and a clean handoff.",
+          "url": "https://alisachenko.com/",
+          "image": "https://alisachenko.com/og-image.png",
+          "sameAs": [
+            "https://www.linkedin.com/in/anton-lisachenko"
+          ],
+          "knowsAbout": [
+            "Business analysis",
+            "Requirements engineering",
+            "Requirements elicitation",
+            "BRD",
+            "SRS",
+            "User stories",
+            "BPMN 2.0",
+            "UML",
+            "Process modeling",
+            "System architecture",
+            "REST API",
+            "SQL",
+            "Pre-sale discovery",
+            "UAT",
+            "RAG",
+            "Local LLMs"
+          ],
+          "knowsLanguage": [
+            "en",
+            "uk"
+          ],
+          "hasOccupation": {
+            "@type": "Occupation",
+            "name": "Business Analyst"
+          },
+          "subjectOf": {
+            "@type": "CollectionPage",
+            "url": "https://alisachenko.com/portfolio.html",
+            "name": "Portfolio — Anton Lisachenko"
+          }
+        }
+      ]
     }
     </script>
     <!-- a reload always starts at the top: restoring the old scroll position made

@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://alisachenko.com/</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+    <image:image><image:loc>https://alisachenko.com/og-image.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://alisachenko.com/portfolio.html</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image><image:loc>https://alisachenko.com/artifacts/uml-sequence-approval.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-certificate-issuance.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-access-request.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-annual-reporting.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/general-schematic-diagram.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/dwh-medallion.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-user-story-validation.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/og-portfolio.png</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://alisachenko.com/CV_BA_Anton-Lisachenko.pdf</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>

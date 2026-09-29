@@ -15,6 +15,7 @@
     <meta property="og:url" content="https://alisachenko.com/portfolio.html">
     <meta property="og:site_name" content="Anton Lisachenko">
     <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="uk_UA">
     <meta property="og:title" content="Portfolio — Anton Lisachenko">
     <meta property="og:description"
         content="Business analysis artifacts from real projects: process models, sequence diagrams, architecture, a data pipeline and an AI workflow.">
@@ -27,6 +28,162 @@
     <meta name="theme-color" content="#0a2540">
     <link rel="stylesheet" href="style.css?v=2026093001">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
+    <!-- structured data: the portfolio as a collection of works by the person on the home page -->
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": "https://alisachenko.com/portfolio.html#page",
+          "url": "https://alisachenko.com/portfolio.html",
+          "name": "Portfolio — Anton Lisachenko",
+          "description": "Business analysis artifacts from real projects: BPMN 2.0 process models, a UML sequence diagram, system and data architecture, and an AI workflow.",
+          "inLanguage": [
+            "en",
+            "uk"
+          ],
+          "isPartOf": {
+            "@id": "https://alisachenko.com/#website"
+          },
+          "author": {
+            "@id": "https://alisachenko.com/#person"
+          },
+          "breadcrumb": {
+            "@id": "https://alisachenko.com/portfolio.html#breadcrumb"
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": 7,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "Nomenclature Approval Flow",
+                  "description": "How a catalogue item moves from Project to Approved — statuses, edit locks, storage and notifications in one sequence.",
+                  "genre": "UML · Sequence",
+                  "image": "https://alisachenko.com/artifacts/uml-sequence-approval.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "Certificate Issuance from Registry Records",
+                  "description": "Reuse a certificate already issued or build a new one from source records — ending in a document with a QR code for verification.",
+                  "genre": "BPMN 2.0",
+                  "image": "https://alisachenko.com/artifacts/bpmn-certificate-issuance.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "Access Request & Approval",
+                  "description": "Time-boxed access to a registry card: requested by the user, routed by the role map, revoked automatically when the term ends.",
+                  "genre": "BPMN 2.0",
+                  "image": "https://alisachenko.com/artifacts/bpmn-access-request.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "Annual Reporting Flow",
+                  "description": "Two ways in — API (JSON) or paper — one way out: deadline-driven statuses, versioned corrections and registrar approval.",
+                  "genre": "BPMN 2.0",
+                  "image": "https://alisachenko.com/artifacts/bpmn-annual-reporting.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "System Architecture",
+                  "description": "Multi-tenant records platform: three front doors over one NestJS core, with PostgreSQL, Redis, object storage and OAuth 2.0 / OIDC.",
+                  "genre": "Architecture",
+                  "image": "https://alisachenko.com/artifacts/general-schematic-diagram.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "Medallion Data Pipeline",
+                  "description": "Bronze → Silver → Gold warehouse: raw ingestion, cleaning and validation, curated marts feeding Superset and Power BI dashboards.",
+                  "genre": "Data Architecture",
+                  "image": "https://alisachenko.com/artifacts/dwh-medallion.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "item": {
+                  "@type": "CreativeWork",
+                  "name": "User Story Validator",
+                  "description": "A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.",
+                  "genre": "BPMN 2.0 · RAG",
+                  "image": "https://alisachenko.com/artifacts/bpmn-user-story-validation.png",
+                  "author": {
+                    "@id": "https://alisachenko.com/#person"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://alisachenko.com/portfolio.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Anton Lisachenko",
+              "item": "https://alisachenko.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Portfolio",
+              "item": "https://alisachenko.com/portfolio.html"
+            }
+          ]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://alisachenko.com/#person",
+          "name": "Anton Lisachenko",
+          "url": "https://alisachenko.com/"
+        }
+      ]
+    }
+    </script>
     <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
     <script>document.documentElement.classList.add("js");</script>
     <!-- apply the theme before first paint: dark is the default, light only if the
@@ -857,8 +1014,8 @@
                 <div class="pf-head-text">
                     <p class="pf-kicker"><b>NDA //</b> <span data-i18n="portfolio.kicker">Selected work · Redacted</span></p>
                     <h1 class="hex" data-i18n="portfolio.heading">Portfolio</h1>
-                    <p class="pf-intro" data-i18n="portfolio.intro.p1"></p>
-                    <p class="pf-intro" data-i18n="portfolio.intro.p2"></p>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p1">Diagrams, documents and tools from real projects.</p>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p2">Client work is under NDA, so the previews are blurred.</p>
                 </div>
                 <div class="pf-fig" id="pf-fig-hit">
                     <div class="pf-fig-stage" id="pf-fig-box"><canvas id="pf-fig-canvas"></canvas></div>
@@ -876,64 +1033,64 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/uml-sequence-approval.png" alt="" loading="lazy">
+                    <img src="artifacts/uml-sequence-approval.png" alt="UML sequence diagram of a nomenclature approval flow: lifelines, activation bars and an alt fragment (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.approval.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.approval.type">UML · Sequence</span>
                         <span class="pf-pill pf-pill-tool">GovTech</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.approval.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.approval.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.approval.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.approval.title">Nomenclature Approval Flow</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.approval.short">How a catalogue item moves from Project to Approved — statuses, edit locks, storage and notifications in one sequence.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.approval.desc" hidden>Sequence for approving a nomenclature (catalogue) item: create in Project status, save to Postgres, submit with edits locked and a copy held in object storage, notify the clerk via a Redis queue; then either approve (status Approved) or return with comments (back to Project, edits unlocked).</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-certificate-issuance.png" alt="" loading="lazy">
+                    <img src="artifacts/bpmn-certificate-issuance.png" alt="BPMN 2.0 diagram of certificate issuance from registry records: lanes, user and service tasks, gateways and a rework loop (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.cert.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.cert.type">BPMN 2.0</span>
                         <span class="pf-pill pf-pill-tool">GovTech</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.cert.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.cert.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.cert.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.cert.title">Certificate Issuance from Registry Records</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.cert.short">Reuse a certificate already issued or build a new one from source records — ending in a document with a QR code for verification.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.cert.desc" hidden>BPMN 2.0 of issuing a certificate from registry records: the clerk first checks whether one has already been issued; if not, a draft is created and its type chosen, the object's source records are found and entered, linked records and supporting documents are added to the chain, and the content is reviewed — looping back until it is correct. The draft is saved at every step; once the clerk sets it to Generated, the system adds a QR code for verification and the certificate is printed or sent electronically.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-access-request.png" alt="" loading="lazy">
+                    <img src="artifacts/bpmn-access-request.png" alt="BPMN 2.0 diagram of an access request and approval, with a timer event that revokes temporary access (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.access.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.access.type">BPMN 2.0</span>
                         <span class="pf-pill pf-pill-tool">GovTech</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.access.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.access.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.access.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.access.title">Access Request &amp; Approval</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.access.short">Time-boxed access to a registry card: requested by the user, routed by the role map, revoked automatically when the term ends.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.access.desc" hidden>BPMN 2.0 of role-based access on request: when a user's role gives no rights to a registry card, the system shows a request form; the user asks for specific rights (view, edit, attach files, print) for a set number of days, and the request is routed to the approving role from the role map. A rejection comes back with a reason; an approval grants access for the term, and a timer revokes it automatically once the term is over.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-annual-reporting.png" alt="" loading="lazy">
+                    <img src="artifacts/bpmn-annual-reporting.png" alt="BPMN 2.0 collaboration diagram of annual reporting via API or paper, with an event-based gateway and a correction deadline (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.bpmn2.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.bpmn2.type">BPMN 2.0</span>
                         <span class="pf-pill pf-pill-tool">Energy &amp; Utilities</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.bpmn2.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.bpmn2.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.bpmn2.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.bpmn2.title">Annual Reporting Flow</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.bpmn2.short">Two ways in — API (JSON) or paper — one way out: deadline-driven statuses, versioned corrections and registrar approval.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.bpmn2.desc" hidden>BPMN 2.0 of an annual-reporting flow with two entry points: an external system files a JSON report via API — parsed, then stamped Submitted or Overdue by the filing date — while a registrar may also enter a paper report by hand; corrections replace the version until the cut-off date, then the registrar verifies and approves the report and the balance is closed.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -946,32 +1103,32 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/general-schematic-diagram.png" alt="" loading="lazy">
+                    <img src="artifacts/general-schematic-diagram.png" alt="System architecture diagram: presentation, application and data layers with PostgreSQL, Redis, S3-compatible storage and OAuth 2.0 / OIDC (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.arch.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.arch.type">Architecture</span>
                         <span class="pf-pill pf-pill-tool">SaaS</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.arch.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.arch.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.arch.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.arch.title">System Architecture</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.arch.short">Multi-tenant records platform: three front doors over one NestJS core, with PostgreSQL, Redis, object storage and OAuth 2.0 / OIDC.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.arch.desc" hidden>Layered architecture of a multi-tenant records platform: three front doors (public portal, per-tenant cabinet, restricted admin panel) over a single NestJS core with routing, state-registry sync and OAuth 2.0 / OIDC access control; PostgreSQL with GIN/GiST full-text indexes, Redis for cache and queues, S3-compatible object storage for scanned documents; Docker / Kubernetes with CI/CD.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/dwh-medallion.png" alt="" loading="lazy">
+                    <img src="artifacts/dwh-medallion.png" alt="Medallion data pipeline diagram: Bronze, Silver and Gold layers feeding Apache Superset and Power BI (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.dwh.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.dwh.type">Data Architecture</span>
                         <span class="pf-pill pf-pill-tool">Blockchain &amp; Crypto</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.dwh.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.dwh.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.dwh.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.dwh.title">Medallion Data Pipeline</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.dwh.short">Bronze → Silver → Gold warehouse: raw ingestion, cleaning and validation, curated marts feeding Superset and Power BI dashboards.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.dwh.desc" hidden>Data flows in a warehouse built on the medallion architecture: a Bronze layer ingests raw files untouched — idempotent and re-processable — a Silver layer cleans, validates, filters and normalizes them into one structure, and a Gold layer publishes curated marts that feed dashboards in Apache Superset (analysts) and Power BI (leadership); orchestration and scheduled jobs keep the layers consistent.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -984,16 +1141,16 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-user-story-validation.png" alt="" loading="lazy">
+                    <img src="artifacts/bpmn-user-story-validation.png" alt="BPMN 2.0 diagram of user story validation with a local RAG: business analyst, local LLM and knowledge-base lanes" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.rag.type"></span>
+                        <span class="pf-pill" data-i18n="portfolio.items.rag.type">BPMN 2.0 · RAG</span>
                         <span class="pf-pill pf-pill-tool">Local LLM</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.rag.title"></h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.rag.short"></p>
-                    <p class="pf-full" data-i18n="portfolio.items.rag.desc" hidden></p>
+                    <h2 class="hex" data-i18n="portfolio.items.rag.title">User Story Validator</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.rag.short">A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.rag.desc" hidden>An AnythingLLM workspace on a local model. Seven reference documents — story types, INVEST &amp; 3C quality rules, acceptance-criteria patterns, splitting techniques, golden examples, DoR / DoD and reference stories — are embedded once into a local vector store. A draft story is matched against the most relevant rules and examples, and the model returns a verdict per check, untestable or missing acceptance criteria, split suggestions and a rewrite. Nothing leaves the laptop, so it works on NDA material; approved stories feed back in as new golden examples, and the analyst makes the final call.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -1002,8 +1159,8 @@
 
         <section class="pf-cta pf-reveal">
             <span class="deco-line" style="width:60px;"></span>
-            <h2 class="hex" data-i18n="portfolio.cta.heading"></h2>
-            <p data-i18n="portfolio.cta.text"></p>
+            <h2 class="hex" data-i18n="portfolio.cta.heading">Want the details?</h2>
+            <p data-i18n="portfolio.cta.text">I can walk you through any of these on a call — under NDA if needed.</p>
             <div class="cta-links">
                 <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>
                 <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
@@ -1036,7 +1193,7 @@
                 </div>
                 <h2 id="pf-lb-title" class="hex"></h2>
                 <p class="lb-desc"></p>
-                <p class="lb-note"><b>NDA //</b> <span data-i18n="portfolio.note"></span></p>
+                <p class="lb-note"><b>NDA //</b> <span data-i18n="portfolio.note">preview blurred · details on a call</span></p>
             </figcaption>
         </figure>
     </div>
