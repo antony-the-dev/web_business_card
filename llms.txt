@@ -9,7 +9,7 @@
 ## Pages
 
 - [Home](https://alisachenko.com/): profile, domains and expertise
-- [Portfolio](https://alisachenko.com/portfolio.html): business analysis artifacts from real projects (client work is under NDA, so previews are partly blurred)
+- [Portfolio](https://alisachenko.com/portfolio.html): business analysis artifacts in classic notations (BPMN 2.0, UML 2, DFD), prepared for the portfolio from typical processes and systems of my practice, with generic names and no client data
 - [CV (PDF)](https://alisachenko.com/CV_BA_Anton-Lisachenko.pdf)
 
 ## Expertise

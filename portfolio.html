@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="description"
-        content="Business analysis portfolio: BPMN 2.0 process models, UML sequence and component diagrams, a data flow diagram and an AI-assisted story validation flow. Client work is under NDA, so previews are blurred.">
+        content="Business analysis portfolio: BPMN 2.0 process models, UML sequence and component diagrams, a data flow diagram and an AI-assisted spec validation flow — examples in classic notations, prepared for the portfolio.">
     <meta name="author" content="Anton Lisachenko">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://alisachenko.com/portfolio.html">
@@ -20,13 +20,13 @@
     <meta property="og:description"
         content="Business analysis artifacts: BPMN 2.0 process models, UML diagrams, a data flow diagram and an AI-assisted story validation flow.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093004">
+    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093005">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN 2.0, UML, architecture and data diagrams from real projects.">
+    <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. BPMN 2.0, UML, architecture and data diagrams in classic notations.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026093004">
+    <link rel="stylesheet" href="style.css?v=2026093005">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- structured data: the portfolio as a collection of works by the person on the home page -->
     <script type="application/ld+json">
@@ -428,7 +428,7 @@
             border-color: rgba(255, 87, 34, 0.45);
         }
 
-        /* ===== MEDIA (blurred preview + stamp) ===== */
+        /* ===== MEDIA ===== */
         .pf-media {
             position: relative;
             overflow: hidden;
@@ -670,7 +670,7 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            /* orange (the brand accent): redaction marks that read on white
+            /* orange (the brand accent): crop marks that read on white
                diagrams and on the navy table alike */
             border: 0 solid var(--accent);
             opacity: 0;
@@ -751,20 +751,6 @@
             color: var(--muted);
             margin-top: 0.8rem;
             line-height: 1.65;
-        }
-
-        .lb-note {
-            font-family: var(--font-mono);
-            font-size: 0.66rem;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            color: var(--muted);
-            margin-top: 1.4rem;
-        }
-
-        .lb-note b {
-            color: var(--accent-text);
-            font-weight: 500;
         }
 
         .lb-close {
@@ -1012,10 +998,10 @@
 
             <div class="pf-head-grid">
                 <div class="pf-head-text">
-                    <p class="pf-kicker"><b>NDA //</b> <span data-i18n="portfolio.kicker">Selected work · Redacted</span></p>
+                    <p class="pf-kicker"><b>//</b> <span data-i18n="portfolio.kicker">Selected work</span></p>
                     <h1 class="hex" data-i18n="portfolio.heading">Portfolio</h1>
-                    <p class="pf-intro" data-i18n="portfolio.intro.p1">Diagrams, documents and tools from real projects.</p>
-                    <p class="pf-intro" data-i18n="portfolio.intro.p2">Client work is under NDA, so the previews are blurred.</p>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p1">Business analysis artifacts in classic notations — BPMN 2.0, UML 2 and DFD.</p>
+                    <p class="pf-intro" data-i18n="portfolio.intro.p2">Each one is prepared for this portfolio: typical processes and systems from my practice, drawn with generic names and no client data.</p>
                 </div>
                 <div class="pf-fig" id="pf-fig-hit">
                     <div class="pf-fig-stage" id="pf-fig-box"><canvas id="pf-fig-canvas"></canvas></div>
@@ -1033,7 +1019,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/uml-sequence-approval.png" alt="UML sequence diagram of a nomenclature approval flow: lifelines, activation bars and an alt fragment (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/uml-sequence-approval.png" alt="UML sequence diagram of a nomenclature approval flow: lifelines, activation bars and an alt fragment" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1049,7 +1035,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-certificate-issuance.png" alt="BPMN 2.0 diagram of certificate issuance from registry records: lanes, user and service tasks, gateways and a rework loop (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/bpmn-certificate-issuance.png" alt="BPMN 2.0 diagram of certificate issuance from registry records: lanes, user and service tasks, gateways and a rework loop" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1065,7 +1051,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-access-request.png" alt="BPMN 2.0 diagram of an access request and approval, with a timer event that revokes temporary access (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/bpmn-access-request.png" alt="BPMN 2.0 diagram of an access request and approval, with a timer event that revokes temporary access" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1081,7 +1067,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-annual-reporting.png" alt="BPMN 2.0 collaboration diagram of annual reporting via API or paper, with an event-based gateway and a correction deadline (labels partly redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/bpmn-annual-reporting.png" alt="BPMN 2.0 collaboration diagram of annual reporting via API or paper, with an event-based gateway and a correction deadline" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1103,7 +1089,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/uml-component-architecture.png" alt="UML component diagram of a multi-tenant records platform: presentation, application, data and external-system packages, ball-and-socket interfaces and «use» dependencies (some names redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/uml-component-architecture.png" alt="UML component diagram of a multi-tenant records platform: presentation, application, data and external-system packages, ball-and-socket interfaces and «use» dependencies" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1119,7 +1105,7 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
-                    <img src="artifacts/dfd-medallion-pipeline.png" alt="Level-1 data flow diagram in Gane–Sarson notation of a medallion data warehouse: processes, Bronze, Silver and Gold data stores, external entities and labelled data flows (source names redacted under NDA)" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/dfd-medallion-pipeline.png" alt="Level-1 data flow diagram in Gane–Sarson notation of a medallion data warehouse: processes, Bronze, Silver and Gold data stores, external entities and labelled data flows" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
@@ -1139,7 +1125,7 @@
                 <span class="pf-section-line"></span>
             </div>
 
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
+            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog">
                 <figure class="pf-media">
                     <img src="artifacts/bpmn-spec-story-validator.png" alt="BPMN 2.0 diagram of spec and user story validation on a local LLM: business analyst and local LLM lanes, the model picked by input type, a parallel multi-instance check against eight standards, audit, recommendations and suggested edits as data objects, the analyst's decision with a rework loop, standards and golden stories data stores" loading="lazy" width="1600" height="1000">
                 </figure>
@@ -1160,7 +1146,7 @@
         <section class="pf-cta pf-reveal">
             <span class="deco-line" style="width:60px;"></span>
             <h2 class="hex" data-i18n="portfolio.cta.heading">Want the details?</h2>
-            <p data-i18n="portfolio.cta.text">I can walk you through any of these on a call — under NDA if needed.</p>
+            <p data-i18n="portfolio.cta.text">I can walk you through the reasoning behind any of these on a call.</p>
             <div class="cta-links">
                 <a href="mailto:antonlisachenko@gmail.com">antonlisachenko@gmail.com</a>
                 <a href="https://www.linkedin.com/in/anton-lisachenko" target="_blank"
@@ -1193,12 +1179,11 @@
                 </div>
                 <h2 id="pf-lb-title" class="hex"></h2>
                 <p class="lb-desc"></p>
-                <p class="lb-note"><b>NDA //</b> <span data-i18n="portfolio.note">preview blurred · details on a call</span></p>
             </figcaption>
         </figure>
     </div>
 
-    <script src="lang.js?v=2026093004"></script>
+    <script src="lang.js?v=2026093005"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1238,7 +1223,6 @@
             var lbType = lb.querySelector(".lb-type");
             var lbTool = lb.querySelector(".lb-tool");
             var lbCount = lb.querySelector(".lb-count");
-            var lbNote = lb.querySelector(".lb-note");
             var closeBtn = lb.querySelector(".lb-close");
             var lastFocus = null;
             var hideTimer = null;
@@ -1267,8 +1251,6 @@
                 lbTitle.textContent = card.querySelector("h2").textContent;
                 // lightbox gets the full write-up; the card only shows the one-liner
                 lbDesc.textContent = (card.querySelector(".pf-full") || card.querySelector(".pf-desc")).textContent;
-                // "NDA // preview blurred" only under client work — own, sharp work (data-open) has none
-                lbNote.hidden = card.hasAttribute("data-open");
                 // the light table labels the document like a file in a set: 04 / 10
                 var pad = function (x) { return (x < 10 ? "0" : "") + x; };
                 lbCount.textContent = "// " + pad(i + 1) + " / " + pad(cards.length);
@@ -1379,7 +1361,7 @@
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026093004";
+                fig.src = "figure.js?v=2026093005";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);

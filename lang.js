@@ -61,14 +61,13 @@
             portfolio: {
                 title: "Portfolio — Anton Lisachenko",
                 back: "Back to home",
-                kicker: "Selected work · Redacted",
+                kicker: "Selected work",
                 heading: "Portfolio",
                 more: "tap to inspect",
-                note: "preview blurred · details on a call",
                 sections: { process: "Process & Notation", data: "Architecture & Data", ai: "AI in Practice" },
                 intro: {
-                    p1: "Diagrams, documents and tools from real projects.",
-                    p2: "Client work is under NDA, so the previews are blurred."
+                    p1: "Business analysis artifacts in classic notations — BPMN 2.0, UML 2 and DFD.",
+                    p2: "Each one is prepared for this portfolio: typical processes and systems from my practice, drawn with generic names and no client data."
                 },
                 items: {
                     arch: { type: "UML · Component", title: "System Architecture", short: "Multi-tenant records platform: three front doors over one NestJS core, with PostgreSQL, Redis, object storage and OAuth 2.0 / OIDC.", desc: "UML component diagram of a multi-tenant records platform: three front ends (public portal, per-tenant cabinet, VPN-only admin panel) require the REST interfaces of one NestJS core; inside it, API, auth (OAuth 2.0 / OIDC), state-registry sync and notification components sit on persistence, cache and file-storage components backed by PostgreSQL (GIN/GiST full-text), Redis and S3-compatible storage; Docker / Kubernetes with CI/CD." },
@@ -81,7 +80,7 @@
                 },
                 cta: {
                     heading: "Want the details?",
-                    text: "I can walk you through any of these on a call — under NDA if needed."
+                    text: "I can walk you through the reasoning behind any of these on a call."
                 }
             },
             services: {
@@ -186,14 +185,13 @@
             portfolio: {
                 title: "Портфоліо — Антон Лісаченко",
                 back: "На головну",
-                kicker: "Обрані роботи · Під NDA",
+                kicker: "Обрані роботи",
                 heading: "Портфоліо",
                 more: "натисни, щоб розглянути",
-                note: "прев'ю розмите · деталі — на дзвінку",
                 sections: { process: "Процеси та нотації", data: "Архітектура та дані", ai: "ШІ на практиці" },
                 intro: {
-                    p1: "Діаграми, документи та інструменти з реальних проєктів.",
-                    p2: "Клієнтські роботи під NDA, тому прев'ю розмиті."
+                    p1: "Артефакти бізнес-аналізу в класичних нотаціях — BPMN 2.0, UML 2 і DFD.",
+                    p2: "Кожен підготовлено спеціально для портфоліо: типові процеси й системи з моєї практики, з узагальненими назвами і без даних клієнтів."
                 },
                 items: {
                     arch: { type: "UML · Component", title: "Архітектура системи", short: "Мультитенантна платформа: три входи над єдиним ядром NestJS, PostgreSQL, Redis, об'єктне сховище і OAuth 2.0 / OIDC.", desc: "UML-діаграма компонентів мультитенантної платформи: три фронтенди (публічний портал, кабінет установи, адмінпанель лише через VPN) використовують REST-інтерфейси єдиного ядра NestJS; усередині — компоненти API, авторизації (OAuth 2.0 / OIDC), синхронізації з державним реєстром і сповіщень поверх компонентів доступу до даних, кешу та файлів, що працюють із PostgreSQL (повнотекстові індекси GIN/GiST), Redis і S3-сумісним сховищем; Docker / Kubernetes з CI/CD." },
@@ -206,7 +204,7 @@
                 },
                 cta: {
                     heading: "Потрібні деталі?",
-                    text: "Можу розповісти про будь-яку з цих робіт на дзвінку — за потреби під NDA."
+                    text: "Можу розповісти про логіку будь-якої з цих схем на дзвінку."
                 }
             },
             services: {
