@@ -13,11 +13,18 @@
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <image:image><image:loc>https://alisachenko.com/artifacts/uml-sequence-approval.png</image:loc></image:image>
-    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-certificate-issuance.png</image:loc></image:image>
-    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-access-request.png</image:loc></image:image>
-    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-annual-reporting.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/uml-sequence-approval-en.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/uml-sequence-approval-uk.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-certificate-issuance-en.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-certificate-issuance-uk.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-access-request-en.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-access-request-uk.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/uml-state-access-request-en.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/uml-state-access-request-uk.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-annual-reporting-en.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-annual-reporting-uk.png</image:loc></image:image>
     <image:image><image:loc>https://alisachenko.com/artifacts/uml-component-architecture.png</image:loc></image:image>
+    <image:image><image:loc>https://alisachenko.com/artifacts/erd-records-platform.png</image:loc></image:image>
     <image:image><image:loc>https://alisachenko.com/artifacts/dfd-medallion-pipeline.png</image:loc></image:image>
     <image:image><image:loc>https://alisachenko.com/artifacts/bpmn-spec-story-validator.png</image:loc></image:image>
     <image:image><image:loc>https://alisachenko.com/og-portfolio.png</image:loc></image:image>

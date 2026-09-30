@@ -27,10 +27,12 @@ SaaS, GovTech, Healthcare, Real Estate, Media, Advertising, Energy & Utilities, 
 
 ## Portfolio
 
-- Nomenclature Approval Flow — UML sequence diagram
+- Nomenclature Approval Flow — UML sequence diagram (five lifelines, alt fragment)
 - Certificate Issuance from Registry Records — BPMN 2.0
 - Access Request & Approval — BPMN 2.0
-- Annual Reporting Flow — BPMN 2.0
+- Access Request — Lifecycle — UML state machine of the same request
+- Annual Reporting Flow — BPMN 2.0 collaboration with an external system
 - System Architecture — UML component diagram of a multi-tenant records platform
-- Medallion Data Pipeline — data flow diagram (Gane–Sarson): Bronze → Silver → Gold feeding Apache Superset and Power BI
+- Records Platform — Data Model — logical ERD in crow's foot notation
+- Medallion Data Pipeline — data flow diagram (Gane–Sarson, level 1 with the level-0 context): Bronze → Silver → Gold feeding Apache Superset and Power BI
 - Spec & Story Validator — BPMN 2.0 process of a local LLM assistant that checks a spec or a user story against eight standards and golden stories and returns an audit, recommendations and suggested edits; the analyst decides
