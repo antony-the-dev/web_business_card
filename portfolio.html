@@ -20,13 +20,13 @@
     <meta property="og:description"
         content="Business analysis artifacts: BPMN 2.0 process models, UML diagrams, a data flow diagram and an AI-assisted story validation flow.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093003">
+    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093004">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN 2.0, UML, architecture and data diagrams from real projects.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026093003">
+    <link rel="stylesheet" href="style.css?v=2026093004">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- structured data: the portfolio as a collection of works by the person on the home page -->
     <script type="application/ld+json">
@@ -145,10 +145,10 @@
                 "position": 7,
                 "item": {
                   "@type": "CreativeWork",
-                  "name": "User Story Validator",
-                  "description": "A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.",
+                  "name": "Spec & Story Validator",
+                  "description": "A local LLM checks a spec or a user story against eight standards and a set of golden stories, then returns an audit, recommendations and suggested edits — the analyst makes the call.",
                   "genre": "BPMN 2.0 · RAG",
-                  "image": "https://alisachenko.com/artifacts/bpmn-user-story-validation.png",
+                  "image": "https://alisachenko.com/artifacts/bpmn-spec-story-validator.png",
                   "author": {
                     "@id": "https://alisachenko.com/#person"
                   }
@@ -1141,16 +1141,16 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
                 <figure class="pf-media">
-                    <img src="artifacts/bpmn-user-story-validation.png" alt="BPMN 2.0 diagram of user story validation with a local RAG: business analyst and local LLM lanes, a rework loop, a validation report and data stores" loading="lazy" width="1600" height="1000">
+                    <img src="artifacts/bpmn-spec-story-validator.png" alt="BPMN 2.0 diagram of spec and user story validation on a local LLM: business analyst and local LLM lanes, the model picked by input type, a parallel multi-instance check against eight standards, audit, recommendations and suggested edits as data objects, the analyst's decision with a rework loop, standards and golden stories data stores" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
                     <div class="pf-tags">
                         <span class="pf-pill" data-i18n="portfolio.items.rag.type">BPMN 2.0 · RAG</span>
                         <span class="pf-pill pf-pill-tool">Local LLM</span>
                     </div>
-                    <h2 class="hex" data-i18n="portfolio.items.rag.title">User Story Validator</h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.rag.short">A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.</p>
-                    <p class="pf-full" data-i18n="portfolio.items.rag.desc" hidden>An AnythingLLM workspace on a local model. Seven reference documents — story types, INVEST &amp; 3C quality rules, acceptance-criteria patterns, splitting techniques, golden examples, DoR / DoD and reference stories — are embedded once into a local vector store. A draft story is matched against the most relevant rules and examples, and the model returns a verdict per check, untestable or missing acceptance criteria, split suggestions and a rewrite. Nothing leaves the laptop, so it works on NDA material; approved stories feed back in as new golden examples, and the analyst makes the final call.</p>
+                    <h2 class="hex" data-i18n="portfolio.items.rag.title">Spec &amp; Story Validator</h2>
+                    <p class="pf-desc" data-i18n="portfolio.items.rag.short">A local LLM checks a spec or a user story against eight standards and a set of golden stories, then returns an audit, recommendations and suggested edits — the analyst makes the call.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.rag.desc" hidden>An AnythingLLM workspace on local models. A spec or a user story goes in, and its type picks the model: a compact, fast one for a story, a long-context one for a spec. The relevant standards and the nearest golden stories are retrieved from a local vector store, and the text is checked against each of eight standards in parallel — story types, INVEST, 3C, acceptance criteria, splitting, Definition of Ready, Definition of Done and requirement quality (ISO/IEC/IEEE 29148). Out come three things: an audit per standard, recommendations and suggested edits, every finding citing its standard. The analyst accepts the edits or reworks and resubmits; the best approved stories become new golden stories. Nothing leaves the laptop, so it works on NDA material.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -1198,7 +1198,7 @@
         </figure>
     </div>
 
-    <script src="lang.js?v=2026093003"></script>
+    <script src="lang.js?v=2026093004"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1379,7 +1379,7 @@
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026093003";
+                fig.src = "figure.js?v=2026093004";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);

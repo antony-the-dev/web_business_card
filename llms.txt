@@ -33,4 +33,4 @@ SaaS, GovTech, Healthcare, Real Estate, Media, Advertising, Energy & Utilities, 
 - Annual Reporting Flow — BPMN 2.0
 - System Architecture — UML component diagram of a multi-tenant records platform
 - Medallion Data Pipeline — data flow diagram (Gane–Sarson): Bronze → Silver → Gold feeding Apache Superset and Power BI
-- User Story Validator — BPMN 2.0 process of a local RAG assistant that checks user stories against a BA rulebook
+- Spec & Story Validator — BPMN 2.0 process of a local LLM assistant that checks a spec or a user story against eight standards and golden stories and returns an audit, recommendations and suggested edits; the analyst decides
