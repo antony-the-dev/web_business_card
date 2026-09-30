@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="description"
-        content="Business analysis portfolio: BPMN 2.0 process models, UML sequence, component and use case diagrams, a data flow diagram and a user story spec. Client work is under NDA, so previews are blurred.">
+        content="Business analysis portfolio: BPMN 2.0 process models, UML sequence and component diagrams, a data flow diagram and an AI-assisted story validation flow. Client work is under NDA, so previews are blurred.">
     <meta name="author" content="Anton Lisachenko">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://alisachenko.com/portfolio.html">
@@ -18,15 +18,15 @@
     <meta property="og:locale:alternate" content="uk_UA">
     <meta property="og:title" content="Portfolio — Anton Lisachenko">
     <meta property="og:description"
-        content="Business analysis artifacts: BPMN 2.0 process models, UML diagrams, a data flow diagram and a user story specification.">
+        content="Business analysis artifacts: BPMN 2.0 process models, UML diagrams, a data flow diagram and an AI-assisted story validation flow.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093002">
+    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093003">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. Redacted BPMN 2.0, UML, architecture and data diagrams from real projects.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026093002">
+    <link rel="stylesheet" href="style.css?v=2026093003">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- structured data: the portfolio as a collection of works by the person on the home page -->
     <script type="application/ld+json">
@@ -38,7 +38,7 @@
           "@id": "https://alisachenko.com/portfolio.html#page",
           "url": "https://alisachenko.com/portfolio.html",
           "name": "Portfolio — Anton Lisachenko",
-          "description": "Business analysis artifacts: BPMN 2.0 process models, UML sequence, component and use case diagrams, a Gane–Sarson data flow diagram and a user story specification.",
+          "description": "Business analysis artifacts: BPMN 2.0 process models, UML sequence and component diagrams, a Gane–Sarson data flow diagram and an AI-assisted user story validation process.",
           "inLanguage": [
             "en",
             "uk"
@@ -54,7 +54,7 @@
           },
           "mainEntity": {
             "@type": "ItemList",
-            "numberOfItems": 9,
+            "numberOfItems": 7,
             "itemListElement": [
               {
                 "@type": "ListItem",
@@ -145,38 +145,10 @@
                 "position": 7,
                 "item": {
                   "@type": "CreativeWork",
-                  "name": "User Story Validator — Use Cases",
-                  "description": "Who uses the validator and for what: validation with included retrieval and quality checks, split and rewrite as extensions, rulebook upkeep.",
-                  "genre": "UML · Use Case",
-                  "image": "https://alisachenko.com/artifacts/uml-use-case-validator.png",
-                  "author": {
-                    "@id": "https://alisachenko.com/#person"
-                  }
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": 8,
-                "item": {
-                  "@type": "CreativeWork",
                   "name": "User Story Validator",
                   "description": "A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.",
                   "genre": "BPMN 2.0 · RAG",
                   "image": "https://alisachenko.com/artifacts/bpmn-user-story-validation.png",
-                  "author": {
-                    "@id": "https://alisachenko.com/#person"
-                  }
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": 9,
-                "item": {
-                  "@type": "CreativeWork",
-                  "name": "Validate a Draft Story — Spec",
-                  "description": "A ready-for-development story for the validator: statement, Gherkin acceptance criteria, business rules, NFRs, DoR and traceability.",
-                  "genre": "Requirements · User Story",
-                  "image": "https://alisachenko.com/artifacts/spec-user-story-validation.png",
                   "author": {
                     "@id": "https://alisachenko.com/#person"
                   }
@@ -1169,22 +1141,6 @@
 
             <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
                 <figure class="pf-media">
-                    <img src="artifacts/uml-use-case-validator.png" alt="UML use case diagram of the User Story Validator: business analyst and local LLM actors, a system boundary, «include» and «extend» relationships with extension points" loading="lazy" width="1600" height="1000">
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.usecase.type">UML · Use Case</span>
-                        <span class="pf-pill pf-pill-tool">Local LLM</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.usecase.title">User Story Validator — Use Cases</h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.usecase.short">Who uses the validator and for what: validation with included retrieval and quality checks, split and rewrite as extensions, rulebook upkeep.</p>
-                    <p class="pf-full" data-i18n="portfolio.items.usecase.desc" hidden>UML use case diagram of the validator: the business analyst validates a story — which always includes retrieving the relevant rules and golden examples and checking quality (INVEST · 3C · AC · DoR) — while a split or a rewrite is proposed only at the 'story too large' and 'checks failed' extension points; the analyst also saves approved stories as golden examples and maintains the rulebook, and both re-index the knowledge base. The local LLM takes part as a secondary system actor.</p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
-                <figure class="pf-media">
                     <img src="artifacts/bpmn-user-story-validation.png" alt="BPMN 2.0 diagram of user story validation with a local RAG: business analyst and local LLM lanes, a rework loop, a validation report and data stores" loading="lazy" width="1600" height="1000">
                 </figure>
                 <div class="pf-body">
@@ -1195,22 +1151,6 @@
                     <h2 class="hex" data-i18n="portfolio.items.rag.title">User Story Validator</h2>
                     <p class="pf-desc" data-i18n="portfolio.items.rag.short">A local RAG assistant that checks a draft story against my BA rulebook — type, INVEST / 3C, acceptance criteria, splitting, DoR — and returns the gaps plus a suggested rewrite.</p>
                     <p class="pf-full" data-i18n="portfolio.items.rag.desc" hidden>An AnythingLLM workspace on a local model. Seven reference documents — story types, INVEST &amp; 3C quality rules, acceptance-criteria patterns, splitting techniques, golden examples, DoR / DoD and reference stories — are embedded once into a local vector store. A draft story is matched against the most relevant rules and examples, and the model returns a verdict per check, untestable or missing acceptance criteria, split suggestions and a rewrite. Nothing leaves the laptop, so it works on NDA material; approved stories feed back in as new golden examples, and the analyst makes the final call.</p>
-                    <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
-                </div>
-            </article>
-
-            <article class="pf-card pf-reveal" role="button" tabindex="0" aria-haspopup="dialog" data-open>
-                <figure class="pf-media">
-                    <img src="artifacts/spec-user-story-validation.png" alt="Specification page of user story US-03 for the User Story Validator: story statement, Gherkin acceptance criteria, business rules, non-functional requirements, Definition of Ready and traceability" loading="lazy" width="1600" height="1000">
-                </figure>
-                <div class="pf-body">
-                    <div class="pf-tags">
-                        <span class="pf-pill" data-i18n="portfolio.items.story.type">Requirements · User Story</span>
-                        <span class="pf-pill pf-pill-tool">Local LLM</span>
-                    </div>
-                    <h2 class="hex" data-i18n="portfolio.items.story.title">Validate a Draft Story — Spec</h2>
-                    <p class="pf-desc" data-i18n="portfolio.items.story.short">A ready-for-development story for the validator: statement, Gherkin acceptance criteria, business rules, NFRs, DoR and traceability.</p>
-                    <p class="pf-full" data-i18n="portfolio.items.story.desc" hidden>An example specification of one story of the validator (US-03): the story in As a / I want / so that form, three acceptance scenarios in Gherkin (every check passes, a criterion is not testable, the story is too large), business rules, non-functional requirements (offline, every issue cites its rule, the rulebook changes without code changes), the Definition of Ready, out-of-scope items and traceability to the use case and the BPMN.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -1258,7 +1198,7 @@
         </figure>
     </div>
 
-    <script src="lang.js?v=2026093002"></script>
+    <script src="lang.js?v=2026093003"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1439,7 +1379,7 @@
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026093002";
+                fig.src = "figure.js?v=2026093003";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);
