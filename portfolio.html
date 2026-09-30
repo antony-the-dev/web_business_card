@@ -20,13 +20,13 @@
     <meta property="og:description"
         content="Business analysis artifacts in classic notations: BPMN 2.0, UML, ERD and DFD.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093006">
+    <meta property="og:image" content="https://alisachenko.com/og-portfolio.png?v=2026093007">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Portfolio — Anton Lisachenko, Business Analyst. BPMN 2.0, UML, ERD and data flow diagrams in classic notations.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026093006">
+    <link rel="stylesheet" href="style.css?v=2026093007">
     <link rel="canonical" href="https://alisachenko.com/portfolio.html" />
     <!-- structured data: the portfolio as a collection of works by the person on the home page -->
     <script type="application/ld+json">
@@ -1129,7 +1129,7 @@
                     </div>
                     <h2 class="hex" data-i18n="portfolio.items.approval.title">Nomenclature Approval Flow</h2>
                     <p class="pf-desc" data-i18n="portfolio.items.approval.short">How a catalogue item moves from Draft to Approved — statuses, edit locks, file storage and notifications in one sequence.</p>
-                    <p class="pf-full" data-i18n="portfolio.items.approval.desc" hidden>UML sequence diagram of approving a nomenclature (catalogue) item across five lifelines: the author creates it (saved to PostgreSQL) and submits it — the file goes to MinIO object storage, the status becomes In review and editing is locked — and the approver is notified asynchronously through a Redis queue; the approver opens the card and, in an alt fragment, either approves it or returns it with comments, which sends it back to Draft and notifies the author. No signature is required at submission.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.approval.desc" hidden>UML sequence diagram of approving a nomenclature (catalogue) item across five lifelines: the author creates it (saved to PostgreSQL) and submits it — the file goes to MinIO object storage, the status becomes In review and editing is locked — and the approver is notified asynchronously through a Redis queue; the approver opens the card and, in an alt fragment, either approves it or returns it with comments, which sends it back to Draft; either way the author is notified. No signature is required at submission.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -1177,7 +1177,7 @@
                     </div>
                     <h2 class="hex" data-i18n="portfolio.items.state.title">Access Request — Lifecycle</h2>
                     <p class="pf-desc" data-i18n="portfolio.items.state.short">The access request from the BPMN, seen as states: submitted, under review, active until the term runs out — and every way it can end.</p>
-                    <p class="pf-full" data-i18n="portfolio.items.state.desc" hidden>UML 2 state machine of one access request — the lifecycle view of the Access Request BPMN: submit(rights, term) creates it in Submitted (entry: route to the approver); the approver opens it and either rejects it with a reason (entry: notify the requester) or approves it, which makes it Active — entry grants the rights and exit withdraws them, so every way out cleans up. The time event after(term) moves it to Expired, an admin can revoke it earlier, and the requester may withdraw it while it is still Submitted; every end state leads to a final state.</p>
+                    <p class="pf-full" data-i18n="portfolio.items.state.desc" hidden>UML 2 state machine of one access request — the lifecycle view of the Access Request BPMN: submit(rights, term) creates it in Submitted (entry: route to the approver); the approver opens it and either rejects it with a reason (entry: notify the requester) or approves it, which makes it Active — entry grants the rights and notifies the requester, exit withdraws them, so every way out cleans up. The time event after(term) moves it to Expired, an admin can revoke it earlier, and the requester may withdraw it while it is still Submitted; every end state leads to a final state.</p>
                     <p class="pf-more"><b>//</b> <span data-i18n="portfolio.more">tap to inspect</span></p>
                 </div>
             </article>
@@ -1321,7 +1321,7 @@
         </figure>
     </div>
 
-    <script src="lang.js?v=2026093006"></script>
+    <script src="lang.js?v=2026093007"></script>
     <script>
         (function () {
             var reveals = Array.prototype.slice.call(document.querySelectorAll(".pf-reveal"));
@@ -1607,7 +1607,7 @@
             three.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
             three.onload = function () {
                 var fig = document.createElement("script");
-                fig.src = "figure.js?v=2026093006";
+                fig.src = "figure.js?v=2026093007";
                 document.body.appendChild(fig);
             };
             document.body.appendChild(three);
