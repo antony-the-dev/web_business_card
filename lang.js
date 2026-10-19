@@ -38,9 +38,9 @@
                 title: "Privacy Policy — Anton Lisachenko",
                 back: "Back to home",
                 heading: "Privacy Policy",
-                updated: "Last updated: September 2026",
+                updated: "Last updated: October 2026",
                 overview: { h: "Overview", p: "This is a static personal site. It does not collect, store, sell or share personal data: there are no accounts, no forms, no cookies and no tracking scripts." },
-                storage: { h: "Stored in your browser", p: "Your theme (dark or light) and language (EN or UA) are remembered in your browser's local storage, so the site opens with your settings. They never leave your device, and you can clear them at any time in your browser settings." },
+                storage: { h: "Stored in your browser", p: "Your language (EN or UA) is remembered in your browser's local storage, so the site opens in the language you chose. It never leaves your device, and you can clear it at any time in your browser settings." },
                 hosting: { h: "Hosting & technical logs", p: "The site is hosted on GitHub Pages. GitHub may keep standard server access logs (such as IP address, browser type and referring page) as part of running its infrastructure, under", link: "GitHub's Privacy Statement" },
                 resources: { h: "Third-party resources", p: "The 3D figure is drawn with the Three.js library, loaded from the cdnjs network run by Cloudflare. When your browser downloads it, Cloudflare receives the usual technical request data (such as IP address and browser type), under", link: "Cloudflare's Privacy Policy", p2: "Fonts are served from this site itself — no requests go to Google." },
                 cookies: { h: "Cookies", p: "The site sets no cookies. DNS for the domain is managed by Cloudflare in DNS-only mode — site traffic is not proxied, cached or tracked by Cloudflare." },
@@ -164,9 +164,9 @@
                 title: "Політика приватності — Антон Лісаченко",
                 back: "На головну",
                 heading: "Політика приватності",
-                updated: "Оновлено: вересень 2026",
+                updated: "Оновлено: жовтень 2026",
                 overview: { h: "Загалом", p: "Це статичний персональний сайт. Він не збирає, не зберігає, не продає і не передає персональні дані: тут немає акаунтів, форм, кукі та скриптів відстеження." },
-                storage: { h: "Що зберігається у вашому браузері", p: "Тема (темна чи світла) і мова (EN чи UA) запам'ятовуються в локальному сховищі браузера, щоб сайт відкривався з вашими налаштуваннями. Ці дані не залишають ваш пристрій, і їх можна будь-коли очистити в налаштуваннях браузера." },
+                storage: { h: "Що зберігається у вашому браузері", p: "Мова (EN чи UA) запам'ятовується в локальному сховищі браузера, щоб сайт відкривався обраною мовою. Ці дані не залишають ваш пристрій, і їх можна будь-коли очистити в налаштуваннях браузера." },
                 hosting: { h: "Хостинг і технічні журнали", p: "Сайт розміщено на GitHub Pages. GitHub може зберігати стандартні журнали доступу до сервера (як-от IP-адресу, тип браузера та сторінку, з якої перейшли) в межах роботи своєї інфраструктури відповідно до", link: "Політики конфіденційності GitHub" },
                 resources: { h: "Сторонні ресурси", p: "3D-фігура малюється бібліотекою Three.js, яка завантажується з мережі cdnjs від Cloudflare. Коли браузер її завантажує, Cloudflare отримує звичайні технічні дані запиту (як-от IP-адресу та тип браузера) відповідно до", link: "Політики конфіденційності Cloudflare", p2: "Шрифти завантажуються з цього ж сайту — жодних запитів до Google." },
                 cookies: { h: "Кукі", p: "Сайт не встановлює кукі. DNS домену обслуговує Cloudflare у режимі «лише DNS» — трафік сайту не проходить через Cloudflare, не кешується і не відстежується." },
@@ -265,6 +265,8 @@
         }, obj);
     }
 
+    // the light theme is gone (Oct 19 2026): forget a stored choice so nothing lingers
+    try { localStorage.removeItem("theme"); } catch (e) { /* private mode */ }
     var lang = (localStorage.getItem("site-lang") === "uk") ? "uk" : "en";
     var dict = I18N[lang];
 

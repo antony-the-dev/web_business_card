@@ -10,11 +10,11 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="robots" content="noindex">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026101901">
+    <link rel="stylesheet" href="style.css?v=2026101902">
     <link rel="canonical" href="https://alisachenko.com/privacy.html" />
     <!-- dark is the default theme, light only if the visitor toggled it (same as
          every other page) -->
-    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
+    <script>document.documentElement.classList.add("dark");</script>
     <style>
         /* page-scoped — small static legal page */
         body {
@@ -87,21 +87,10 @@
     <main class="legal-wrap">
         <div class="legal-toprow">
             <a class="legal-back" href="index.html" data-i18n="privacy.back">Back to home</a>
-            <div class="lang-switch" aria-label="Language and theme">
+            <div class="lang-switch" aria-label="Language">
                 <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                     class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
-                    aria-label="Українська">UA</button><span class="lang-sep" aria-hidden="true">·</span>
-                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
-                    <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
-                        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
-                            fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    </svg>
-                    <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
-                            stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-                    </svg>
-                </button>
+                    aria-label="Українська">UA</button>
             </div>
         </div>
 
@@ -188,33 +177,8 @@
         <p>Anton Lisachenko &middot; &copy; 2026</p>
     </footer>
 
-    <script src="lang.js?v=2026101901"></script>
+    <script src="lang.js?v=2026101902"></script>
     <script>
-        // ===== THEME TOGGLE (same behavior as index.html, standalone) =====
-        (function () {
-            var btn = document.getElementById("theme-toggle");
-            if (!btn) return;
-            var root = document.documentElement;
-            function syncThemeColor() {
-                var meta = document.querySelector('meta[name="theme-color"]');
-                if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
-            }
-            syncThemeColor();
-            btn.addEventListener("click", function () {
-                var dark = !root.classList.contains("dark");
-                root.classList.toggle("dark", dark);
-                try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
-                syncThemeColor();
-                // iOS Safari: force compositor repaints so the URL-bar / home
-                // indicator chrome refreshes with the theme
-                function repaint() {
-                    document.body.style.webkitTransform = "translateZ(0)";
-                    requestAnimationFrame(function () { document.body.style.webkitTransform = ""; });
-                }
-                repaint();
-                [150, 450].forEach(function (ms) { setTimeout(repaint, ms); });
-            });
-        })();
     </script>
 </body>
 

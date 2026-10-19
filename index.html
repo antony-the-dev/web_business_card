@@ -29,7 +29,7 @@
     <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Three.js comes from cdnjs: open the connection early -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="style.css?v=2026101901">
+    <link rel="stylesheet" href="style.css?v=2026101902">
     <link rel="canonical" href="https://alisachenko.com/" />
     <!-- structured data: the site, this profile page and the person it is about
          (alternateName = the Cyrillic spelling, so UA searches map to the same person) -->
@@ -117,9 +117,9 @@
     <!-- a reload always starts at the top: restoring the old scroll position made
          the page land mid-way, replay the bottom "develop" and then jump -->
     <script>try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) { }</script>
-    <!-- apply the theme before first paint: dark is the default, light only if the
-         visitor explicitly toggled it (kills any white/light flash) -->
-    <script>try { if (localStorage.getItem("theme") !== "light") document.documentElement.classList.add("dark"); } catch (e) { document.documentElement.classList.add("dark"); }</script>
+    <!-- the site is dark only (the light theme was removed Oct 19 2026); the class goes on
+         before first paint so nothing flashes white -->
+    <script>document.documentElement.classList.add("dark");</script>
 </head>
 
 <body>
@@ -145,21 +145,10 @@
             <!-- language switch: own grid area so it can sit above credo on
                  mobile (choose language before reading) while staying next
                  to contact links on desktop -->
-            <div class="lang-switch reveal-blur" data-enter="1" aria-label="Language and theme">
+            <div class="lang-switch reveal-blur" data-enter="1" aria-label="Language">
                 <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                     class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
-                    aria-label="Українська">UA</button><span class="lang-sep" aria-hidden="true">·</span>
-                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light / dark theme">
-                    <svg class="theme-ic theme-ic-sun" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8" />
-                        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"
-                            fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    </svg>
-                    <svg class="theme-ic theme-ic-moon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z" fill="none"
-                            stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-                    </svg>
-                </button>
+                    aria-label="Українська">UA</button>
             </div>
 
             <!-- top-left: credo / brand line -->
@@ -325,10 +314,10 @@
         </div>
     </section>
 
-    <script src="lang.js?v=2026101901"></script>
+    <script src="lang.js?v=2026101902"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="figure.js?v=2026101901"></script>
-    <script src="script.js?v=2026101901"></script>
+    <script src="figure.js?v=2026101902"></script>
+    <script src="script.js?v=2026101902"></script>
 </body>
 
 </html>

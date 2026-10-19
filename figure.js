@@ -47,20 +47,9 @@
     // ===== THEME PALETTES: the figure recolors itself when the theme flips =====
     // ink/cube/orange = the three stops every dot slowly drifts through;
     // cube is also the wireframe + glass tint, scan the colour of the scan light
+    // one palette: the site is dark only (the light palette — translucent orange drop,
+    // deep-teal glints on white — was removed Oct 19 2026)
     const PALETTES = {
-        light: {
-            ink: [0.039, 0.145, 0.251],    // site --ink #0a2540
-            cube: [0.08, 0.72, 0.77],      // site teal
-            orange: [1.0, 0.34, 0.13],     // spark / twinkle accent (site --accent #ff5722)
-            scan: [0.02, 0.42, 0.5],       // deep teal: reads on white
-            glint: [0.02, 0.42, 0.5],      // pane highlight (white would vanish on white)
-            // the core on white can't glow (additive light vanishes on white): a
-            // TRANSLUCENT ORANGE drop instead (user's call — the teal one read as a
-            // plain inverted colour); coreAlpha = surface opacity at the centre, the
-            // rim stays dense like the edge of a glass drop
-            coreHot: [1.0, 0.66, 0.46], coreGlow: [1.0, 0.34, 0.13], coreAdd: false, coreHalo: 0.45, coreAlpha: 0.5,
-            coreIrid: [[1.0, 0.3, 0.55], [1.0, 0.78, 0.25]], coreIridK: 0.55   // thin-film rim: pink <-> gold
-        },
         dark: {
             ink: [0.93, 0.97, 1.0],        // luminous off-white on navy
             cube: [0.13, 0.83, 0.93],      // bright cyan
@@ -74,7 +63,6 @@
             coreIrid: [[0.52, 0.45, 1.0], [0.35, 1.0, 0.8]], coreIridK: 0.7
         }
     };
-    const isDarkTheme = () => document.documentElement.classList.contains("dark");
 
     // ===== SCENE_CONFIG — the single tuning surface =====
     const SCENE_CONFIG = {
@@ -169,7 +157,7 @@
         // and coasts on with inertia
         touch: { spin: 0.006, friction: 0.95, maxPitch: 0.5, dragPx: 6 },
         dot: { size: 0.07, opacity: 0.85 },
-        colors: isDarkTheme() ? PALETTES.dark : PALETTES.light,
+        colors: PALETTES.dark,            // the site is dark only (Oct 19 2026)
         cubeDiagonals: true,               // face diagonals on the cube (false = plain grid)
         // rate 0: no random orange flares at rest any more — orange is kept for the
         // lock-in spark of a rebuild (was rate 2, when every dot also drifted
@@ -1469,12 +1457,6 @@
     }
     const tv = new THREE.Vector3();
     animate();
-
-    // theme flip: swap the palette (dots, struts and glass recolor on the next frame)
-    window.addEventListener("themechange", () => {
-        C.colors = isDarkTheme() ? PALETTES.dark : PALETTES.light;
-        applyColors();
-    });
 
     window.addEventListener("resize", () => {
         renderer.setSize(hero.clientWidth, hero.clientHeight);

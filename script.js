@@ -219,60 +219,20 @@ const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 })();
 
 
-// ===== BOTTOM SECTION THEME BEHAVIOUR =====
-// Dark theme: the navy section "develops" into the classic white design once it
-// enters the focus band — one-way, stays white after.
-// Light theme: the original inversion — the section turns navy while it is in
-// the focus band and releases back to white as it passes.
+// ===== BOTTOM SECTION: DEVELOP TO WHITE =====
+// The navy section "develops" into the classic white design once it enters the
+// focus band — one-way, it stays white after. (The site is dark only since
+// Oct 19 2026; the light theme's scroll inversion went with it.)
 (function () {
     const lower = document.getElementById("lower");
     if (!lower) return;
-    const isDarkTheme = () => document.documentElement.classList.contains("dark");
-    let inView = false, revealed = false;
-    const apply = () => {
-        if (isDarkTheme()) lower.classList.toggle("light", revealed);
-        else lower.classList.toggle("dark", inView);
-    };
     const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            inView = entry.isIntersecting;
-            if (inView) revealed = true; // dark theme: one-way develop
-        });
-        apply();
+        if (entries.some((entry) => entry.isIntersecting)) {
+            lower.classList.add("light");
+            io.disconnect();
+        }
     }, { rootMargin: "-12% 0px -12% 0px", threshold: 0 });
     io.observe(lower);
-    window.addEventListener("themechange", apply);
-})();
-
-
-// ===== THEME TOGGLE (moon/sun button next to the language switch) =====
-(function () {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-    const root = document.documentElement;
-    // keep the mobile browser chrome in sync with the current theme
-    function syncThemeColor() {
-        const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute("content", root.classList.contains("dark") ? "#0a2540" : "#ffffff");
-    }
-    syncThemeColor();
-    btn.addEventListener("click", () => {
-        const dark = !root.classList.contains("dark");
-        root.classList.toggle("dark", dark);
-        try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) { /* private mode */ }
-        window.dispatchEvent(new CustomEvent("themechange", { detail: { dark } }));
-        syncThemeColor();
-        // iOS Safari can leave stale navy tiles around the URL bar / home
-        // indicator while the background transitions; force repeated
-        // compositor repaints so the whole viewport (including the chrome
-        // zones) refreshes.
-        function repaint() {
-            document.body.style.webkitTransform = "translateZ(0)";
-            requestAnimationFrame(() => { document.body.style.webkitTransform = ""; });
-        }
-        repaint();
-        [150, 450].forEach((ms) => setTimeout(repaint, ms));
-    });
 })();
 
 
