@@ -6,7 +6,7 @@ Plain HTML/CSS/JS, no framework. Files: `index.html`, `style.css`, `script.js` (
 - Local server: `python3 -m http.server 8080` from the project root → http://localhost:8080
 - The intro plays once per session; to replay it open a fresh/private tab.
 - After editing JS run: `node --check script.js figure.js lang.js`
-- **Cache busting**: every page loads `style.css`, `lang.js`, `figure.js`, `script.js` with `?v=YYYYMMDDNN` (currently `2026093008`) (index, portfolio incl. its dynamic figure.js loader, 404, privacy, services). BUMP the version in all pages whenever one of those files changes before a deploy — otherwise browsers mix a fresh HTML page with a stale cached lang.js (Sep 27 2026: the new RAG card showed only its hard-coded bits, "Local LLM" + "tap to inspect", with empty title/desc/type). One-liner: `sed -i '' -E 's/\?v=[0-9]+/?v=NEW/g' *.html`.
+- **Cache busting**: every page loads `style.css`, `lang.js`, `figure.js`, `script.js` with `?v=YYYYMMDDNN` (currently `2026101901`) (index, portfolio incl. its dynamic figure.js loader, 404, privacy, services). BUMP the version in all pages whenever one of those files changes before a deploy — otherwise browsers mix a fresh HTML page with a stale cached lang.js (Sep 27 2026: the new RAG card showed only its hard-coded bits, "Local LLM" + "tap to inspect", with empty title/desc/type). One-liner: `sed -i '' -E 's/\?v=[0-9]+/?v=NEW/g' *.html`.
 - 404.html: GitHub Pages serves it for ANY missing path, so every asset in it is root-absolute (`/style.css`, `/figure.js`…). Locally just open `/404.html`.
 
 ## Current design (as of the dark-theme overhaul — do not regress)
@@ -33,6 +33,16 @@ Plain HTML/CSS/JS, no framework. Files: `index.html`, `style.css`, `script.js` (
 - Original white version lives in git history (commit 39d4c95). All post-dark-theme work was committed as of commit `a5aceab` ("Added Services and made blocks consistent, latest deploy"). NEVER use `git reset --hard` (the user was warned; uncommitted work would be destroyed).
 - `bugs/` folder: screenshots + claude_chat.md (history of failed attempts, useful context for the iOS lines bug).
 - **Deploy prep done (uncommitted)**: `og-image.png` (1200×630, navy + hexagon watermark) + og/twitter meta; `theme-color` meta synced dynamically on theme toggle (light `#ffffff` / dark `#0a2540`); footer timezone removed (user doesn't want to maintain it); UA "Елісітація" → "Збір вимог"; cube-hint default text removed (lang.js fills it); privacy.html favicon paths fixed (files live in ROOT, not `favicons/`). (privacy.html is no longer always-light — see the Sep 27 trust/SEO pass below.) iOS theme-switch lines persist after 2-3 toggles (repaint retries at 150/450ms), reload clears — user says fine, don't chase it.
+
+## Oct 19 2026 site review ("подивись мій сайт… скажи може щось можна поправити", user: "фікси все що бачиш")
+- The third "Currently working with" item is a LINK to the validator card: `<li><a href="portfolio.html#validator" data-i18n="now.items.2">` (text "AI validation of specs — see the validator in the portfolio" / «…валідатор у портфоліо»); the `rag` article carries `id="validator"`; `.now-list a` style = inherited ink, thin underline, orange on hover.
+- The Ukrainian copy now addresses the visitor FORMALLY («ви») everywhere — privacy, 404, services (e.g. «Розкажіть, що хочете випустити…», «Потрібно щось збудувати?»); the informal «ти/твій/тапни» is gone. Keep «ви» in new UA copy.
+- `services.html` is `noindex` (hidden from the nav since Sep, so hidden from search too); drop the meta only if it ever gets a public link again.
+- Footer meta reads "working with UA / EU / US teams" / «працюю з командами в Україні / ЄС / США» — the bare "UA / EU / US" had no context.
+- Typewriter (script.js) opens on the WHOLE first phrase and starts cycling by deleting it after 2.2 s — a half-typed "BPMN & UML modelin" was the first paint in screenshots / previews.
+- Experience wording aligned with the CV: "5 years of experience (7 in IT)" in the home meta description, the Person JSON-LD and llms.txt (CV says "5 years experience (~7 in IT)").
+- `artifacts/thumb-alisachenko.png` re-shot from the CURRENT home (the old one still showed the deleted portrait): two-tone, hero with the cube left, white Domains/Expertise right.
+- NOT done, needs the user: the CV PDF still lists Mobile and IoT under Domain (the site dropped them as platforms, not domains) — the text is stored as glyphs, so it must be edited in Pages and re-exported (then re-apply the PDF metadata, see the SEO section).
 
 ## SEO (pass Sep 30 2026 — user: "як сео покращити максимально… щоб сайт частіше вилітав")
 - Audit first: all 5 pages × EN/UA × dark/light × desktop/phone in headless Chromium (Three.js r128 served from npm since cdnjs is blocked in the cloud box) — no JS errors, no 4xx, no horizontal overflow, one h1 per page, `<html lang>` + title follow the language. No bugs; the only gap was SEO.

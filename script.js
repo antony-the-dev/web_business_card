@@ -5,7 +5,11 @@ const phrases = (window.TYPED_PHRASES && window.TYPED_PHRASES.length)
     ? window.TYPED_PHRASES
     : ["BPMN & UML modeling", "API & Data entity schemas", "Requirements engineering", "Pre-sale consulting", "Discovery to handoff"];
 const targets = document.querySelectorAll("#typed, .id-typed");
-let phraseIndex = 0; let charIndex = 0; let deleting = false;
+// open on the whole first phrase (a half-typed "BPMN & UML modelin" on the first
+// paint read as a glitch in screenshots and link previews); the cycle starts by
+// deleting it after the usual pause
+let phraseIndex = 0; let charIndex = phrases[0].length; let deleting = true;
+targets.forEach((t) => t.textContent = phrases[0]);
 
 function tick() {
     const current = phrases[phraseIndex];
@@ -22,7 +26,7 @@ function tick() {
     }
     setTimeout(tick, deleting ? 50 : 100);
 }
-tick();
+setTimeout(tick, 2200);
 
 
 // ===== shared helper for the UI scripts below (the Three.js sections keep

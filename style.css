@@ -686,6 +686,22 @@ html.dark .theme-ic-moon {
     line-height: 1.55;
 }
 
+/* an item may link somewhere (the validator in the portfolio): same ink,
+   the underline is the affordance, orange on hover like the other text links */
+.now-list a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.now-list a:hover,
+.now-list a:focus-visible {
+    color: var(--accent-text);
+    text-decoration-color: var(--accent);
+}
+
 .now-list li::before {
     content: "";
     position: absolute;
