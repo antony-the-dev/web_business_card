@@ -10,10 +10,10 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="robots" content="noindex">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026101902">
+    <link rel="stylesheet" href="style.css?v=2026110201">
     <link rel="canonical" href="https://alisachenko.com/privacy.html" />
-    <!-- dark is the default theme, light only if the visitor toggled it (same as
-         every other page) -->
+    <!-- the site is dark only (the light theme was removed Oct 19 2026); the class goes on
+         before first paint so nothing flashes white -->
     <script>document.documentElement.classList.add("dark");</script>
     <style>
         /* page-scoped — small static legal page */
@@ -87,7 +87,7 @@
     <main class="legal-wrap">
         <div class="legal-toprow">
             <a class="legal-back" href="index.html" data-i18n="privacy.back">Back to home</a>
-            <div class="lang-switch" aria-label="Language">
+            <div class="lang-switch" role="group" aria-label="Language">
                 <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                     class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
                     aria-label="Українська">UA</button>
@@ -95,7 +95,7 @@
         </div>
 
         <h1 class="hex" data-i18n="privacy.heading">Privacy Policy</h1>
-        <p class="legal-updated" data-i18n="privacy.updated">Last updated: September 2026</p>
+        <p class="legal-updated" data-i18n="privacy.updated">Last updated: November 2026</p>
 
         <section>
             <span class="deco-line" style="width:60px;"></span>
@@ -107,9 +107,9 @@
         <section>
             <span class="deco-line" style="width:60px;"></span>
             <h2 class="hex" data-i18n="privacy.storage.h">Stored in your browser</h2>
-            <p data-i18n="privacy.storage.p">Your theme (dark or light) and language (EN or UA) are remembered in
-                your browser's local storage, so the site opens with your settings. They never leave your device,
-                and you can clear them at any time in your browser settings.</p>
+            <p data-i18n="privacy.storage.p">Your language (EN or UA) is remembered in your browser's local storage,
+                so the site opens in the language you chose. It never leaves your device, and you can clear it at any
+                time in your browser settings.</p>
         </section>
 
         <section>
@@ -127,13 +127,9 @@
         <section>
             <span class="deco-line" style="width:60px;"></span>
             <h2 class="hex" data-i18n="privacy.resources.h">Third-party resources</h2>
-            <p><span data-i18n="privacy.resources.p">The 3D figure is drawn with the Three.js library, loaded from
-                    the cdnjs network run by Cloudflare. When your browser downloads it, Cloudflare receives the
-                    usual technical request data (such as IP address and browser type), under</span>
-                <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer"
-                    data-i18n="privacy.resources.link">Cloudflare's Privacy Policy</a>.
-            </p>
-            <p data-i18n="privacy.resources.p2">Fonts are served from this site itself — no requests go to Google.</p>
+            <p data-i18n="privacy.resources.p">None. The fonts and the Three.js library that draws the 3D figure are
+                served from this site itself, so your browser makes no requests to Google, Cloudflare or any other
+                third party while you browse.</p>
         </section>
 
         <section>
@@ -177,9 +173,7 @@
         <p>Anton Lisachenko &middot; &copy; 2026</p>
     </footer>
 
-    <script src="lang.js?v=2026101902"></script>
-    <script>
-    </script>
+    <script src="lang.js?v=2026110201"></script>
 </body>
 
 </html>

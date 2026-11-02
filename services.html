@@ -26,7 +26,7 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Services.">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="style.css?v=2026101902">
+    <link rel="stylesheet" href="style.css?v=2026110201">
     <link rel="canonical" href="https://alisachenko.com/services.html" />
     <!-- progressive enhancement flag: entrance-hidden states only apply with JS -->
     <script>document.documentElement.classList.add("js");</script>
@@ -34,14 +34,13 @@
          before first paint so nothing flashes white -->
     <script>document.documentElement.classList.add("dark");</script>
     <style>
-        /* ===== PAGE-SCOPED (always-dark services page) ===== */
+        /* ===== PAGE-SCOPED ===== */
         .sv-wrap {
             max-width: 1000px;
             margin: 0 auto;
             padding: 3.5rem 2rem 4rem;
             background: var(--bg);
             min-height: 100vh;
-            transition: background-color 0.35s ease, color 0.35s ease;
         }
 
         body {
@@ -359,32 +358,6 @@
             text-align: center;
             color: var(--muted);
             font-size: 0.85rem;
-            transition: color 0.35s ease, border-color 0.35s ease;
-        }
-
-        /* smooth theme transitions for all page elements */
-        .sv-card,
-        .sv-site-card {
-            transition: border-color 0.35s ease, background-color 0.35s ease,
-                transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-        }
-        .sv-card h3,
-        .sv-site-card h3,
-        .sv-kicker,
-        .sv-track-title,
-        .sv-intro,
-        .sv-card p,
-        .sv-site-card p,
-        .sv-sites-note,
-        .sv-cta p,
-        .sv-cta h2 {
-            transition: color 0.35s ease;
-        }
-        .sv-pill,
-        .sv-site-link,
-        .sv-track-line,
-        .sv-site-thumb {
-            transition: color 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
         }
 
         .sv-footer a {
@@ -447,7 +420,7 @@
         <header class="sv-head sv-reveal">
             <div class="sv-toprow">
                 <a class="legal-back" href="index.html" data-i18n="services.back">Back to home</a>
-                <div class="lang-switch" aria-label="Language">
+                <div class="lang-switch" role="group" aria-label="Language">
                     <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                         class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk"
                         type="button" aria-label="Українська">UA</button>
@@ -473,17 +446,17 @@
                     <div class="sv-pills" data-i18n="services.tracks.analysis.items.req.pills">Stories | BRD / SRS / FRD</div>
                 </div>
                 <div class="sv-card">
-                    <h3 data-i18n="services.tracks.analysis.items.model.title">Modeling</h3>
+                    <h3 data-i18n="services.tracks.analysis.items.model.title">Process Modeling</h3>
                     <p data-i18n="services.tracks.analysis.items.model.desc">BPMN and UML diagrams that make the current pain and the target flow visible to business and developers at the same time.</p>
                     <div class="sv-pills" data-i18n="services.tracks.analysis.items.model.pills">BPMN / UML / Sequence</div>
                 </div>
                 <div class="sv-card">
-                    <h3 data-i18n="services.tracks.analysis.items.arch.title">Architecture</h3>
+                    <h3 data-i18n="services.tracks.analysis.items.arch.title">Architecture &amp; Data</h3>
                     <p data-i18n="services.tracks.analysis.items.arch.desc">System architecture, ERD / DWH schemas and API specs — the blueprint before a single line of code is spent.</p>
                     <div class="sv-pills" data-i18n="services.tracks.analysis.items.arch.pills">API | ERD / Architecture</div>
                 </div>
                 <div class="sv-card">
-                    <h3 data-i18n="services.tracks.analysis.items.presale.title">Pre-sale &amp; Discovery</h3>
+                    <h3 data-i18n="services.tracks.analysis.items.presale.title">Pre-Sale &amp; Discovery</h3>
                     <p data-i18n="services.tracks.analysis.items.presale.desc">Feasibility, scope and estimates at the very front of a deal, so stakeholders commit with their eyes open.</p>
                     <div class="sv-pills" data-i18n="services.tracks.analysis.items.presale.pills">Workshops | Discovery / Estimates</div>
                 </div>
@@ -493,7 +466,7 @@
         <section class="sv-track sv-reveal sv-track-left" aria-label="AI-native Delivery">
             <div class="sv-track-head">
                 <span class="sv-track-num">02 //</span>
-                <span class="sv-track-title" data-i18n="services.tracks.delivery.heading">AI-native Delivery</span>
+                <span class="sv-track-title" data-i18n="services.tracks.delivery.heading">AI-Native Delivery</span>
                 <span class="sv-track-line"></span>
             </div>
             <div class="sv-grid">
@@ -503,7 +476,7 @@
                     <div class="sv-pills" data-i18n="services.tracks.delivery.items.websites.pills">HTML / CSS / JS | API / Integrations / CMS</div>
                 </div>
                 <div class="sv-card">
-                    <h3 data-i18n="services.tracks.delivery.items.bcard.title">Business Cards</h3>
+                    <h3 data-i18n="services.tracks.delivery.items.bcard.title">Business Card Sites</h3>
                     <p data-i18n="services.tracks.delivery.items.bcard.desc">A one-page web business card — dark, modern, bilingual — designed, coded and deployed. Live in days, not months.</p>
                     <div class="sv-pills" data-i18n="services.tracks.delivery.items.bcard.pills">HTML / CSS / JS | Bilingual / Deploy</div>
                 </div>
@@ -513,7 +486,7 @@
                     <div class="sv-pills" data-i18n="services.tracks.delivery.items.landing.pills">HTML / CSS / JS | SEO / Copy</div>
                 </div>
                 <div class="sv-card">
-                    <h3 data-i18n="services.tracks.delivery.items.automation.title">Automation</h3>
+                    <h3 data-i18n="services.tracks.delivery.items.automation.title">AI Automation</h3>
                     <p data-i18n="services.tracks.delivery.items.automation.desc">n8n workflows and local LLMs that scan, digest and remind for you — zero cloud cost, running on your own hardware.</p>
                     <div class="sv-pills" data-i18n="services.tracks.delivery.items.automation.pills">AI / API | n8n / LLM / RAG</div>
                 </div>
@@ -523,7 +496,7 @@
         <section class="sv-sites sv-reveal" aria-label="My work">
             <div class="sv-sites-head">
                 <span class="sv-track-num">03 //</span>
-                <span class="sv-track-title" data-i18n="services.sites.heading">Websites I've built</span>
+                <span class="sv-track-title" data-i18n="services.sites.heading">My Work</span>
                 <span class="sv-track-line"></span>
             </div>
             <p class="sv-sites-note" data-i18n="services.sites.note">The public half of the portfolio — no NDA here. Pick one and open it.</p>
@@ -590,7 +563,7 @@
         <p>Anton Lisachenko &middot; &copy; 2026 &middot; <a href="index.html">alisachenko.com</a></p>
     </footer>
 
-    <script src="lang.js?v=2026101902"></script>
+    <script src="lang.js?v=2026110201"></script>
     <script>
         /* Split pill text into chip spans. Each / or + makes a new chip on the
            SAME line; a | forces a new centered line (used where one word alone

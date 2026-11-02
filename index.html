@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="description"
-        content="Business Analyst with 5 years of experience (7 in IT) and a background in project management. I take requirements from pre-sale and discovery through to UAT and a clean handoff.">
+        content="Business Analyst with 5 years of experience (7 in IT) and a project management background: requirements from pre-sale and discovery to UAT and handoff.">
     <meta name="author" content="Anton Lisachenko">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://alisachenko.com/">
@@ -27,9 +27,7 @@
     <meta property="og:image:alt" content="Anton Lisachenko — Business Analyst. Classic business analysis, AI-native execution.">
     <meta name="theme-color" content="#0a2540">
     <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- Three.js comes from cdnjs: open the connection early -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="style.css?v=2026101902">
+    <link rel="stylesheet" href="style.css?v=2026110201">
     <link rel="canonical" href="https://alisachenko.com/" />
     <!-- structured data: the site, this profile page and the person it is about
          (alternateName = the Cyrillic spelling, so UA searches map to the same person) -->
@@ -56,6 +54,8 @@
           "@id": "https://alisachenko.com/#page",
           "url": "https://alisachenko.com/",
           "name": "Anton Lisachenko — Business Analyst",
+          "dateCreated": "2026-08-03",
+          "dateModified": "2026-11-02",
           "isPartOf": {
             "@id": "https://alisachenko.com/#website"
           },
@@ -124,7 +124,8 @@
 
 <body>
 
-    <div id="id-bar">
+    <!-- a visual duplicate of the name/role for sighted scrollers: hidden from assistive tech -->
+    <div id="id-bar" aria-hidden="true">
         <div class="id-inner">
             <p class="id-name">Anton Lisachenko</p>
             <p class="id-role" data-i18n="role">Business Analyst</p>
@@ -132,7 +133,7 @@
         </div>
     </div>
 
-    <!-- ===== SCREN 1 ===== -->
+    <!-- ===== SCREEN 1 ===== -->
     <section id="hero">
 
         <!-- full-bleed particle canvas, sits behind the text -->
@@ -145,7 +146,7 @@
             <!-- language switch: own grid area so it can sit above credo on
                  mobile (choose language before reading) while staying next
                  to contact links on desktop -->
-            <div class="lang-switch reveal-blur" data-enter="1" aria-label="Language">
+            <div class="lang-switch reveal-blur" data-enter="1" role="group" aria-label="Language">
                 <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                     class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
                     aria-label="Українська">UA</button>
@@ -303,21 +304,22 @@
                 <p class="footer-status">
                     <span class="status-dot" aria-hidden="true"></span><span class="status-label"
                         data-i18n="footer.status">Business Analyst</span><span class="status-meta"
-                        data-i18n="footer.statusMeta">UA / EU / US</span>
+                        data-i18n="footer.statusMeta">working with UA / EU / US teams</span>
                 </p>
                 <p class="footer-name">Anton Lisachenko</p>
                 <p class="footer-rights">&copy; 2026 &middot; <span data-i18n="footer.rights">All rights
-                        reserved</span> <br><a href="privacy.html" data-i18n="footer.privacy">Privacy
+                        reserved.</span> <br><a href="privacy.html" data-i18n="footer.privacy">Privacy
                         Policy</a></p>
             </footer>
 
         </div>
     </section>
 
-    <script src="lang.js?v=2026101902"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="figure.js?v=2026101902"></script>
-    <script src="script.js?v=2026101902"></script>
+    <script src="lang.js?v=2026110201"></script>
+    <!-- Three.js r128, self-hosted (vendor/) — the site makes no third-party requests -->
+    <script src="vendor/three-r128.min.js"></script>
+    <script src="figure.js?v=2026110201"></script>
+    <script src="script.js?v=2026110201"></script>
 </body>
 
 </html>

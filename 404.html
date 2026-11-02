@@ -12,8 +12,8 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="theme-color" content="#0a2540">
-    <link rel="stylesheet" href="/style.css?v=2026101902">
-    <!-- dark is the default theme, light only if the visitor toggled it -->
+    <link rel="stylesheet" href="/style.css?v=2026110201">
+    <!-- the site is dark only; the class goes on before first paint so nothing flashes white -->
     <script>document.documentElement.classList.add("dark");</script>
     <style>
         body {
@@ -157,7 +157,7 @@
     <main class="nf-wrap">
         <div class="nf-toprow">
             <a class="legal-back" href="/" data-i18n="notFound.back">Back to home</a>
-            <div class="lang-switch" aria-label="Language">
+            <div class="lang-switch" role="group" aria-label="Language">
                 <button class="lang-opt" data-lang="en" type="button" aria-label="English">EN</button><span
                     class="lang-sep" aria-hidden="true">/</span><button class="lang-opt" data-lang="uk" type="button"
                     aria-label="Українська">UA</button>
@@ -185,11 +185,9 @@
             scrollShrink: 0, bandless: true
         };
     </script>
-    <script src="/lang.js?v=2026101902"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="/figure.js?v=2026101902"></script>
-    <script>
-    </script>
+    <script src="/lang.js?v=2026110201"></script>
+    <script src="/vendor/three-r128.min.js"></script>
+    <script src="/figure.js?v=2026110201"></script>
 </body>
 
 </html>

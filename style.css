@@ -49,7 +49,7 @@ html {
 }
 
 :root {
-    /* JetBrains Mono is loaded from Google Fonts (see index.html) so the mono
+    /* JetBrains Mono is self-hosted (the @font-face rules above) so the mono
        accents render identically on macOS / Windows / Linux; the rest of the
        stack is a system fallback while the webfont loads */
     --font-mono: "JetBrains Mono", "SF Mono", "Roboto Mono", ui-monospace, monospace;
@@ -78,7 +78,6 @@ body {
     background-color: var(--bg);
     color: var(--ink);
     line-height: 1.7;
-    transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 /* ===== PERSISTENT IDENTITY BAR (solid theme bg) ===== */
@@ -225,7 +224,7 @@ body {
     position: relative;
     z-index: 1;
     pointer-events: none;
-    /* clicks fall through to the canvas (morph to face) */
+    /* clicks fall through to the canvas (tap = rebuild the figure) */
     width: 100%;
     height: 100%;
     margin: 0;
@@ -1045,17 +1044,17 @@ a:focus-visible {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
 
-    /* ---- TUNABLE: portrait band on mobile ---- */
-    /* --band-top: where the portrait band starts (raise/lower the whole portrait) */
-    /* --band-h:   portrait band height (smaller = less empty space, lifts About/Currently) */
+    /* ---- TUNABLE: the figure's band on mobile ---- */
+    /* --band-top: where the band starts (raise/lower the whole figure) */
+    /* --band-h:   band height (smaller = less empty space, lifts "Currently working with") */
     :root {
         /* band-top = height of the text stack ABOVE the cube (lang + credo +
            contacts + CV button + row gaps). NO-JS FALLBACK ONLY — pin() in
            script.js measures the CTA's real bottom edge and overrides this
            inline. Re-derive if you add/remove rows above the cube.
            ~16.3rem = lang(1.2) + credo(3.2) + contacts TWO lines (~3.4,
-           Email·LinkedIn·GitHub / centered Portfolio+Services) + cta(2.5) +
-           gaps + padding-top(1.75). */
+           Email·LinkedIn / centered Portfolio) + cta(2.5) + gaps +
+           padding-top(1.75). */
         --band-top: 16.3rem;
         --band-h: 46vh;
         /* TWO independent stretch levers. The cube's size AND screen position are
@@ -1086,9 +1085,8 @@ a:focus-visible {
             "portrait"
             "identity";
         /* contact must be AUTO, not a fixed spacer track: contacts stack on
-           TWO lines on mobile (Email·LinkedIn·GitHub / centered Portfolio +
-           Services + neon beam), a fixed height overflows onto the CV button
-           below */
+           TWO lines on mobile (Email·LinkedIn / centered Portfolio + neon
+           beam), a fixed height overflows onto the CV button below */
         grid-template-rows: auto auto auto auto auto var(--band-h) auto;
         column-gap: 0;
         row-gap: 0.6rem;
@@ -1110,7 +1108,7 @@ a:focus-visible {
         margin-right: 0;
     }
 
-    /* confine the 3D portrait to a centered band; text flows above and below it */
+    /* confine the 3D figure to a centered band; text flows above and below it */
     #hero-canvas-container {
         top: var(--band-top);
         /* grow both ways: JS raises the pinned top by --band-up, and the height
@@ -1277,7 +1275,7 @@ a:focus-visible {
 }
 
 /* ===== PORTFOLIO LINK IN HERO CONTACT =====
-   Looks like Email/LinkedIn/GitHub — same mono uppercase base, same orange
+   Looks like Email/LinkedIn — same mono uppercase base, same orange
    draw-in above the word on hover, same accent-text colour.
    Signature difference: a thin neon scanning beam under the word — a small
    bright gradient highlight that slowly glides left→right on an infinite
