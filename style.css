@@ -1478,7 +1478,12 @@ a:focus-visible {
     }
 }
 
-/* white bottom: pills read as chips, captions carry the site's "//" kicker */
+/* white bottom: a short accent line rests above each heading (it still grows
+   orange on hover), pills read as chips, captions carry the site's "//" kicker */
+#lower {
+    --deco-rest: 40px;
+}
+
 #lower.light .domain-tags span,
 #lower.light .exp-tags span {
     background-color: #f3f6fa;
