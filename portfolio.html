@@ -1034,6 +1034,19 @@
                 height: 32px;
                 font-size: 1.05rem;
             }
+
+            /* the compact buttons keep a 44px finger target round them */
+            .lb-close::before,
+            .lb-nav::before,
+            .lb-zoom::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 44px;
+                height: 44px;
+                transform: translate(-50%, -50%);
+            }
         }
 
         /* ===== REDUCED MOTION ===== */
@@ -1462,7 +1475,15 @@
                 curIdx = i;
                 var media = card.querySelector(".pf-media img");
                 resetZ();
-                lbImg.src = hd(media.getAttribute("src"));
+                // open on the card's picture, which is already loaded, and trade up to the
+                // 3200px copy once it has decoded — no blank frame on a slow connection
+                var big = hd(media.getAttribute("src"));
+                lbImg.src = media.currentSrc || media.src;
+                var up = new Image();
+                up.src = big;
+                (up.decode ? up.decode() : Promise.resolve()).then(function () {
+                    if (curIdx === i && !lb.hidden) lbImg.src = big;
+                }, function () { /* keep the card copy */ });
                 lbImg.alt = media.getAttribute("alt") || "";
                 lbType.textContent = card.querySelector(".pf-pill").textContent;
                 lbTool.textContent = card.querySelector(".pf-pill-tool").textContent;

@@ -1494,3 +1494,27 @@ a:focus-visible {
     content: "// ";
     color: var(--accent-text);
 }
+
+/* ===== TAP TARGETS (Nov 3 2026): the small mono links keep their glyphs, but an
+   invisible 44px-tall hit area sits round each one (WCAG 2.5.5 — Email/LinkedIn/
+   Portfolio were ~21px tall on a phone); same trick as .lang-opt above ===== */
+.footer-rights a,
+.legal-back,
+.nf-links a,
+.cta-links a {
+    position: relative;
+}
+
+.hero-contact a::before,
+.footer-rights a::before,
+.legal-back::before,
+.nf-links a::before,
+.cta-links a::before {
+    content: "";
+    position: absolute;
+    left: -0.4rem;
+    right: -0.4rem;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+}
