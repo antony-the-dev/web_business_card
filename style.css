@@ -1413,3 +1413,79 @@ a:focus-visible {
         row-gap: 0.9rem;
     }
 }
+/* ===== DEPTH PASS (Nov 3 2026): more colour and depth without new elements =====
+   The hero gets a background with a soft cyan glow behind the figure, a faint warm
+   note under the name and a mild vignette; the typed line turns into a teal mono
+   caption (a colour link to the figure); the name scales with the viewport; the
+   white section's pills get a faint fill and the Expertise captions the same
+   orange "//" kicker as the portfolio sections. ===== */
+#hero {
+    background:
+        radial-gradient(58% 52% at 70% 48%, rgba(34, 211, 238, 0.12), transparent 70%),
+        radial-gradient(42% 38% at 12% 82%, rgba(255, 87, 34, 0.05), transparent 70%),
+        radial-gradient(120% 100% at 50% 42%, transparent 58%, rgba(3, 14, 28, 0.38) 100%),
+        var(--bg);
+}
+
+/* a faint blueprint dot grid around the figure, masked away from the text */
+#hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(234, 242, 252, 0.085) 1px, transparent 1.3px);
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(48% 60% at 70% 48%, #000 15%, transparent 85%);
+    mask-image: radial-gradient(48% 60% at 70% 48%, #000 15%, transparent 85%);
+}
+
+@media (min-width: 901px) {
+    h1 {
+        font-size: clamp(2.3rem, 1.6vw + 1.2rem, 3.2rem);
+    }
+
+    .role {
+        font-size: clamp(1.25rem, 0.6vw + 0.9rem, 1.5rem);
+    }
+}
+
+/* the typed line: a teal mono caption, like the credo but lit by the figure */
+#typed {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 0.75rem;
+}
+
+#typed::after {
+    color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    #hero {
+        background:
+            radial-gradient(75% 42% at 50% 50%, rgba(34, 211, 238, 0.11), transparent 70%),
+            var(--bg);
+    }
+
+    #hero::before {
+        -webkit-mask-image: radial-gradient(70% 45% at 50% 50%, #000 15%, transparent 85%);
+        mask-image: radial-gradient(70% 45% at 50% 50%, #000 15%, transparent 85%);
+    }
+}
+
+/* white bottom: pills read as chips, captions carry the site's "//" kicker */
+#lower.light .domain-tags span,
+#lower.light .exp-tags span {
+    background-color: #f3f6fa;
+    border-color: #e1e7ee;
+}
+
+.exp-group-title::before {
+    content: "// ";
+    color: var(--accent-text);
+}
